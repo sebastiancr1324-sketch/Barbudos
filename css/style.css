@@ -1,32 +1,21 @@
 /* ============================================================
-   Barbudo's Barbershop — brutalismo oscuro (revisado)
-   Más prolijo: ritmo de espacios consistente, cajas medidas,
-   rojo solo como acento. Medios como placeholders.
+   Barbudo's Barbershop — Power sobre marca negro + rojo
+   Tipografía Oswald + JetBrains Mono y radios suaves del sistema
+   Power, sobre la identidad característica: fondo oscuro cálido,
+   texto marfil, acento rojo #e04032.
    ============================================================ */
 
 @font-face {
-  font-family: 'Darker Grotesque';
-  src: url('../assets/fonts/DarkerGrotesque-400.woff2') format('woff2');
-  font-weight: 400; font-style: normal; font-display: swap;
+  font-family: 'Oswald';
+  src: url('../assets/fonts/Oswald-Variable.woff2') format('woff2');
+  font-weight: 200 700; font-style: normal; font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Darker Grotesque';
-  src: url('../assets/fonts/DarkerGrotesque-500.woff2') format('woff2');
-  font-weight: 500; font-style: normal; font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Darker Grotesque';
-  src: url('../assets/fonts/DarkerGrotesque-700.woff2') format('woff2');
-  font-weight: 700; font-style: normal; font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Darker Grotesque';
-  src: url('../assets/fonts/DarkerGrotesque-800.woff2') format('woff2');
-  font-weight: 800; font-style: normal; font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  font-family: 'Oswald';
+  src: url('../assets/fonts/Oswald-Variable-ext.woff2') format('woff2');
+  font-weight: 200 700; font-style: normal; font-display: swap;
+  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: 'JetBrains Mono';
@@ -57,13 +46,16 @@
   --line-soft: #1d1a16;
   --line-strong: #3a342c;
 
-  --red: #e04032;
-  --red-deep: #b02a20;
-  --red-soft: rgba(224, 64, 50, 0.14);
+  --accent: #e04032;
+  --accent-deep: #b02a20;
+  --accent-soft: rgba(224, 64, 50, 0.14);
   --danger: #e06056;
 
-  --font-display: 'Darker Grotesque', 'Arial Narrow', sans-serif;
-  --font-body: 'Darker Grotesque', 'Segoe UI', sans-serif;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  --font-display: 'Oswald', 'Arial Narrow', sans-serif;
+  --font-body: 'Oswald', 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --container: 1180px;
@@ -76,7 +68,7 @@
 /* ---------- Reset ---------- */
 *,
 *::before,
-*::after { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0 !important; }
+*::after { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
 
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 12px); }
 
@@ -84,9 +76,9 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 1.05rem;
+  font-size: 1.06rem;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -96,14 +88,14 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 input, select, textarea { font: inherit; color: inherit; }
 
-::selection { background: var(--red); color: #0a0909; }
+::selection { background: var(--accent); color: #0a0909; }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: -0.01em;
-  line-height: 0.95;
+  letter-spacing: 0.01em;
+  line-height: 1;
   color: var(--ink);
 }
 
@@ -112,13 +104,53 @@ p { max-width: 68ch; }
 code {
   font-family: var(--font-mono);
   font-size: 0.85em;
-  color: var(--red);
+  color: var(--accent);
 }
 
 .mono { font-family: var(--font-mono); }
 
+/* ---------- Radios (Power) ---------- */
+.btn,
+.nav__logo,
+.nav__burger,
+.preloader__mark,
+.preloader__bar,
+.ph,
+.video-item,
+.feature,
+.drinks,
+.barber,
+.branch,
+.branch__map,
+.hours,
+.contact__card,
+.form,
+.footer__rif,
+.hero__figure img {
+  border-radius: var(--radius-md);
+}
+
+.hero__figure::after,
+.media-grid__item {
+  border-radius: var(--radius-md);
+}
+
+.form__field input,
+.form__field select,
+.form__field textarea,
+.video-item video,
+.feature__tag,
+.drinks__media img,
+.drinks__mini,
+.barber__img,
+.barber__badge,
+.branch__map-link,
+.booking__list-n {
+  border-radius: var(--radius-sm);
+}
+
 /* ---------- Utilidades ---------- */
-.accent { color: var(--red); }
+.accent { color: var(--accent); }
 
 .eyebrow {
   font-family: var(--font-mono);
@@ -126,7 +158,7 @@ code {
   font-size: 0.74rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--red);
+  color: var(--accent);
 }
 
 .section {
@@ -175,20 +207,20 @@ code {
 }
 
 .btn:focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
 .btn--primary {
-  background: var(--red);
-  border-color: var(--red);
+  background: var(--accent);
+  border-color: var(--accent);
   color: #0a0909;
 }
 
 .btn--primary:hover {
   background: transparent;
-  border-color: var(--red);
-  color: var(--red);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .btn--ghost {
@@ -197,8 +229,8 @@ code {
 }
 
 .btn--ghost:hover {
-  border-color: var(--red);
-  color: var(--red);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .btn--block {
@@ -230,7 +262,7 @@ code {
   font-size: 3.2rem;
   letter-spacing: 0.06em;
   color: var(--bg);
-  background: var(--red);
+  background: var(--accent);
   padding: 0.15rem 1.1rem;
   transform: rotate(-3deg);
 }
@@ -247,7 +279,7 @@ code {
   position: absolute;
   inset: 0 auto 0 0;
   width: 40%;
-  background: var(--red);
+  background: var(--accent);
   animation: preload 0.9s var(--ease) infinite;
 }
 
@@ -299,12 +331,16 @@ code {
   width: 36px;
   height: 36px;
   flex: none;
-  border: 1.5px dashed var(--ink-3);
-  display: grid;
-  place-items: center;
-  font-size: 0.5rem;
-  letter-spacing: 0.14em;
-  color: var(--ink-3);
+  display: block;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+  object-fit: contain;
+  padding: 3px;
+  transition: border-color 0.2s var(--ease);
+}
+
+.nav__brand:hover .nav__logo {
+  border-color: var(--accent);
 }
 
 .nav__brand-text {
@@ -335,7 +371,7 @@ code {
 
 .nav__links .nav__cta {
   color: #0a0909;
-  background: var(--red);
+  background: var(--accent);
   padding: 0.55rem 1.05rem;
   letter-spacing: 0.06em;
 }
@@ -417,7 +453,7 @@ code {
 .hero__line--block {
   display: inline-block;
   max-width: 100%;
-  background: var(--red);
+  background: var(--accent);
   color: #0a0909;
   padding: 0.02em 0.2em;
   margin-top: 0.08em;
@@ -439,6 +475,34 @@ code {
   position: relative;
   max-width: clamp(320px, 30vw, 440px);
   margin-left: auto;
+}
+
+.hero__figure {
+  position: relative;
+  margin: 0;
+}
+
+.hero__figure::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--accent);
+  transform: translate(12px, 12px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero__figure img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border: 1px solid var(--line-strong);
+}
+
+.hero__figure:hover img {
+  filter: saturate(1.15);
+  transition: filter 0.25s var(--ease);
 }
 
 .hero__stamp {
@@ -477,7 +541,7 @@ code {
 }
 
 .ph:hover {
-  border-color: var(--red);
+  border-color: var(--accent);
   background: var(--bg-3);
 }
 
@@ -490,7 +554,7 @@ code {
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--red);
+  color: var(--accent);
 }
 
 .ph__file {
@@ -530,7 +594,7 @@ code {
 .marquee__track i {
   width: 7px;
   height: 7px;
-  background: var(--red);
+  background: var(--accent);
   transform: rotate(45deg);
   margin-inline: 1.4rem;
   flex: none;
@@ -547,8 +611,27 @@ code {
   gap: 1.25rem;
 }
 
-.media-grid .ph {
+.media-grid__item {
+  position: relative;
+  margin: 0;
+  width: 100%;
   aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+}
+
+.media-grid__item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease), filter 0.4s var(--ease);
+}
+
+.media-grid__item:hover img {
+  transform: scale(1.04);
+  filter: saturate(1.2);
 }
 
 /* ---------- El Local · Videos ---------- */
@@ -683,7 +766,7 @@ code {
   content: '';
   width: 8px;
   height: 8px;
-  background: var(--red);
+  background: var(--accent);
   transform: rotate(45deg);
   flex: none;
 }
@@ -694,8 +777,8 @@ code {
   font-size: 0.68rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--red);
-  border: 1px solid var(--red);
+  color: var(--accent);
+  border: 1px solid var(--accent);
   padding: 0.25rem 0.55rem;
   display: inline-block;
   margin-top: 0.25rem;
@@ -826,7 +909,7 @@ code {
   top: 1.2rem;
   left: 1.2rem;
   z-index: 1;
-  background: var(--red);
+  background: var(--accent);
   color: #0a0909;
   font-weight: 700;
   font-size: 0.7rem;
@@ -858,7 +941,7 @@ code {
 .barber__handle {
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--red);
+  color: var(--accent);
 }
 
 .barber__handle a {
@@ -905,17 +988,17 @@ code {
   font-size: 0.74rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: var(--red);
+  background: var(--accent);
   color: #0a0909;
   padding: 0.35rem 0.7rem;
   transition: background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease);
-  border: 2px solid var(--red);
+  border: 2px solid var(--accent);
 }
 
 .branch__map-link:hover {
   background: transparent;
-  color: var(--red);
-  border-color: var(--red);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .branch__map {
@@ -947,7 +1030,7 @@ code {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--red);
+  color: var(--accent);
 }
 
 .hours__rows {
@@ -1020,7 +1103,7 @@ code {
 }
 
 .contact__value:hover {
-  color: var(--red);
+  color: var(--accent);
 }
 
 .contact__card {
@@ -1035,8 +1118,8 @@ code {
 }
 
 .contact__card:hover {
-  background: var(--red);
-  border-color: var(--red);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 .contact__card-kicker {
@@ -1069,7 +1152,7 @@ code {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--red);
+  color: var(--accent);
   transition: color 0.2s var(--ease);
 }
 
@@ -1119,8 +1202,8 @@ code {
   font-size: 0.8rem;
   font-weight: 700;
   color: #0a0909;
-  background: var(--red);
-  border: 2px solid var(--red);
+  background: var(--accent);
+  border: 2px solid var(--accent);
   padding: 0.1rem 0.5rem;
   flex: none;
 }
@@ -1183,7 +1266,7 @@ code {
 .form__field select:focus,
 .form__field textarea:focus {
   outline: none;
-  border-color: var(--red);
+  border-color: var(--accent);
   background: var(--bg-3);
 }
 
@@ -1238,7 +1321,7 @@ code {
 
 .footer__brand span {
   display: block;
-  color: var(--red);
+  color: var(--accent);
   font-size: 0.7em;
   letter-spacing: 0.14em;
 }
@@ -1263,7 +1346,7 @@ code {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--red);
+  color: var(--accent);
   margin-bottom: 0.9rem;
 }
 
@@ -1278,7 +1361,7 @@ code {
 }
 
 .footer__col a:hover {
-  color: var(--red);
+  color: var(--accent);
 }
 
 .footer__legal {
@@ -1382,7 +1465,7 @@ code {
   }
 
   .nav__links .nav__cta {
-    border: 2px solid var(--red);
+    border: 2px solid var(--accent);
     margin-top: 1rem;
     text-align: center;
   }

@@ -1,16 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="10" fill="#0a0909"/>
-  <g clip-path="url(#c)">
-    <rect width="64" height="64" fill="#c4392f"/>
-    <g transform="rotate(-45 32 32)">
-      <rect x="-12" y="-8" width="22" height="80" fill="#f1ece5"/>
-      <rect x="18" y="-8" width="22" height="80" fill="#f1ece5"/>
-    </g>
-  </g>
-  <rect x="0.5" y="0.5" width="63" height="63" rx="10" fill="none" stroke="#3a332c" stroke-width="2"/>
-  <defs>
-    <clipPath id="c">
-      <rect x="2" y="2" width="60" height="60" rx="8"/>
-    </clipPath>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 132">
+  <rect width="132" height="132" rx="24" fill="#0a0909"/>
+  <path d="M66 36 C 48 26, 26 32, 26 54 C 26 68, 36 77, 46 71"
+        fill="none" stroke="#ece6dc" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M66 36 C 84 26, 106 32, 106 54 C 106 68, 96 77, 86 71"
+        fill="none" stroke="#ece6dc" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="58" y="94" width="16" height="16" fill="#e04032" transform="rotate(45 66 102)"/>
 </svg>

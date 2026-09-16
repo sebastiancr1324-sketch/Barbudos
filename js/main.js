@@ -63,6 +63,7 @@
     '.branch',
     '.hours',
     '.ph',
+    '.media-grid__item',
     '.video-item',
     '.contact__row',
     '.contact__card',

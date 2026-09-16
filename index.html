@@ -5,11 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Barbudo's Barbershop · Barbería Profesional en Valera y Carvajal, Trujillo</title>
   <meta name="description" content="Barbudo's Barbershop. Más que un corte, diseñamos tu estilo. Barbería profesional en Valera y Carvajal, Edo. Trujillo, Venezuela. Reserva tu turno por WhatsApp.">
+  <meta name="author" content="Barbudo's Barbershop">
+  <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0909">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
-  <link rel="preload" href="assets/fonts/DarkerGrotesque-700.woff2" as="font" type="font/woff2" crossorigin>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Barbudo's Barbershop">
+  <meta property="og:locale" content="es_VE">
+  <meta property="og:title" content="Barbudo's Barbershop · Barbería Profesional en Valera y Carvajal">
+  <meta property="og:description" content="Más que un corte, diseñamos tu estilo. Barbería profesional en Valera y Carvajal, Edo. Trujillo, Venezuela. Reserva tu turno por WhatsApp.">
+  <meta property="og:image" content="assets/img/hero-local.jpg">
+  <meta property="og:image:width" content="720">
+  <meta property="og:image:height" content="960">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Barbudo's Barbershop · Barbería Profesional en Trujillo">
+  <meta name="twitter:description" content="Más que un corte, diseñamos tu estilo. Reserva tu turno por WhatsApp.">
+  <meta name="twitter:image" content="assets/img/hero-local.jpg">
+
+  <link rel="preload" href="assets/fonts/Oswald-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/JetBrainsMono-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" href="assets/img/hero-local.jpg" fetchpriority="high">
 
   <link rel="stylesheet" href="css/style.css">
 
@@ -21,6 +38,18 @@
     "slogan": "Más que un corte, diseñamos tu estilo",
     "taxID": "J-197958002",
     "telephone": "+58 412-6938179",
+    "image": "assets/img/hero-local.jpg",
+    "priceRange": "$$",
+    "foundingDate": "2021",
+    "founder": { "@type": "Person", "name": "Oswaldo Valecillos" },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "08:00",
+        "closes": "19:00"
+      }
+    ],
     "address": [
       { "@type": "PostalAddress", "addressLocality": "Valera", "addressRegion": "Trujillo", "addressCountry": "VE" },
       { "@type": "PostalAddress", "addressLocality": "Carvajal", "addressRegion": "Trujillo", "addressCountry": "VE" }
@@ -40,8 +69,7 @@
   <header class="nav" id="nav">
     <div class="nav__inner">
       <a class="nav__brand" href="#inicio" aria-label="Barbudo's Barbershop, inicio">
-        <!-- El logo de la barbería va en este recuadro (assets/img/logo.svg). -->
-        <span class="nav__logo" aria-hidden="true">LOGO</span>
+        <img class="nav__logo" src="assets/img/logo.svg" alt="Barbudo's Barbershop" width="36" height="36">
         <span class="nav__brand-text">Barbudo's</span>
       </a>
 
@@ -78,11 +106,10 @@
           </div>
         </div>
 
-        <!-- TODO: reemplazar este placeholder por una foto del local en alta calidad (3:4) -->
+        <!-- Foto real del local extraída del video LocalValera.mp4 -->
         <div class="hero__media">
-          <figure class="ph ph--3-4" role="img" aria-label="Espacio reservado para foto del local">
-            <span class="ph__label">FOTO</span>
-            <span class="ph__file">assets/img/hero-local.jpg</span>
+          <figure class="hero__figure">
+            <img src="assets/img/hero-local.jpg" alt="Interior de la barbería Barbudo's en Valera, Trujillo" width="720" height="960" fetchpriority="high" decoding="async">
           </figure>
           <span class="hero__stamp mono">EST.<br>2021</span>
         </div>
@@ -110,22 +137,19 @@
       <header class="section__head">
         <p class="eyebrow mono">[ 01 / El Local ]</p>
         <h2 class="section__title">El <span class="accent">local</span></h2>
-        <p class="section__intro">Un espacio pensado para el detalle. Conocé el local en video y sumá las fotos en los espacios reservados de abajo, en cuanto tengas el material en alta calidad.</p>
+        <p class="section__intro">Un espacio pensado para el detalle. Mirá el local en fotos y en video; cuando tengas material en alta calidad, lo cambiamos en un momento.</p>
       </header>
 
-      <!-- Galería de fotos del local. Reemplazar cada placeholder por el archivo indicado. -->
+      <!-- Galería de fotos del local (frames reales extraídos de los videos de la barbería). -->
       <div class="media-grid" aria-label="Galería de fotos del local">
-        <figure class="ph ph--3-4" role="img" aria-label="Foto del local, espacio reservado">
-          <span class="ph__label">FOTO 1</span>
-          <span class="ph__file">assets/img/el-local-1.jpg</span>
+        <figure class="media-grid__item">
+          <img src="assets/img/el-local-1.jpg" alt="Ambiente interior de la sede Barbudo's en Valera" width="720" height="960" loading="lazy" decoding="async">
         </figure>
-        <figure class="ph ph--3-4" role="img" aria-label="Foto del local, espacio reservado">
-          <span class="ph__label">FOTO 2</span>
-          <span class="ph__file">assets/img/el-local-2.jpg</span>
+        <figure class="media-grid__item">
+          <img src="assets/img/el-local-2.jpg" alt="Presentación del local Barbudo's Barbershop" width="720" height="960" loading="lazy" decoding="async">
         </figure>
-        <figure class="ph ph--3-4" role="img" aria-label="Foto del local, espacio reservado">
-          <span class="ph__label">FOTO 3</span>
-          <span class="ph__file">assets/img/el-local-3.jpg</span>
+        <figure class="media-grid__item">
+          <img src="assets/img/el-local-3.jpg" alt="Un corte en acción en Barbudo's Barbershop" width="720" height="960" loading="lazy" decoding="async">
         </figure>
       </div>
 
@@ -137,15 +161,15 @@
         </div>
         <div class="video-grid__items">
           <figure class="video-item">
-            <video src="assets/video/LocalValera.mp4" controls playsinline preload="metadata"></video>
+            <video src="assets/video/LocalValera.mp4" poster="assets/img/poster-localvalera.jpg" controls playsinline preload="none"></video>
             <figcaption class="mono">Local Valera</figcaption>
           </figure>
           <figure class="video-item">
-            <video src="assets/video/PresentacionBarberia.mp4" controls playsinline preload="metadata"></video>
+            <video src="assets/video/PresentacionBarberia.mp4" poster="assets/img/poster-presentacion.jpg" controls playsinline preload="none"></video>
             <figcaption class="mono">Presentación de la barbería</figcaption>
           </figure>
           <figure class="video-item">
-            <video src="assets/video/VideoCorteLucas.mp4" controls playsinline preload="metadata"></video>
+            <video src="assets/video/VideoCorteLucas.mp4" poster="assets/img/poster-corte.jpg" controls playsinline preload="none"></video>
             <figcaption class="mono">Corte en acción</figcaption>
           </figure>
         </div>

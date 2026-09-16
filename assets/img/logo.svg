@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 132" role="img" aria-label="Barbudo's Barbershop, logo">
+  <rect width="132" height="132" fill="#0a0909"/>
+  <rect x="4" y="4" width="124" height="124" fill="none" stroke="#3a342c" stroke-width="2"/>
+  <path d="M66 36 C 48 26, 26 32, 26 54 C 26 68, 36 77, 46 71"
+        fill="none" stroke="#ece6dc" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M66 36 C 84 26, 106 32, 106 54 C 106 68, 96 77, 86 71"
+        fill="none" stroke="#ece6dc" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="58" y="94" width="16" height="16" fill="#e04032" transform="rotate(45 66 102)"/>
+</svg>
