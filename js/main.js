@@ -133,6 +133,8 @@
 
     const setInvalid = (el, bad) => {
       el.classList.toggle('is-invalid', bad);
+      if (bad) el.setAttribute('aria-invalid', 'true');
+      else el.removeAttribute('aria-invalid');
     };
 
     const validate = () => {
@@ -174,14 +176,18 @@
         '• Sede: ' + val('f-sede'),
         '• Barbero: ' + val('f-barbero'),
         '• Servicio: ' + val('f-servicio'),
-        '• Fecha: ' + val('f-fecha'),
+        '• Fecha: ' + val('f-fecha').split('-').reverse().join('/'),
         '• Hora: ' + val('f-hora')
       ];
       if (val('f-notas')) lines.push('• Notas: ' + val('f-notas'));
       return lines.join('\n');
     };
 
-    const todayISO = new Date().toISOString().split('T')[0];
+    // Fecha de hoy en hora local (toISOString usa UTC: en Venezuela,
+    // desde las 20:00 ya daba el día siguiente)
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const todayISO = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
     const fechaInput = field('f-fecha');
     if (fechaInput) fechaInput.min = todayISO;
 
@@ -205,7 +211,7 @@
 
     form.addEventListener('input', (ev) => {
       if (ev.target.classList.contains('is-invalid')) {
-        ev.target.classList.remove('is-invalid');
+        setInvalid(ev.target, false);
       }
     });
   }
