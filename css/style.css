@@ -68,6 +68,10 @@
   --radius-md: 8px;
   --radius-lg: 16px;
 
+  /* Profundidad con capas de fondo; sombra solo en hover y en el nav */
+  --shadow-card: 0 1px 0 rgba(236, 230, 220, 0.04) inset, 0 12px 32px rgba(0, 0, 0, 0.45);
+  --shadow-nav: 0 1px 0 rgba(236, 230, 220, 0.06), 0 8px 24px rgba(0, 0, 0, 0.5);
+
   /* Oswald: solo títulos (h1–h4). Barlow: texto, nav y botones.
      JetBrains Mono: solo eyebrows y datos (teléfono, horarios, RIF). */
   --font-display: 'Oswald', 'Arial Narrow', sans-serif;
@@ -129,7 +133,7 @@ p { max-width: 68ch; }
 .nav__burger,
 .preloader__mark,
 .preloader__bar,
-.feature,
+.service,
 .drinks,
 .barber,
 .branch,
@@ -143,11 +147,8 @@ p { max-width: 68ch; }
 .form__field input,
 .form__field select,
 .form__field textarea,
-.feature__tag,
 .drinks__media img,
-.drinks__mini,
-.barber__img,
-.barber__badge {
+.drinks__mini {
   border-radius: var(--radius-sm);
 }
 
@@ -658,139 +659,158 @@ p { max-width: 68ch; }
 }
 
 /* ---------- Servicios ---------- */
-.services {
-  border-block: 1px solid var(--line);
+.services__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+/* Las dos tarjetas con el mismo layout: foto 4:3, nombre y precio,
+   descripción, lista y botón (abajo, alineado aunque las listas midan
+   distinto). */
+.service {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.service:hover {
+  background: var(--bg-4);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-card);
+}
+
+.service__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
   background: var(--bg-2);
 }
 
-.services__body {
-  max-width: var(--container);
-  margin-inline: auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1.1rem;
-  justify-items: start;
-}
-
-.services__body .section__intro {
-  margin-bottom: clamp(2rem, 4vw, 2.75rem);
-}
-
-.features {
-  display: grid;
-  gap: clamp(1.5rem, 3vw, 2.25rem);
+.service__media img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
 }
 
-.feature {
-  display: flex;
-  align-items: center;
-  gap: clamp(1.25rem, 2.5vw, 2rem);
-  border: 1px solid var(--line-strong);
-  background: var(--bg);
-  padding: clamp(1rem, 2vw, 1.4rem);
-}
-
-.feature__body {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0.7rem;
-  justify-items: start;
-}
-
-.feature__title {
-  font-size: clamp(1.6rem, 2.2vw, 2rem);
-}
-
-.feature__desc {
-  color: var(--ink-2);
-  max-width: 52ch;
-  font-size: 0.98rem;
-}
-
-.feature__list {
-  list-style: none;
-  display: grid;
-  gap: 0.4rem;
-}
-
-.feature__list li {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  color: var(--ink);
-  font-weight: 500;
-  font-size: 0.95rem;
+.service__chip {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.feature__list li::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  transform: rotate(45deg);
-  flex: none;
+.service__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
 }
 
-.feature__tag {
+.service__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.service__name {
+  font-size: 2rem;
+  line-height: 1.05;
+}
+
+.service__price {
+  flex: none;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.375rem;
+  line-height: 1;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.service__time {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Mientras no haya precio publicado (ver comentario en index.html) */
+.service__price--tbd {
+  max-width: 11ch;
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.8125rem;
+  line-height: 1.3;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  white-space: normal;
   color: var(--ink-2);
-  display: inline-block;
-  margin-top: 0.25rem;
 }
 
-.feature__media {
-  flex: 0 0 clamp(200px, 24vw, 280px);
+.service__desc {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.service__list {
+  list-style: none;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.6rem;
+  gap: var(--space-2);
 }
 
-.feature__media--single {
-  grid-template-columns: minmax(0, 1fr);
+.service__list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  line-height: 1.3;
 }
 
-.feature__media--collage {
-  flex-basis: clamp(300px, 32vw, 380px);
-  position: relative;
-  aspect-ratio: 3 / 4;
+.service__list li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: var(--accent);
+  transform: rotate(45deg);
 }
 
-.feature__media--collage .feature__img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 82%;
-  height: 82%;
-  object-fit: cover;
-  border: 1px solid var(--line);
+/* Secundario en reposo; rojo al pasar por la tarjeta: un solo rojo fuerte a la vez */
+.service__cta {
+  margin-top: auto;
 }
 
-.feature__media--collage .feature__img--front {
-  top: auto;
-  right: 0;
-  bottom: 0;
-  left: auto;
-  width: 64%;
-  height: 78%;
-  border: 6px solid var(--bg-2);
-  transform: rotate(3deg);
-  z-index: 1;
-  box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.32);
+.service:hover .service__cta,
+.service__cta:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
 }
 
-.feature__img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  border: 1px solid var(--line);
+.service .service__cta:hover {
+  background: var(--accent-deep);
+  border-color: var(--accent-deep);
+  color: var(--ink);
 }
 
 /* ---------- Bebida de cortesía ---------- */
@@ -798,9 +818,9 @@ p { max-width: 68ch; }
    1000 a 1100 px al cargar la foto (lazy) y el texto se corría. */
 .drinks {
   width: 100%;
-  margin-top: clamp(2.5rem, 5vw, 3.5rem);
-  border: 1px solid var(--line-strong);
-  background: var(--bg-2);
+  margin-top: var(--space-6);
+  border: 1px solid var(--line);
+  background: var(--bg-3);
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   gap: clamp(1.5rem, 3.5vw, 2.75rem);
@@ -844,97 +864,140 @@ p { max-width: 68ch; }
 .staff__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.25rem;
+  gap: var(--space-6);
 }
 
 .barber {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
-  border: 1px solid var(--line-strong);
-  background: var(--bg-2);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 
+.barber:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-card);
+}
+
+/* Retratos 4:5, cara en el tercio superior y el mismo tratamiento para
+   todos: casi en blanco y negro, a color al pasar el mouse. */
 .barber__photo {
   position: relative;
-  padding: 0.85rem;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bg-2);
 }
 
 .barber__img {
   width: 100%;
-  min-height: 280px;
-  aspect-ratio: 3 / 4;
+  height: 100%;
   object-fit: cover;
-  border: 1px solid var(--line);
+  object-position: center 25%;
+  filter: grayscale(0.8) contrast(1.05);
+  transition: filter 0.35s var(--ease), transform 0.5s var(--ease);
+}
+
+.barber:hover .barber__img {
+  filter: none;
+  transform: scale(1.03);
 }
 
 /* Mientras falte el retrato: el logo sobre una superficie lisa */
 .barber__ph {
   width: 100%;
-  min-height: 280px;
-  aspect-ratio: 3 / 4;
+  height: 100%;
   display: grid;
   place-items: center;
-  background: var(--bg-3);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
 }
 
 .barber__ph img {
   width: 72px;
   height: 72px;
   opacity: 0.6;
+  filter: grayscale(0.8);
+  transition: filter 0.35s var(--ease);
+}
+
+.barber:hover .barber__ph img {
+  filter: none;
 }
 
 .barber__badge {
   position: absolute;
-  top: 1.2rem;
-  left: 1.2rem;
+  top: var(--space-3);
+  left: var(--space-3);
   z-index: 1;
-  background: var(--accent);
-  color: #0a0909;
-  font-family: var(--font-body);
-  font-weight: 600;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  backdrop-filter: blur(6px);
+  color: var(--ink);
   font-size: 0.8125rem;
+  font-weight: 600;
   line-height: 1;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 0.4rem 0.6rem;
 }
 
 .barber__info {
-  padding: clamp(1.2rem, 2.5vw, 1.5rem);
-  border-top: 1px solid var(--line);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0.55rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-4) var(--space-6) var(--space-6);
 }
 
 .barber__name {
-  font-size: clamp(1.6rem, 2.4vw, 2rem);
-}
-
-.barber__role {
-  font-size: 0.8125rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--ink-3);
+  font-size: 1.375rem;
   font-weight: 500;
+  line-height: 1.1;
 }
 
-.barber__handle {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--accent);
+.barber__years {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ink-3);
 }
 
-.barber__handle a {
+.barber__links {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.barber__ig {
+  color: var(--accent-text);
+  font-weight: 500;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
   transition: color 0.2s var(--ease);
 }
 
-.barber__handle a:hover {
+.barber__ig:hover {
   color: var(--ink);
+}
+
+.barber__book {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--line-strong);
+  transition: border-color 0.2s var(--ease);
+}
+
+.barber__book:hover {
+  border-color: var(--accent);
 }
 
 /* ---------- Sucursales ---------- */
@@ -1265,27 +1328,6 @@ p { max-width: 68ch; }
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .features {
-    gap: 2rem;
-  }
-
-  .feature {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .feature__body {
-    order: 1;
-  }
-
-  .feature__media,
-  .feature__media--single {
-    order: 2;
-    flex-basis: auto;
-    width: 100%;
-    max-width: 320px;
-    align-self: center;
-  }
 }
 
 @media (max-width: 860px) {
@@ -1324,6 +1366,10 @@ p { max-width: 68ch; }
 
   .nav__burger {
     display: flex;
+  }
+
+  .services__grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .drinks {
@@ -1380,8 +1426,31 @@ p { max-width: 68ch; }
     grid-template-columns: 1fr;
   }
 
+  /* Dos barberos por fila también en el celular: una sola columna de
+     retratos 4:5 hacía la sección muy larga */
   .staff__grid {
-    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .barber__info {
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+
+  .barber__name {
+    font-size: 1.25rem;
+  }
+
+  .barber__ph img {
+    width: 56px;
+    height: 56px;
+  }
+
+  .service__body {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .service__name {
+    font-size: 1.75rem;
   }
 
   /* En el celular el botón de pausa sube a la esquina para no tapar los datos */

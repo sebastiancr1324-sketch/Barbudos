@@ -102,7 +102,7 @@
     '.section__head',
     '.section__title',
     '.section__intro',
-    '.feature',
+    '.service',
     '.drinks',
     '.barber',
     '.branch',
@@ -253,6 +253,21 @@
       if (ev.target.classList.contains('is-invalid')) {
         setInvalid(ev.target, false);
       }
+    });
+
+    /* "Reservar" de cada barbero y "Reservar este corte": el enlace baja
+       al formulario (#reserva) y deja preseleccionado el barbero o el
+       servicio. Sin JS, el enlace igual lleva al formulario. */
+    const preselect = (select, value) => {
+      if (!select || ![...select.options].some((o) => o.value === value)) return;
+      select.value = value;
+      setInvalid(select, false);
+    };
+    document.addEventListener('click', (ev) => {
+      const link = ev.target.closest('[data-barbero], [data-servicio]');
+      if (!link) return;
+      if (link.dataset.barbero) preselect(field('f-barbero'), link.dataset.barbero);
+      if (link.dataset.servicio) preselect(field('f-servicio'), link.dataset.servicio);
     });
   }
 
