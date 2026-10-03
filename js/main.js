@@ -7,15 +7,29 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.classList.add('js');
 
-  /* ---------- Preloader ---------- */
+  /* ---------- Preloader ----------
+     Se retira en cuanto está lo que se ve en la primera pantalla
+     (fuentes y, si está a la vista, la foto del hero), sin esperar
+     a los videos ni a las imágenes de más abajo. */
   const preloader = document.getElementById('preloader');
   if (preloader) {
     const hide = () => preloader.classList.add('is-done');
     if (reduceMotion) {
       hide();
     } else {
-      window.addEventListener('load', () => setTimeout(hide, 500));
-      setTimeout(hide, 2200);
+      const heroImg = document.querySelector('.hero__figure img');
+      const heroVisible = heroImg && heroImg.getBoundingClientRect().top < window.innerHeight;
+      const imgReady = heroVisible && !heroImg.complete
+        ? new Promise((resolve) => {
+          heroImg.addEventListener('load', resolve, { once: true });
+          heroImg.addEventListener('error', resolve, { once: true });
+        })
+        : Promise.resolve();
+      const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+      Promise.race([
+        Promise.all([imgReady, fontsReady]),
+        new Promise((resolve) => setTimeout(resolve, 1500))
+      ]).then(hide);
     }
   }
 
