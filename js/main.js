@@ -7,15 +7,29 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.classList.add('js');
 
-  /* ---------- Preloader ---------- */
+  /* ---------- Preloader ----------
+     Se retira en cuanto está lo que se ve en la primera pantalla
+     (fuentes y, si está a la vista, la foto del hero), sin esperar
+     a los videos ni a las imágenes de más abajo. */
   const preloader = document.getElementById('preloader');
   if (preloader) {
     const hide = () => preloader.classList.add('is-done');
     if (reduceMotion) {
       hide();
     } else {
-      window.addEventListener('load', () => setTimeout(hide, 500));
-      setTimeout(hide, 2200);
+      const heroImg = document.querySelector('.hero__figure img');
+      const heroVisible = heroImg && heroImg.getBoundingClientRect().top < window.innerHeight;
+      const imgReady = heroVisible && !heroImg.complete
+        ? new Promise((resolve) => {
+          heroImg.addEventListener('load', resolve, { once: true });
+          heroImg.addEventListener('error', resolve, { once: true });
+        })
+        : Promise.resolve();
+      const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+      Promise.race([
+        Promise.all([imgReady, fontsReady]),
+        new Promise((resolve) => setTimeout(resolve, 1500))
+      ]).then(hide);
     }
   }
 
@@ -48,7 +62,11 @@
       if (ev.target.closest('a')) close();
     });
     document.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Escape') close();
+      if (ev.key !== 'Escape' || !links.classList.contains('is-open')) return;
+      const focusInside = links.contains(document.activeElement);
+      close();
+      // El menú se oculta: el foco no puede quedar en un enlace invisible
+      if (focusInside) burger.focus();
     });
   }
 
@@ -62,7 +80,6 @@
     '.barber',
     '.branch',
     '.hours',
-    '.ph',
     '.media-grid__item',
     '.video-item',
     '.contact__row',
@@ -94,8 +111,24 @@
   );
   revealEls.forEach((el) => io.observe(el));
 
-  /* ---------- Videos: solo uno a la vez ---------- */
+  /* ---------- Videos: póster diferido ----------
+     El atributo poster se descarga siempre al cargar la página (~110 KB
+     cada uno) aunque los videos estén muy abajo: se asigna recién cuando
+     el video se acerca a la pantalla. */
   const pageVideos = [...document.querySelectorAll('video')];
+  const posterIO = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.poster = entry.target.dataset.poster;
+        posterIO.unobserve(entry.target);
+      });
+    },
+    { rootMargin: '600px 0px' }
+  );
+  pageVideos.filter((v) => v.dataset.poster).forEach((v) => posterIO.observe(v));
+
+  /* ---------- Videos: solo uno a la vez ---------- */
   if (pageVideos.length > 1) {
     pageVideos.forEach((video) => {
       video.addEventListener('play', () => {
@@ -115,6 +148,8 @@
 
     const setInvalid = (el, bad) => {
       el.classList.toggle('is-invalid', bad);
+      if (bad) el.setAttribute('aria-invalid', 'true');
+      else el.removeAttribute('aria-invalid');
     };
 
     const validate = () => {
@@ -156,14 +191,18 @@
         '• Sede: ' + val('f-sede'),
         '• Barbero: ' + val('f-barbero'),
         '• Servicio: ' + val('f-servicio'),
-        '• Fecha: ' + val('f-fecha'),
+        '• Fecha: ' + val('f-fecha').split('-').reverse().join('/'),
         '• Hora: ' + val('f-hora')
       ];
       if (val('f-notas')) lines.push('• Notas: ' + val('f-notas'));
       return lines.join('\n');
     };
 
-    const todayISO = new Date().toISOString().split('T')[0];
+    // Fecha de hoy en hora local (toISOString usa UTC: en Venezuela,
+    // desde las 20:00 ya daba el día siguiente)
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const todayISO = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
     const fechaInput = field('f-fecha');
     if (fechaInput) fechaInput.min = todayISO;
 
@@ -187,13 +226,20 @@
 
     form.addEventListener('input', (ev) => {
       if (ev.target.classList.contains('is-invalid')) {
-        ev.target.classList.remove('is-invalid');
+        setInvalid(ev.target, false);
       }
     });
   }
 
+  /* ---------- Años de experiencia (desde el año de inicio) ---------- */
+  const thisYear = new Date().getFullYear();
+  document.querySelectorAll('[data-desde]').forEach((el) => {
+    const years = thisYear - Number(el.dataset.desde);
+    if (years > 0) el.textContent = years + (years === 1 ? ' año' : ' años');
+  });
+
   /* ---------- Año en el footer ---------- */
   document.querySelectorAll('.footer__legal p').forEach((p) => {
-    p.textContent = p.textContent.replace('© 2026', '© ' + new Date().getFullYear());
+    p.textContent = p.textContent.replace('© 2026', '© ' + thisYear);
   });
 })();

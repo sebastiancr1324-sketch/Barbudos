@@ -3,42 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Barbudo's Barbershop · Barbería Profesional en Valera y Carvajal, Trujillo</title>
+  <title>Barbudo's Barbershop · Barbería en Valera y Carvajal</title>
   <meta name="description" content="Barbudo's Barbershop. Más que un corte, diseñamos tu estilo. Barbería profesional en Valera y Carvajal, Edo. Trujillo, Venezuela. Reserva tu turno por WhatsApp.">
   <meta name="author" content="Barbudo's Barbershop">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0909">
+  <link rel="canonical" href="https://sebastiancr1324-sketch.github.io/Barbudos/">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Barbudo's Barbershop">
   <meta property="og:locale" content="es_VE">
+  <meta property="og:url" content="https://sebastiancr1324-sketch.github.io/Barbudos/">
   <meta property="og:title" content="Barbudo's Barbershop · Barbería Profesional en Valera y Carvajal">
   <meta property="og:description" content="Más que un corte, diseñamos tu estilo. Barbería profesional en Valera y Carvajal, Edo. Trujillo, Venezuela. Reserva tu turno por WhatsApp.">
-  <meta property="og:image" content="assets/img/hero-local.jpg">
-  <meta property="og:image:width" content="720">
-  <meta property="og:image:height" content="960">
+  <!-- Las redes solo aceptan URL absolutas: si cambia el dominio, actualizar aquí, en canonical y en el JSON-LD -->
+  <meta property="og:image" content="https://sebastiancr1324-sketch.github.io/Barbudos/assets/img/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Barbudo's Barbershop: más que un corte, diseñamos tu estilo. El equipo frente al local en Valera.">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Barbudo's Barbershop · Barbería Profesional en Trujillo">
   <meta name="twitter:description" content="Más que un corte, diseñamos tu estilo. Reserva tu turno por WhatsApp.">
-  <meta name="twitter:image" content="assets/img/hero-local.jpg">
+  <meta name="twitter:image" content="https://sebastiancr1324-sketch.github.io/Barbudos/assets/img/og-image.jpg">
+  <meta name="twitter:image:alt" content="Barbudo's Barbershop: más que un corte, diseñamos tu estilo. El equipo frente al local en Valera.">
 
   <link rel="preload" href="assets/fonts/Oswald-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/JetBrainsMono-700.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" as="image" href="assets/img/hero-local.jpg" fetchpriority="high">
+  <link rel="preload" href="assets/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" href="assets/img/hero-local.webp" type="image/webp" fetchpriority="high">
 
   <link rel="stylesheet" href="css/style.css">
+  <noscript><style>.preloader { display: none; }</style></noscript>
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "BarberShop",
+    "@id": "https://sebastiancr1324-sketch.github.io/Barbudos/#barberia",
     "name": "Barbudo's Barbershop",
+    "url": "https://sebastiancr1324-sketch.github.io/Barbudos/",
+    "logo": "https://sebastiancr1324-sketch.github.io/Barbudos/assets/apple-touch-icon.png",
     "slogan": "Más que un corte, diseñamos tu estilo",
     "taxID": "J-197958002",
     "telephone": "+58 412-6938179",
-    "image": "assets/img/hero-local.jpg",
+    "image": ["https://sebastiancr1324-sketch.github.io/Barbudos/assets/img/og-image.jpg", "https://sebastiancr1324-sketch.github.io/Barbudos/assets/img/el-local-1.jpg"],
     "priceRange": "$$",
     "foundingDate": "2021",
     "founder": { "@type": "Person", "name": "Oswaldo Valecillos" },
@@ -73,6 +85,11 @@
         <span class="nav__brand-text">Barbudo's</span>
       </a>
 
+      <!-- El botón va antes que los enlaces para que, al abrir el menú, Tab entre en ellos -->
+      <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
       <nav class="nav__links" id="nav-links" aria-label="Navegación principal">
         <a href="#local">El Local</a>
         <a href="#servicios">Servicios</a>
@@ -81,10 +98,6 @@
         <a href="#contacto">Contacto</a>
         <a class="nav__cta" href="#turnos">Reservar turno</a>
       </nav>
-
-      <button class="nav__burger" id="nav-burger" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menú">
-        <span></span><span></span><span></span>
-      </button>
     </div>
   </header>
 
@@ -102,14 +115,17 @@
           <p class="hero__sub">Cortes, barba y diseño hecho a tu medida. Dos sedes en Trujillo, Venezuela. Sin vueltas, al corte.</p>
           <div class="hero__ctas">
             <a class="btn btn--primary" href="#turnos">Reservar turno</a>
-            <a class="btn btn--ghost" href="https://wa.me/584126938179" target="_blank" rel="noopener">WhatsApp +58 412-6938179</a>
+            <a class="btn btn--ghost" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">WhatsApp +58 412-6938179</a>
           </div>
         </div>
 
         <!-- Foto real del local extraída del video LocalValera.mp4 -->
         <div class="hero__media">
           <figure class="hero__figure">
-            <img src="assets/img/hero-local.jpg" alt="Interior de la barbería Barbudo's en Valera, Trujillo" width="720" height="960" fetchpriority="high" decoding="async">
+            <picture>
+              <source srcset="assets/img/hero-local.webp" type="image/webp">
+              <img src="assets/img/hero-local.jpg" alt="Vista de la calle desde la entrada de la sede Barbudo's en Valera, Trujillo" width="720" height="960" fetchpriority="high" decoding="async">
+            </picture>
           </figure>
           <span class="hero__stamp mono">EST.<br>2021</span>
         </div>
@@ -137,39 +153,48 @@
       <header class="section__head">
         <p class="eyebrow mono">[ 01 / El Local ]</p>
         <h2 class="section__title">El <span class="accent">local</span></h2>
-        <p class="section__intro">Un espacio pensado para el detalle. Mirá el local en fotos y en video; cuando tengas material en alta calidad, lo cambiamos en un momento.</p>
+        <p class="section__intro">Un espacio pensado para el detalle. Mira el local en fotos y en video.</p>
       </header>
 
       <!-- Galería de fotos del local (frames reales extraídos de los videos de la barbería). -->
-      <div class="media-grid" aria-label="Galería de fotos del local">
+      <div class="media-grid" role="group" aria-label="Galería de fotos del local">
         <figure class="media-grid__item">
-          <img src="assets/img/el-local-1.jpg" alt="Ambiente interior de la sede Barbudo's en Valera" width="720" height="960" loading="lazy" decoding="async">
+          <picture>
+            <source srcset="assets/img/el-local-1.webp" type="image/webp">
+            <img src="assets/img/el-local-1.jpg" alt="El equipo de Barbudo's frente a la entrada del local en Valera" width="720" height="960" loading="lazy" decoding="async">
+          </picture>
         </figure>
         <figure class="media-grid__item">
-          <img src="assets/img/el-local-2.jpg" alt="Presentación del local Barbudo's Barbershop" width="720" height="960" loading="lazy" decoding="async">
+          <picture>
+            <source srcset="assets/img/el-local-2.webp" type="image/webp">
+            <img src="assets/img/el-local-2.jpg" alt="Presentación del local Barbudo's Barbershop" width="720" height="960" loading="lazy" decoding="async">
+          </picture>
         </figure>
         <figure class="media-grid__item">
-          <img src="assets/img/el-local-3.jpg" alt="Un corte en acción en Barbudo's Barbershop" width="720" height="960" loading="lazy" decoding="async">
+          <picture>
+            <source srcset="assets/img/el-local-3.webp" type="image/webp">
+            <img src="assets/img/el-local-3.jpg" alt="Un corte en acción en Barbudo's Barbershop" width="720" height="960" loading="lazy" decoding="async">
+          </picture>
         </figure>
       </div>
 
-      <!-- Videos del local. Reemplazar cada placeholder por el archivo indicado. -->
+      <!-- Videos del local: con preload="none" solo se descargan al tocar play. -->
       <div class="video-grid">
         <div class="video-grid__head">
           <h3 class="video-grid__title">El local <span class="accent">en video</span></h3>
-          <p class="video-grid__intro">Recorridos, presentación y el corte en acción. Tocá play.</p>
+          <p class="video-grid__intro">Recorridos, presentación y el corte en acción. Toca play.</p>
         </div>
         <div class="video-grid__items">
           <figure class="video-item">
-            <video src="assets/video/LocalValera.mp4" poster="assets/img/poster-localvalera.jpg" controls playsinline preload="none"></video>
+            <video src="assets/video/LocalValera.mp4" aria-label="Video: recorrido por el local de Valera" data-poster="assets/img/poster-localvalera.jpg" controls playsinline preload="none"></video>
             <figcaption class="mono">Local Valera</figcaption>
           </figure>
           <figure class="video-item">
-            <video src="assets/video/PresentacionBarberia.mp4" poster="assets/img/poster-presentacion.jpg" controls playsinline preload="none"></video>
+            <video src="assets/video/PresentacionBarberia.mp4" aria-label="Video: presentación de la barbería" data-poster="assets/img/poster-presentacion.jpg" controls playsinline preload="none"></video>
             <figcaption class="mono">Presentación de la barbería</figcaption>
           </figure>
           <figure class="video-item">
-            <video src="assets/video/VideoCorteLucas.mp4" poster="assets/img/poster-corte.jpg" controls playsinline preload="none"></video>
+            <video src="assets/video/VideoCorteLucas.mp4" aria-label="Video: un corte en acción" data-poster="assets/img/poster-corte.jpg" controls playsinline preload="none"></video>
             <figcaption class="mono">Corte en acción</figcaption>
           </figure>
         </div>
@@ -198,14 +223,23 @@
               <span class="feature__tag">Precio · consultar</span>
             </div>
             <div class="feature__media feature__media--collage">
-              <img class="feature__img" src="assets/img/Corte1.jpg" alt="Resultado de un corte premium en Barbudo's Barbershop" width="960" height="1280" loading="lazy" decoding="async">
-              <img class="feature__img" src="assets/img/Corte1Foto2.jpg" alt="Detalle del trabajo del corte premium" width="960" height="1278" loading="lazy" decoding="async">
+              <picture>
+                <source srcset="assets/img/Corte1.webp" type="image/webp">
+                <img class="feature__img" src="assets/img/Corte1.jpg" alt="Resultado de un corte premium en Barbudo's Barbershop" width="960" height="1280" loading="lazy" decoding="async">
+              </picture>
+              <picture>
+                <source srcset="assets/img/Corte1Foto2.webp" type="image/webp">
+                <img class="feature__img feature__img--front" src="assets/img/Corte1Foto2.jpg" alt="Detalle del trabajo del corte premium" width="960" height="1278" loading="lazy" decoding="async">
+              </picture>
             </div>
           </article>
 
           <article class="feature">
             <div class="feature__media feature__media--single">
-              <img class="feature__img" src="assets/img/Corte2.jpg" alt="Resultado de un corte full en Barbudo's Barbershop" width="1279" height="1704" loading="lazy" decoding="async">
+              <picture>
+                <source srcset="assets/img/Corte2.webp" type="image/webp">
+                <img class="feature__img" src="assets/img/Corte2.jpg" alt="Resultado de un corte full en Barbudo's Barbershop" width="1279" height="1704" loading="lazy" decoding="async">
+              </picture>
             </div>
             <div class="feature__body">
               <h3 class="feature__title">Corte <span class="accent">Full</span></h3>
@@ -224,13 +258,19 @@
 
         <aside class="drinks" id="bebida">
           <div class="drinks__media">
-            <img src="assets/img/BebidaDeCortesiaPrincipal.jpg" alt="Bebida de cortesía que se ofrece con cada corte en Barbudo's" width="1080" height="1440" loading="lazy" decoding="async">
+            <picture>
+              <source srcset="assets/img/BebidaDeCortesiaPrincipal.webp" type="image/webp">
+              <img src="assets/img/BebidaDeCortesiaPrincipal.jpg" alt="Bebida de cortesía que se ofrece con cada corte en Barbudo's" width="1080" height="1440" loading="lazy" decoding="async">
+            </picture>
           </div>
           <div class="drinks__body">
             <p class="eyebrow mono">[ + Bebida de cortesía ]</p>
             <h3 class="drinks__title">Con tu corte,<br><span class="accent">la bebida va por nuestra cuenta</span></h3>
             <p class="drinks__desc">Premium y Full incluyen una bebida de cortesía, para que el momento valga más que la silla.</p>
-            <img class="drinks__mini" src="assets/img/BebidasCortesia.jpg" alt="Varias bebidas de cortesía disponibles en el local" width="720" height="959" loading="lazy" decoding="async">
+            <picture>
+              <source srcset="assets/img/BebidasCortesia.webp" type="image/webp">
+              <img class="drinks__mini" src="assets/img/BebidasCortesia.jpg" alt="Varias bebidas de cortesía disponibles en el local" width="720" height="959" loading="lazy" decoding="async">
+            </picture>
           </div>
         </aside>
       </div>
@@ -242,56 +282,63 @@
         <h2 class="section__title">Nuestros <span class="accent">barberos</span></h2>
       </header>
 
-      <!-- TODO: faltan las fotos de Oswaldo y Gabriel (assets/img/barbero-oswaldo.jpg y barbero-gabriel.jpg). -->
+      <!-- Oswaldo y Gabriel tienen fotos provisionales hasta tener las suyas.
+           Los años de experiencia se calculan en main.js desde data-desde. -->
       <div class="staff__grid">
         <article class="barber">
           <div class="barber__photo">
-            <figure class="ph ph--3-4" role="img" aria-label="Foto de Oswaldo Valecillos, espacio reservado">
-              <span class="ph__label">FOTO</span>
-              <span class="ph__file">assets/img/barbero-oswaldo.jpg</span>
-            </figure>
+            <picture>
+              <source srcset="assets/img/el-local-1.webp" type="image/webp">
+              <img class="barber__img" src="assets/img/el-local-1.jpg" alt="Foto provisional: el equipo de Barbudo's frente al local" width="720" height="960" loading="lazy" decoding="async">
+            </picture>
             <span class="barber__badge mono">Dueño</span>
           </div>
           <div class="barber__info">
             <h3 class="barber__name">Oswaldo Valecillos</h3>
-            <p class="barber__role mono">Barbero profesional · 8 años de experiencia</p>
-            <p class="barber__handle mono"><a href="https://www.instagram.com/Valeoswald/" target="_blank" rel="noopener">@Valeoswald</a></p>
+            <p class="barber__role mono">Barbero profesional · <span data-desde="2018">8 años</span> de experiencia</p>
+            <p class="barber__handle mono"><a href="https://www.instagram.com/Valeoswald/" target="_blank" rel="noopener noreferrer">@Valeoswald</a></p>
           </div>
         </article>
 
         <article class="barber">
           <div class="barber__photo">
-            <figure class="ph ph--3-4" role="img" aria-label="Foto de Gabriel Hidalgo, espacio reservado">
-              <span class="ph__label">FOTO</span>
-              <span class="ph__file">assets/img/barbero-gabriel.jpg</span>
-            </figure>
+            <picture>
+              <source srcset="assets/img/Corte1Foto2.webp" type="image/webp">
+              <img class="barber__img" src="assets/img/Corte1Foto2.jpg" alt="Foto provisional: detalle de un corte hecho en Barbudo's" width="960" height="1278" loading="lazy" decoding="async">
+            </picture>
           </div>
           <div class="barber__info">
             <h3 class="barber__name">Gabriel Hidalgo</h3>
-            <p class="barber__role mono">Barbero profesional · 12 años de experiencia</p>
-            <p class="barber__handle mono"><a href="https://www.instagram.com/gabriel_s_barber/" target="_blank" rel="noopener">@gabriel_s_barber</a></p>
+            <p class="barber__role mono">Barbero profesional · <span data-desde="2014">12 años</span> de experiencia</p>
+            <p class="barber__handle mono"><a href="https://www.instagram.com/gabriel_s_barber/" target="_blank" rel="noopener noreferrer">@gabriel_s_barber</a></p>
           </div>
         </article>
 
         <article class="barber">
           <div class="barber__photo">
-            <img class="barber__img" src="assets/img/EstebanMendoza1.jpg" alt="Esteban Mendoza, barbero profesional en Barbudo's" width="800" height="1066" loading="lazy" decoding="async">
+            <picture>
+              <source srcset="assets/img/EstebanMendoza1.webp" type="image/webp">
+              <img class="barber__img" src="assets/img/EstebanMendoza1.jpg" alt="Esteban Mendoza, barbero profesional en Barbudo's" width="800" height="1066" loading="lazy" decoding="async">
+            </picture>
           </div>
           <div class="barber__info">
             <h3 class="barber__name">Esteban Mendoza</h3>
-            <p class="barber__role mono">Barbero profesional · 2 años de experiencia</p>
-            <p class="barber__handle mono"><a href="https://www.instagram.com/estabanbarber/" target="_blank" rel="noopener">@estabanbarber</a></p>
+            <p class="barber__role mono">Barbero profesional · <span data-desde="2024">2 años</span> de experiencia</p>
+            <p class="barber__handle mono"><a href="https://www.instagram.com/estabanbarber/" target="_blank" rel="noopener noreferrer">@estabanbarber</a></p>
           </div>
         </article>
 
         <article class="barber">
           <div class="barber__photo">
-            <img class="barber__img" src="assets/img/JoseOjeda1.jpg" alt="José Ojeda, barbero profesional en Barbudo's" width="800" height="1066" loading="lazy" decoding="async">
+            <picture>
+              <source srcset="assets/img/JoseOjeda1.webp" type="image/webp">
+              <img class="barber__img" src="assets/img/JoseOjeda1.jpg" alt="José Ojeda, barbero profesional en Barbudo's" width="800" height="1066" loading="lazy" decoding="async">
+            </picture>
           </div>
           <div class="barber__info">
             <h3 class="barber__name">José Ojeda</h3>
-            <p class="barber__role mono">Barbero profesional · 10 años de experiencia</p>
-            <p class="barber__handle mono"><a href="https://www.instagram.com/goyi_barber/" target="_blank" rel="noopener">@goyi_barber</a></p>
+            <p class="barber__role mono">Barbero profesional · <span data-desde="2016">10 años</span> de experiencia</p>
+            <p class="barber__handle mono"><a href="https://www.instagram.com/goyi_barber/" target="_blank" rel="noopener noreferrer">@goyi_barber</a></p>
           </div>
         </article>
       </div>
@@ -307,7 +354,7 @@
         <article class="branch">
           <h3 class="branch__name">Sede Valera</h3>
           <p class="branch__loc">Valera, Estado Trujillo, Venezuela.</p>
-          <a class="branch__map-link mono" href="https://www.google.com/maps/search/?api=1&query=Valera+Trujillo+Venezuela" target="_blank" rel="noopener">Cómo llegar ↗</a>
+          <a class="branch__map-link mono" href="https://www.google.com/maps/search/?api=1&query=Valera+Trujillo+Venezuela" target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
           <div class="branch__map">
             <iframe src="https://maps.google.com/maps?q=Valera%2C%20Trujillo%2C%20Venezuela&z=13&output=embed" title="Mapa de la sede Valera" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
@@ -315,7 +362,7 @@
         <article class="branch">
           <h3 class="branch__name">Sede Carvajal</h3>
           <p class="branch__loc">Carvajal, Estado Trujillo, Venezuela.</p>
-          <a class="branch__map-link mono" href="https://www.google.com/maps/search/?api=1&query=Carvajal+Trujillo+Venezuela" target="_blank" rel="noopener">Cómo llegar ↗</a>
+          <a class="branch__map-link mono" href="https://www.google.com/maps/search/?api=1&query=Carvajal+Trujillo+Venezuela" target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
           <div class="branch__map">
             <iframe src="https://maps.google.com/maps?q=Carvajal%2C%20Trujillo%2C%20Venezuela&z=13&output=embed" title="Mapa de la sede Carvajal" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
@@ -337,23 +384,23 @@
         <div class="contact__main">
           <p class="eyebrow mono">[ 05 / Contacto ]</p>
           <h2 class="section__title">Hablemos <span class="accent">directo</span></h2>
-          <p class="contact__sub">Escribenos por WhatsApp, llámanos o síguenos en Instagram. Te respondemos lo antes posible.</p>
+          <p class="contact__sub">Escríbenos por WhatsApp, llámanos o síguenos en Instagram. Te respondemos lo antes posible.</p>
 
           <div class="contact__rows">
             <div class="contact__row">
               <span class="contact__label mono">WhatsApp / Teléfono</span>
-              <a class="contact__value" href="https://wa.me/584126938179" target="_blank" rel="noopener">+58 412-6938179</a>
+              <a class="contact__value" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">+58 412-6938179</a>
             </div>
             <div class="contact__row">
               <span class="contact__label mono">Instagram</span>
-              <a class="contact__value" href="https://www.instagram.com/barbudos.barbershop/" target="_blank" rel="noopener">@barbudos.barbershop</a>
+              <a class="contact__value" href="https://www.instagram.com/barbudos.barbershop/" target="_blank" rel="noopener noreferrer">@barbudos.barbershop</a>
             </div>
           </div>
         </div>
 
-        <a class="contact__card" href="https://wa.me/584126938179" target="_blank" rel="noopener">
+        <a class="contact__card" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">
           <span class="contact__card-kicker mono">Reserva al instante</span>
-          <span class="contact__card-title">Escribinos por WhatsApp</span>
+          <span class="contact__card-title">Escríbenos por WhatsApp</span>
           <span class="contact__card-action mono">Abrir chat ↳</span>
         </a>
       </div>
@@ -368,7 +415,7 @@
           <ol class="booking__list">
             <li><span class="booking__list-n mono">1</span> Elige sede, servicio y horario</li>
             <li><span class="booking__list-n mono">2</span> Enviamos tu solicitud por WhatsApp</li>
-            <li><span class="booking__list-n mono">3</span> Confirmamos y quedás reservado</li>
+            <li><span class="booking__list-n mono">3</span> Confirmamos y quedas reservado</li>
           </ol>
         </div>
 
@@ -387,7 +434,7 @@
             <div class="form__field">
               <label for="f-sede">Sede</label>
               <select id="f-sede" name="sede" required>
-                <option value="" selected>Seleccioná…</option>
+                <option value="" selected>Selecciona…</option>
                 <option value="Valera">Sede Valera</option>
                 <option value="Carvajal">Sede Carvajal</option>
               </select>
@@ -407,7 +454,7 @@
           <div class="form__field">
             <label for="f-servicio">Servicio</label>
             <select id="f-servicio" name="servicio" required>
-              <option value="" selected>Seleccioná un servicio…</option>
+              <option value="" selected>Selecciona un servicio…</option>
               <option>Corte Premium</option>
               <option>Corte Full</option>
               <option>Otro (consultar)</option>
@@ -454,8 +501,8 @@
       <div class="footer__col">
         <p class="footer__title mono">Contacto</p>
         <p><a href="tel:+584126938179">+58 412-6938179</a></p>
-        <p><a href="https://wa.me/584126938179" target="_blank" rel="noopener">WhatsApp</a></p>
-        <p><a href="https://www.instagram.com/barbudos.barbershop/" target="_blank" rel="noopener">Instagram</a></p>
+        <p><a href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">WhatsApp</a></p>
+        <p><a href="https://www.instagram.com/barbudos.barbershop/" target="_blank" rel="noopener noreferrer">Instagram</a></p>
       </div>
       <div class="footer__col">
         <p class="footer__title mono">Navegación</p>
