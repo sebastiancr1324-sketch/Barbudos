@@ -7,31 +7,7 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.classList.add('js');
 
-  /* ---------- Preloader ----------
-     Se retira en cuanto está lo que se ve en la primera pantalla
-     (fuentes y, si está a la vista, la foto del hero), sin esperar
-     a los videos ni a las imágenes de más abajo. */
-  const preloader = document.getElementById('preloader');
-  if (preloader) {
-    const hide = () => preloader.classList.add('is-done');
-    if (reduceMotion) {
-      hide();
-    } else {
-      const heroImg = document.querySelector('.hero__poster');
-      const heroVisible = heroImg && heroImg.getBoundingClientRect().top < window.innerHeight;
-      const imgReady = heroVisible && !heroImg.complete
-        ? new Promise((resolve) => {
-          heroImg.addEventListener('load', resolve, { once: true });
-          heroImg.addEventListener('error', resolve, { once: true });
-        })
-        : Promise.resolve();
-      const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
-      Promise.race([
-        Promise.all([imgReady, fontsReady]),
-        new Promise((resolve) => setTimeout(resolve, 1500))
-      ]).then(hide);
-    }
-  }
+  // El preloader es solo CSS (600 ms como máximo): no necesita JS.
 
   /* ---------- Hero: video de fondo y botón de pausa ----------
      Con "reducir movimiento" el <source> ya no aplica (media query) y el
@@ -112,28 +88,37 @@
     '.form'
   ];
 
-  const revealEls = [...document.querySelectorAll(revealSelectors.join(','))];
-
-  revealEls.forEach((el) => {
-    let rd = 0;
-    const sib = el.parentElement ? [...el.parentElement.children] : [el];
-    rd = Math.min(sib.indexOf(el), 6);
-    el.style.setProperty('--rd', String(rd));
-    el.classList.add('reveal');
-  });
-
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-in');
-          io.unobserve(entry.target);
-        }
+  // El contenido solo se oculta cuando IntersectionObserver existe y quedó
+  // listo (clase reveal-on en <html>). Si algo falla, todo queda visible.
+  if (!reduceMotion && "IntersectionObserver" in window) {
+    try {
+      const revealEls = [...document.querySelectorAll(revealSelectors.join(","))];
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-in");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+      );
+      revealEls.forEach((el) => {
+        const sib = el.parentElement ? [...el.parentElement.children] : [el];
+        el.style.setProperty("--rd", String(Math.min(sib.indexOf(el), 6)));
+        // Lo que ya está en pantalla al cargar no se esconde
+        if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add("is-in");
+        el.classList.add("reveal");
+        io.observe(el);
       });
-    },
-    { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
-  );
-  revealEls.forEach((el) => io.observe(el));
+      document.documentElement.classList.add("reveal-on");
+      // Al imprimir, todo visible
+      window.addEventListener("beforeprint", () => revealEls.forEach((el) => el.classList.add("is-in")));
+    } catch (err) {
+      document.documentElement.classList.remove("reveal-on");
+    }
+  }
 
   /* ---------- Videos: póster diferido ----------
      El atributo poster se descarga siempre al cargar la página (~110 KB

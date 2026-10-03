@@ -131,8 +131,6 @@ p { max-width: 68ch; }
 .btn,
 .nav__logo,
 .nav__burger,
-.preloader__mark,
-.preloader__bar,
 .service,
 .drinks,
 .barber,
@@ -180,28 +178,46 @@ p { max-width: 68ch; }
 
 /* El contenido de cada sección queda dentro del mismo contenedor que el
    menú, el hero y el pie (--container con --gutter por dentro); el fondo
-   y los bordes de la sección siguen ocupando todo el ancho. */
+   y los bordes de la sección siguen ocupando todo el ancho.
+   Ritmo: 64px arriba y abajo en el celular, 96px en escritorio. */
 .section {
-  padding-block: clamp(5rem, 9vw, 8rem);
+  padding-block: var(--space-16);
   padding-inline: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
+  background: var(--bg);
+}
+
+@media (min-width: 861px) {
+  .section {
+    padding-block: var(--space-24);
+  }
+}
+
+/* Las secciones se separan alternando el fondo, sin líneas divisorias:
+   Servicios, Barberos y Sedes en --bg-2; El local y Reserva en --bg. */
+.services,
+.staff,
+.branches {
+  background: var(--bg-2);
 }
 
 .section__head {
   max-width: 760px;
-  margin-bottom: clamp(2.75rem, 6vw, 4.25rem);
+  margin-bottom: var(--space-12);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1.1rem;
+  gap: var(--space-4);
   justify-items: start;
 }
 
 .section__title {
-  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
 }
 
 .section__intro {
   color: var(--ink-2);
-  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  line-height: 1.55;
+  max-width: 60ch;
 }
 
 /* ---------- Botones ---------- */
@@ -258,61 +274,34 @@ p { max-width: 68ch; }
   width: 100%;
 }
 
-/* ---------- Preloader ---------- */
+/* ---------- Preloader ----------
+   Solo CSS, 600 ms como máximo en total: el logo aparece y la capa se
+   desvanece entre los 350 y los 600 ms. No depende de JS ni del evento
+   load, así que nunca deja la página tapada. */
 .preloader {
   position: fixed;
   inset: 0;
   z-index: 100;
   background: var(--bg);
   display: grid;
-  place-content: center;
-  gap: 1.25rem;
-  justify-items: center;
-  transition: opacity 0.5s var(--ease), visibility 0.5s;
-  /* Respaldo sin JS (o con JS que tarda): se retira sola a los 2 s */
-  animation: preloaderOut 0.5s var(--ease) 2s forwards;
-}
-
-.preloader.is-done {
-  opacity: 0;
-  visibility: hidden;
+  place-items: center;
   pointer-events: none;
+  animation: preloaderOut 0.25s ease-out 0.35s forwards;
 }
 
 @keyframes preloaderOut {
   to { opacity: 0; visibility: hidden; }
 }
 
-.preloader__mark {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 3.2rem;
-  letter-spacing: 0.06em;
-  color: var(--bg);
-  background: var(--accent);
-  padding: 0.15rem 1.1rem;
-  transform: rotate(-3deg);
+.preloader__logo {
+  width: 72px;
+  height: 72px;
+  animation: preloaderLogo 0.35s var(--ease) both;
 }
 
-.preloader__bar {
-  width: 150px;
-  height: 6px;
-  background: var(--bg-3);
-  position: relative;
-}
-
-.preloader__bar span {
-  display: block;
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 40%;
-  background: var(--accent);
-  animation: preload 0.9s var(--ease) infinite;
-}
-
-@keyframes preload {
-  0%   { left: -45%; }
-  100% { left: 105%; }
+@keyframes preloaderLogo {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: none; }
 }
 
 /* ---------- Navegación (fondo siempre sólido) ---------- */
@@ -327,7 +316,7 @@ p { max-width: 68ch; }
 
 .nav.is-scrolled {
   border-bottom-color: var(--line-strong);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-nav);
 }
 
 .nav__inner {
@@ -482,7 +471,8 @@ p { max-width: 68ch; }
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-6);
   justify-items: start;
-  animation: heroIn 0.8s var(--ease) both;
+  /* Arranca cuando el preloader ya se está yendo */
+  animation: heroIn 0.8s var(--ease) 0.3s both;
 }
 
 .hero__title {
@@ -1001,10 +991,6 @@ p { max-width: 68ch; }
 }
 
 /* ---------- Sucursales ---------- */
-.branches {
-  border-bottom: 1px solid var(--line);
-}
-
 .branches__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1013,8 +999,8 @@ p { max-width: 68ch; }
 }
 
 .branch {
-  border: 1px solid var(--line-strong);
-  background: var(--bg-2);
+  border: 1px solid var(--line);
+  background: var(--bg-3);
   padding: 1.6rem;
   display: grid;
   gap: 0.9rem;
@@ -1139,8 +1125,8 @@ p { max-width: 68ch; }
 
 /* ---------- Formulario ---------- */
 .form {
-  background: var(--bg-2);
-  border: 1px solid var(--line-strong);
+  background: var(--bg-3);
+  border: 1px solid var(--line);
   padding: clamp(1.6rem, 4vw, 2.2rem);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -1225,9 +1211,9 @@ p { max-width: 68ch; }
 }
 
 /* ---------- Footer ---------- */
+/* Sedes va en --bg-2: el pie vuelve a --bg, sin línea divisoria */
 .footer {
-  border-top: 1px solid var(--line);
-  background: var(--bg-2);
+  background: var(--bg);
   padding-top: clamp(3rem, 6vw, 4.5rem);
 }
 
@@ -1310,14 +1296,14 @@ p { max-width: 68ch; }
 }
 
 /* ---------- Aparición al hacer scroll ---------- */
-.js .reveal {
+.reveal-on .reveal {
   opacity: 0;
   transform: translateY(22px);
   transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
   transition-delay: calc(var(--rd, 0) * 70ms);
 }
 
-.js .reveal.is-in {
+.reveal-on .reveal.is-in {
   opacity: 1;
   transform: none;
 }
@@ -1472,7 +1458,7 @@ p { max-width: 68ch; }
     transition-duration: 0.01ms !important;
   }
 
-  .js .reveal {
+  .reveal-on .reveal {
     opacity: 1;
     transform: none;
     transition: none;
