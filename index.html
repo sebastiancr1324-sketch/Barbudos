@@ -25,8 +25,8 @@
   <meta name="twitter:image" content="assets/img/hero-local.jpg">
 
   <link rel="preload" href="assets/fonts/Oswald-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/JetBrainsMono-700.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" as="image" href="assets/img/hero-local.jpg" fetchpriority="high">
+  <link rel="preload" href="assets/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" href="assets/img/hero-local.webp" type="image/webp" fetchpriority="high">
 
   <link rel="stylesheet" href="css/style.css">
   <noscript><style>.preloader { display: none; }</style></noscript>
@@ -111,7 +111,10 @@
         <!-- Foto real del local extraída del video LocalValera.mp4 -->
         <div class="hero__media">
           <figure class="hero__figure">
-            <img src="assets/img/hero-local.jpg" alt="Vista de la calle desde la entrada de la sede Barbudo's en Valera, Trujillo" width="720" height="960" fetchpriority="high" decoding="async">
+            <picture>
+              <source srcset="assets/img/hero-local.webp" type="image/webp">
+              <img src="assets/img/hero-local.jpg" alt="Vista de la calle desde la entrada de la sede Barbudo's en Valera, Trujillo" width="720" height="960" fetchpriority="high" decoding="async">
+            </picture>
           </figure>
           <span class="hero__stamp mono">EST.<br>2021</span>
         </div>
@@ -145,13 +148,22 @@
       <!-- Galería de fotos del local (frames reales extraídos de los videos de la barbería). -->
       <div class="media-grid" role="group" aria-label="Galería de fotos del local">
         <figure class="media-grid__item">
-          <img src="assets/img/el-local-1.jpg" alt="El equipo de Barbudo's frente a la entrada del local en Valera" width="720" height="960" loading="lazy" decoding="async">
+          <picture>
+            <source srcset="assets/img/el-local-1.webp" type="image/webp">
+            <img src="assets/img/el-local-1.jpg" alt="El equipo de Barbudo's frente a la entrada del local en Valera" width="720" height="960" loading="lazy" decoding="async">
+          </picture>
         </figure>
         <figure class="media-grid__item">
-          <img src="assets/img/el-local-2.jpg" alt="Presentación del local Barbudo's Barbershop" width="720" height="960" loading="lazy" decoding="async">
+          <picture>
+            <source srcset="assets/img/el-local-2.webp" type="image/webp">
+            <img src="assets/img/el-local-2.jpg" alt="Presentación del local Barbudo's Barbershop" width="720" height="960" loading="lazy" decoding="async">
+          </picture>
         </figure>
         <figure class="media-grid__item">
-          <img src="assets/img/el-local-3.jpg" alt="Un corte en acción en Barbudo's Barbershop" width="720" height="960" loading="lazy" decoding="async">
+          <picture>
+            <source srcset="assets/img/el-local-3.webp" type="image/webp">
+            <img src="assets/img/el-local-3.jpg" alt="Un corte en acción en Barbudo's Barbershop" width="720" height="960" loading="lazy" decoding="async">
+          </picture>
         </figure>
       </div>
 
@@ -163,15 +175,15 @@
         </div>
         <div class="video-grid__items">
           <figure class="video-item">
-            <video src="assets/video/LocalValera.mp4" aria-label="Video: recorrido por el local de Valera" poster="assets/img/poster-localvalera.jpg" controls playsinline preload="none"></video>
+            <video src="assets/video/LocalValera.mp4" aria-label="Video: recorrido por el local de Valera" data-poster="assets/img/poster-localvalera.jpg" controls playsinline preload="none"></video>
             <figcaption class="mono">Local Valera</figcaption>
           </figure>
           <figure class="video-item">
-            <video src="assets/video/PresentacionBarberia.mp4" aria-label="Video: presentación de la barbería" poster="assets/img/poster-presentacion.jpg" controls playsinline preload="none"></video>
+            <video src="assets/video/PresentacionBarberia.mp4" aria-label="Video: presentación de la barbería" data-poster="assets/img/poster-presentacion.jpg" controls playsinline preload="none"></video>
             <figcaption class="mono">Presentación de la barbería</figcaption>
           </figure>
           <figure class="video-item">
-            <video src="assets/video/VideoCorteLucas.mp4" aria-label="Video: un corte en acción" poster="assets/img/poster-corte.jpg" controls playsinline preload="none"></video>
+            <video src="assets/video/VideoCorteLucas.mp4" aria-label="Video: un corte en acción" data-poster="assets/img/poster-corte.jpg" controls playsinline preload="none"></video>
             <figcaption class="mono">Corte en acción</figcaption>
           </figure>
         </div>
@@ -200,14 +212,23 @@
               <span class="feature__tag">Precio · consultar</span>
             </div>
             <div class="feature__media feature__media--collage">
-              <img class="feature__img" src="assets/img/Corte1.jpg" alt="Resultado de un corte premium en Barbudo's Barbershop" width="960" height="1280" loading="lazy" decoding="async">
-              <img class="feature__img" src="assets/img/Corte1Foto2.jpg" alt="Detalle del trabajo del corte premium" width="960" height="1278" loading="lazy" decoding="async">
+              <picture>
+                <source srcset="assets/img/Corte1.webp" type="image/webp">
+                <img class="feature__img" src="assets/img/Corte1.jpg" alt="Resultado de un corte premium en Barbudo's Barbershop" width="960" height="1280" loading="lazy" decoding="async">
+              </picture>
+              <picture>
+                <source srcset="assets/img/Corte1Foto2.webp" type="image/webp">
+                <img class="feature__img feature__img--front" src="assets/img/Corte1Foto2.jpg" alt="Detalle del trabajo del corte premium" width="960" height="1278" loading="lazy" decoding="async">
+              </picture>
             </div>
           </article>
 
           <article class="feature">
             <div class="feature__media feature__media--single">
-              <img class="feature__img" src="assets/img/Corte2.jpg" alt="Resultado de un corte full en Barbudo's Barbershop" width="1279" height="1704" loading="lazy" decoding="async">
+              <picture>
+                <source srcset="assets/img/Corte2.webp" type="image/webp">
+                <img class="feature__img" src="assets/img/Corte2.jpg" alt="Resultado de un corte full en Barbudo's Barbershop" width="1279" height="1704" loading="lazy" decoding="async">
+              </picture>
             </div>
             <div class="feature__body">
               <h3 class="feature__title">Corte <span class="accent">Full</span></h3>
@@ -226,13 +247,19 @@
 
         <aside class="drinks" id="bebida">
           <div class="drinks__media">
-            <img src="assets/img/BebidaDeCortesiaPrincipal.jpg" alt="Bebida de cortesía que se ofrece con cada corte en Barbudo's" width="1080" height="1440" loading="lazy" decoding="async">
+            <picture>
+              <source srcset="assets/img/BebidaDeCortesiaPrincipal.webp" type="image/webp">
+              <img src="assets/img/BebidaDeCortesiaPrincipal.jpg" alt="Bebida de cortesía que se ofrece con cada corte en Barbudo's" width="1080" height="1440" loading="lazy" decoding="async">
+            </picture>
           </div>
           <div class="drinks__body">
             <p class="eyebrow mono">[ + Bebida de cortesía ]</p>
             <h3 class="drinks__title">Con tu corte,<br><span class="accent">la bebida va por nuestra cuenta</span></h3>
             <p class="drinks__desc">Premium y Full incluyen una bebida de cortesía, para que el momento valga más que la silla.</p>
-            <img class="drinks__mini" src="assets/img/BebidasCortesia.jpg" alt="Varias bebidas de cortesía disponibles en el local" width="720" height="959" loading="lazy" decoding="async">
+            <picture>
+              <source srcset="assets/img/BebidasCortesia.webp" type="image/webp">
+              <img class="drinks__mini" src="assets/img/BebidasCortesia.jpg" alt="Varias bebidas de cortesía disponibles en el local" width="720" height="959" loading="lazy" decoding="async">
+            </picture>
           </div>
         </aside>
       </div>
@@ -249,7 +276,10 @@
       <div class="staff__grid">
         <article class="barber">
           <div class="barber__photo">
-            <img class="barber__img" src="assets/img/el-local-1.jpg" alt="Foto provisional: el equipo de Barbudo's frente al local" width="720" height="960" loading="lazy" decoding="async">
+            <picture>
+              <source srcset="assets/img/el-local-1.webp" type="image/webp">
+              <img class="barber__img" src="assets/img/el-local-1.jpg" alt="Foto provisional: el equipo de Barbudo's frente al local" width="720" height="960" loading="lazy" decoding="async">
+            </picture>
             <span class="barber__badge mono">Dueño</span>
           </div>
           <div class="barber__info">
@@ -261,7 +291,10 @@
 
         <article class="barber">
           <div class="barber__photo">
-            <img class="barber__img" src="assets/img/Corte1Foto2.jpg" alt="Foto provisional: detalle de un corte hecho en Barbudo's" width="960" height="1278" loading="lazy" decoding="async">
+            <picture>
+              <source srcset="assets/img/Corte1Foto2.webp" type="image/webp">
+              <img class="barber__img" src="assets/img/Corte1Foto2.jpg" alt="Foto provisional: detalle de un corte hecho en Barbudo's" width="960" height="1278" loading="lazy" decoding="async">
+            </picture>
           </div>
           <div class="barber__info">
             <h3 class="barber__name">Gabriel Hidalgo</h3>
@@ -272,7 +305,10 @@
 
         <article class="barber">
           <div class="barber__photo">
-            <img class="barber__img" src="assets/img/EstebanMendoza1.jpg" alt="Esteban Mendoza, barbero profesional en Barbudo's" width="800" height="1066" loading="lazy" decoding="async">
+            <picture>
+              <source srcset="assets/img/EstebanMendoza1.webp" type="image/webp">
+              <img class="barber__img" src="assets/img/EstebanMendoza1.jpg" alt="Esteban Mendoza, barbero profesional en Barbudo's" width="800" height="1066" loading="lazy" decoding="async">
+            </picture>
           </div>
           <div class="barber__info">
             <h3 class="barber__name">Esteban Mendoza</h3>
@@ -283,7 +319,10 @@
 
         <article class="barber">
           <div class="barber__photo">
-            <img class="barber__img" src="assets/img/JoseOjeda1.jpg" alt="José Ojeda, barbero profesional en Barbudo's" width="800" height="1066" loading="lazy" decoding="async">
+            <picture>
+              <source srcset="assets/img/JoseOjeda1.webp" type="image/webp">
+              <img class="barber__img" src="assets/img/JoseOjeda1.jpg" alt="José Ojeda, barbero profesional en Barbudo's" width="800" height="1066" loading="lazy" decoding="async">
+            </picture>
           </div>
           <div class="barber__info">
             <h3 class="barber__name">José Ojeda</h3>

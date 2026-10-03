@@ -111,8 +111,24 @@
   );
   revealEls.forEach((el) => io.observe(el));
 
-  /* ---------- Videos: solo uno a la vez ---------- */
+  /* ---------- Videos: póster diferido ----------
+     El atributo poster se descarga siempre al cargar la página (~110 KB
+     cada uno) aunque los videos estén muy abajo: se asigna recién cuando
+     el video se acerca a la pantalla. */
   const pageVideos = [...document.querySelectorAll('video')];
+  const posterIO = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.poster = entry.target.dataset.poster;
+        posterIO.unobserve(entry.target);
+      });
+    },
+    { rootMargin: '600px 0px' }
+  );
+  pageVideos.filter((v) => v.dataset.poster).forEach((v) => posterIO.observe(v));
+
+  /* ---------- Videos: solo uno a la vez ---------- */
   if (pageVideos.length > 1) {
     pageVideos.forEach((video) => {
       video.addEventListener('play', () => {
