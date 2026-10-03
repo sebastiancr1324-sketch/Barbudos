@@ -161,9 +161,12 @@ code {
   color: var(--accent);
 }
 
+/* El contenido de cada sección queda dentro del mismo contenedor que el
+   menú, el hero y el pie (--container con --gutter por dentro); el fondo
+   y los bordes de la sección siguen ocupando todo el ancho. */
 .section {
   padding-block: clamp(5rem, 9vw, 8rem);
-  padding-inline: var(--gutter);
+  padding-inline: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
 }
 
 .section__head {
