@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice">
+  <!-- Respaldo de los mapas de las sedes: se ve si el mapa de Google no carga.
+       Ilustración genérica (no es un plano real), en la paleta del sitio. -->
+  <rect width="600" height="300" fill="#131110"/>
+  <g fill="#1b1816">
+    <rect x="18" y="16" width="112" height="70" rx="4"/>
+    <rect x="150" y="16" width="96" height="70" rx="4"/>
+    <rect x="266" y="16" width="140" height="58" rx="4"/>
+    <rect x="426" y="16" width="156" height="58" rx="4"/>
+    <rect x="18" y="106" width="70" height="86" rx="4"/>
+    <rect x="108" y="106" width="138" height="86" rx="4"/>
+    <rect x="426" y="94" width="72" height="98" rx="4"/>
+    <rect x="518" y="94" width="64" height="98" rx="4"/>
+    <rect x="18" y="212" width="112" height="72" rx="4"/>
+    <rect x="150" y="212" width="96" height="72" rx="4"/>
+    <rect x="266" y="236" width="140" height="48" rx="4"/>
+    <rect x="426" y="212" width="156" height="72" rx="4"/>
+  </g>
+  <!-- Río -->
+  <path d="M250 300 C 270 240, 300 220, 320 180 S 360 110, 410 90 S 520 70, 600 40" fill="none" stroke="#221e1b" stroke-width="22" stroke-linecap="round"/>
+  <!-- Calles principales -->
+  <g fill="none" stroke="#3a342c" stroke-width="3" stroke-linecap="round">
+    <path d="M0 96 H600"/>
+    <path d="M0 202 H600"/>
+    <path d="M256 0 V300"/>
+    <path d="M416 0 V300"/>
+  </g>
+  <g fill="none" stroke="#26221d" stroke-width="2">
+    <path d="M140 0 V300"/>
+    <path d="M98 96 V202"/>
+    <path d="M508 84 V202"/>
+    <path d="M0 290 H600"/>
+  </g>
+  <!-- Pin con el rombo del logo -->
+  <g transform="translate(336 150)">
+    <ellipse cx="0" cy="26" rx="14" ry="4" fill="#0a0909" opacity="0.6"/>
+    <path d="M0 26 C -6 14, -20 2, -20 -12 A 20 20 0 1 1 20 -12 C 20 2, 6 14, 0 26 Z" fill="#e24234"/>
+    <rect x="-6" y="-18" width="12" height="12" fill="#0a0909" transform="rotate(45 0 -12)"/>
+  </g>
+</svg>

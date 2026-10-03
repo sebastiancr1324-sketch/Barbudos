@@ -7,29 +7,32 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.classList.add('js');
 
-  /* ---------- Preloader ----------
-     Se retira en cuanto está lo que se ve en la primera pantalla
-     (fuentes y, si está a la vista, la foto del hero), sin esperar
-     a los videos ni a las imágenes de más abajo. */
-  const preloader = document.getElementById('preloader');
-  if (preloader) {
-    const hide = () => preloader.classList.add('is-done');
+  // El preloader es solo CSS (600 ms como máximo): no necesita JS.
+
+  /* ---------- Hero: video de fondo y botón de pausa ----------
+     Con "reducir movimiento" el <source> ya no aplica (media query) y el
+     CSS oculta el video; aquí además se frena por si el navegador
+     ignora el atributo media. */
+  const heroVideo = document.getElementById('hero-video');
+  const heroToggle = document.getElementById('hero-toggle');
+  if (heroVideo) {
     if (reduceMotion) {
-      hide();
-    } else {
-      const heroImg = document.querySelector('.hero__figure img');
-      const heroVisible = heroImg && heroImg.getBoundingClientRect().top < window.innerHeight;
-      const imgReady = heroVisible && !heroImg.complete
-        ? new Promise((resolve) => {
-          heroImg.addEventListener('load', resolve, { once: true });
-          heroImg.addEventListener('error', resolve, { once: true });
-        })
-        : Promise.resolve();
-      const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
-      Promise.race([
-        Promise.all([imgReady, fontsReady]),
-        new Promise((resolve) => setTimeout(resolve, 1500))
-      ]).then(hide);
+      heroVideo.removeAttribute('autoplay');
+      heroVideo.pause();
+    } else if (heroToggle) {
+      const sync = () => {
+        const paused = heroVideo.paused;
+        heroToggle.classList.toggle('is-paused', paused);
+        heroToggle.setAttribute('aria-label', paused ? 'Reproducir el video de fondo' : 'Pausar el video de fondo');
+      };
+      heroToggle.hidden = false;
+      heroToggle.addEventListener('click', () => {
+        if (heroVideo.paused) heroVideo.play().catch(() => {});
+        else heroVideo.pause();
+      });
+      heroVideo.addEventListener('play', sync);
+      heroVideo.addEventListener('pause', sync);
+      sync();
     }
   }
 
@@ -75,47 +78,54 @@
     '.section__head',
     '.section__title',
     '.section__intro',
-    '.feature',
+    '.service',
     '.drinks',
     '.barber',
     '.branch',
-    '.hours',
-    '.media-grid__item',
-    '.video-item',
-    '.contact__row',
-    '.contact__card',
-    '.booking__info',
+    '.showcase__item',
+    '.showcase__video',
+    '.booking__aside',
     '.form'
   ];
 
-  const revealEls = [...document.querySelectorAll(revealSelectors.join(','))];
-
-  revealEls.forEach((el) => {
-    let rd = 0;
-    const sib = el.parentElement ? [...el.parentElement.children] : [el];
-    rd = Math.min(sib.indexOf(el), 6);
-    el.style.setProperty('--rd', String(rd));
-    el.classList.add('reveal');
-  });
-
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-in');
-          io.unobserve(entry.target);
-        }
+  // El contenido solo se oculta cuando IntersectionObserver existe y quedó
+  // listo (clase reveal-on en <html>). Si algo falla, todo queda visible.
+  if (!reduceMotion && "IntersectionObserver" in window) {
+    try {
+      const revealEls = [...document.querySelectorAll(revealSelectors.join(","))];
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-in");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+      );
+      revealEls.forEach((el) => {
+        const sib = el.parentElement ? [...el.parentElement.children] : [el];
+        el.style.setProperty("--rd", String(Math.min(sib.indexOf(el), 6)));
+        // Lo que ya está en pantalla al cargar no se esconde
+        if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add("is-in");
+        el.classList.add("reveal");
+        io.observe(el);
       });
-    },
-    { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
-  );
-  revealEls.forEach((el) => io.observe(el));
+      document.documentElement.classList.add("reveal-on");
+      // Al imprimir, todo visible
+      window.addEventListener("beforeprint", () => revealEls.forEach((el) => el.classList.add("is-in")));
+    } catch (err) {
+      document.documentElement.classList.remove("reveal-on");
+    }
+  }
 
   /* ---------- Videos: póster diferido ----------
      El atributo poster se descarga siempre al cargar la página (~110 KB
      cada uno) aunque los videos estén muy abajo: se asigna recién cuando
      el video se acerca a la pantalla. */
-  const pageVideos = [...document.querySelectorAll('video')];
+  // El video de fondo del hero va aparte: no tiene controles ni póster diferido
+  const pageVideos = [...document.querySelectorAll('video:not(.hero__video)')];
   const posterIO = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -229,7 +239,36 @@
         setInvalid(ev.target, false);
       }
     });
+
+    /* "Reservar" de cada barbero y "Reservar este corte": el enlace baja
+       al formulario (#reserva) y deja preseleccionado el barbero o el
+       servicio. Sin JS, el enlace igual lleva al formulario. */
+    const preselect = (select, value) => {
+      if (!select || ![...select.options].some((o) => o.value === value)) return;
+      select.value = value;
+      setInvalid(select, false);
+    };
+    document.addEventListener('click', (ev) => {
+      const link = ev.target.closest('[data-barbero], [data-servicio]');
+      if (!link) return;
+      if (link.dataset.barbero) preselect(field('f-barbero'), link.dataset.barbero);
+      if (link.dataset.servicio) preselect(field('f-servicio'), link.dataset.servicio);
+    });
   }
+
+  /* ---------- Mapas: foco de teclado visible ----------
+     Al tabular dentro del iframe (otro dominio) la página pierde el foco y
+     :focus-within no aplica: se marca el contenedor del mapa a mano. */
+  const maps = document.querySelectorAll('.branch__map');
+  const clearMaps = () => maps.forEach((m) => m.classList.remove('is-focused'));
+  window.addEventListener('blur', () => setTimeout(() => {
+    const active = document.activeElement;
+    if (active && active.tagName === 'IFRAME' && active.parentElement.classList.contains('branch__map')) {
+      clearMaps();
+      active.parentElement.classList.add('is-focused');
+    }
+  }));
+  window.addEventListener('focus', clearMaps);
 
   /* ---------- Años de experiencia (desde el año de inicio) ---------- */
   const thisYear = new Date().getFullYear();
