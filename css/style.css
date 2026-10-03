@@ -32,6 +32,7 @@
   --bg: #0a0909;
   --bg-2: #131110;
   --bg-3: #1b1816;
+  --bg-4: #221e1b; /* hover de tarjetas, inputs */
 
   --ink: #ece6dc;
   --ink-2: #aca396;
@@ -42,18 +43,38 @@
   --line-strong: #3a342c;
 
   --accent: #e24234; /* 4,5:1 sobre --bg-2 (WCAG AA) */
+  --accent-text: #ec5446; /* texto rojo pequeño sobre tarjetas */
   --accent-deep: #b02a20;
   --accent-soft: rgba(226, 66, 52, 0.14);
+  --on-accent: #0a0909; /* texto sobre rojo: nunca marfil (3,3:1) */
   --danger: #e06056;
+
+  --paper: #f4efe6; /* una sola sección clara, opcional */
+  --ink-on-paper-2: #6a6257;
+  --overlay: rgba(10, 9, 9, 0.62);
+
+  /* Escala de espaciado: 4/8/12/16/24/32/48/64/96 px */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
 
   --radius-sm: 4px;
   --radius-md: 8px;
+  --radius-lg: 16px;
 
+  /* Oswald: solo títulos (h1–h4). Barlow: texto, nav y botones.
+     JetBrains Mono: solo eyebrows y datos (teléfono, horarios, RIF). */
   --font-display: 'Oswald', 'Arial Narrow', sans-serif;
-  --font-body: 'Oswald', 'Segoe UI', sans-serif;
+  --font-body: 'Barlow', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  --container: 1180px;
+  --container: 1200px;
   --gutter: clamp(1.25rem, 4vw, 2.5rem);
   --nav-h: 72px;
 
@@ -71,9 +92,9 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 1.06rem;
+  font-size: 1.0625rem;
   font-weight: 400;
-  line-height: 1.7;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -146,9 +167,9 @@ p { max-width: 68ch; }
 
 .eyebrow {
   font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 0.74rem;
-  letter-spacing: 0.12em;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -185,11 +206,12 @@ p { max-width: 68ch; }
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  padding: 0.8rem 1.5rem;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
+  padding: 0.875rem 1.5rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   border: 2px solid var(--ink);
   transition: background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease), transform 0.12s var(--ease);
@@ -319,8 +341,9 @@ p { max-width: 68ch; }
   flex-direction: row;
   align-items: center;
   gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-weight: 700;
+  /* El nombre junto al logo es parte de la marca: Oswald, como los títulos */
+  font-family: var(--font-display);
+  font-weight: 600;
   text-transform: uppercase;
   line-height: 1.1;
   padding: 0.3rem 0;
@@ -352,9 +375,9 @@ p { max-width: 68ch; }
   display: flex;
   align-items: center;
   gap: clamp(1rem, 2vw, 1.7rem);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -372,8 +395,7 @@ p { max-width: 68ch; }
 .nav__links .nav__cta {
   color: #0a0909;
   background: var(--accent);
-  padding: 0.55rem 1.05rem;
-  letter-spacing: 0.06em;
+  padding: 0.6rem 1.1rem;
 }
 
 .nav__links .nav__cta:hover {
@@ -435,7 +457,7 @@ p { max-width: 68ch; }
 }
 
 .hero__brand {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -523,7 +545,7 @@ p { max-width: 68ch; }
   color: var(--ink);
   border: 2px solid var(--ink);
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   line-height: 1;
   text-align: center;
   text-transform: uppercase;
@@ -552,8 +574,8 @@ p { max-width: 68ch; }
 }
 
 .marquee__track span {
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 600;
   text-transform: uppercase;
   font-size: 1.05rem;
   letter-spacing: 0.14em;
@@ -657,10 +679,10 @@ p { max-width: 68ch; }
 }
 
 .video-item figcaption {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-3);
   text-align: center;
@@ -746,10 +768,10 @@ p { max-width: 68ch; }
 }
 
 .feature__tag {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent);
   border: 1px solid var(--accent);
@@ -888,11 +910,13 @@ p { max-width: 68ch; }
   z-index: 1;
   background: var(--accent);
   color: #0a0909;
-  font-weight: 700;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 0.35rem 0.6rem;
+  padding: 0.4rem 0.6rem;
 }
 
 .barber__info {
@@ -908,16 +932,16 @@ p { max-width: 68ch; }
 }
 
 .barber__role {
-  font-size: 0.72rem;
-  letter-spacing: 0.05em;
+  font-size: 0.8125rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--ink-3);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .barber__handle {
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: var(--accent);
 }
 
@@ -961,9 +985,10 @@ p { max-width: 68ch; }
 
 .branch__map-link {
   justify-self: start;
-  font-weight: 700;
-  font-size: 0.74rem;
-  letter-spacing: 0.08em;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   background: var(--accent);
   color: #0a0909;
@@ -1003,9 +1028,9 @@ p { max-width: 68ch; }
 }
 
 .hours__label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -1027,7 +1052,9 @@ p { max-width: 68ch; }
 
 .hours__row span:last-child {
   color: var(--ink);
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 /* ---------- Contacto ---------- */
@@ -1065,16 +1092,16 @@ p { max-width: 68ch; }
 }
 
 .contact__label {
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-3);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .contact__value {
   font-size: clamp(1.25rem, 2.4vw, 1.7rem);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.01em;
   transition: color 0.2s var(--ease);
 }
@@ -1100,11 +1127,11 @@ p { max-width: 68ch; }
 }
 
 .contact__card-kicker {
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-3);
-  font-weight: 700;
+  font-weight: 600;
   transition: color 0.2s var(--ease);
 }
 
@@ -1113,8 +1140,8 @@ p { max-width: 68ch; }
 }
 
 .contact__card-title {
-  font-family: var(--font-display);
-  font-weight: 800;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: clamp(1.9rem, 3.4vw, 2.7rem);
   text-transform: uppercase;
   line-height: 0.95;
@@ -1125,9 +1152,9 @@ p { max-width: 68ch; }
 }
 
 .contact__card-action {
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--accent);
   transition: color 0.2s var(--ease);
@@ -1176,8 +1203,8 @@ p { max-width: 68ch; }
 }
 
 .booking__list-n {
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.875rem;
+  font-weight: 600;
   color: #0a0909;
   background: var(--accent);
   border: 2px solid var(--accent);
@@ -1207,10 +1234,10 @@ p { max-width: 68ch; }
 }
 
 .form__field label {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--ink-2);
 }
@@ -1260,8 +1287,9 @@ p { max-width: 68ch; }
 
 .form__error {
   color: var(--danger);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.9375rem;
   min-height: 1.3em;
 }
 
@@ -1290,7 +1318,7 @@ p { max-width: 68ch; }
 
 .footer__brand {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
   font-size: 2rem;
   line-height: 0.95;
@@ -1312,7 +1340,7 @@ p { max-width: 68ch; }
 
 .footer__rif {
   margin-top: 0.9rem;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   color: var(--ink-3);
   border: 1px solid var(--line-strong);
   padding: 0.3rem 0.5rem;
@@ -1320,9 +1348,9 @@ p { max-width: 68ch; }
 }
 
 .footer__title {
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 0.9rem;
@@ -1441,7 +1469,7 @@ p { max-width: 68ch; }
   .nav__links a {
     padding: 0.85rem 0;
     border-bottom: 1px dashed var(--line-soft);
-    font-size: 1rem;
+    font-size: 1.0625rem;
   }
 
   .nav__links .nav__cta {

@@ -36,6 +36,11 @@
   <link rel="preload" href="assets/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" as="image" href="assets/img/hero-local.webp" type="image/webp" fetchpriority="high">
 
+  <!-- Barlow (texto, nav y botones) desde Google Fonts; Oswald y JetBrains Mono son locales -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap">
+
   <link rel="stylesheet" href="css/style.css">
   <noscript><style>.preloader { display: none; }</style></noscript>
 
@@ -151,7 +156,7 @@
 
     <section class="section local" id="local">
       <header class="section__head">
-        <p class="eyebrow mono">[ 01 / El Local ]</p>
+        <p class="eyebrow">[ 01 / El Local ]</p>
         <h2 class="section__title">El <span class="accent">local</span></h2>
         <p class="section__intro">Un espacio pensado para el detalle. Mira el local en fotos y en video.</p>
       </header>
@@ -187,15 +192,15 @@
         <div class="video-grid__items">
           <figure class="video-item">
             <video src="assets/video/LocalValera.mp4" aria-label="Video: recorrido por el local de Valera" data-poster="assets/img/poster-localvalera.jpg" controls playsinline preload="none"></video>
-            <figcaption class="mono">Local Valera</figcaption>
+            <figcaption>Local Valera</figcaption>
           </figure>
           <figure class="video-item">
             <video src="assets/video/PresentacionBarberia.mp4" aria-label="Video: presentación de la barbería" data-poster="assets/img/poster-presentacion.jpg" controls playsinline preload="none"></video>
-            <figcaption class="mono">Presentación de la barbería</figcaption>
+            <figcaption>Presentación de la barbería</figcaption>
           </figure>
           <figure class="video-item">
             <video src="assets/video/VideoCorteLucas.mp4" aria-label="Video: un corte en acción" data-poster="assets/img/poster-corte.jpg" controls playsinline preload="none"></video>
-            <figcaption class="mono">Corte en acción</figcaption>
+            <figcaption>Corte en acción</figcaption>
           </figure>
         </div>
       </div>
@@ -203,7 +208,7 @@
 
     <section class="section services" id="servicios">
       <div class="services__body">
-        <p class="eyebrow mono">[ 02 / Servicios ]</p>
+        <p class="eyebrow">[ 02 / Servicios ]</p>
         <h2 class="section__title">Servicios del <span class="accent">local</span></h2>
         <p class="section__intro">Dos cortes de la casa, pensados para salir listo de la silla. Ambos incluyen bebida de cortesía; el valor se confirma al reservar por WhatsApp.</p>
         <div class="features">
@@ -264,7 +269,7 @@
             </picture>
           </div>
           <div class="drinks__body">
-            <p class="eyebrow mono">[ + Bebida de cortesía ]</p>
+            <p class="eyebrow">[ + Bebida de cortesía ]</p>
             <h3 class="drinks__title">Con tu corte,<br><span class="accent">la bebida va por nuestra cuenta</span></h3>
             <p class="drinks__desc">Premium y Full incluyen una bebida de cortesía, para que el momento valga más que la silla.</p>
             <picture>
@@ -278,7 +283,7 @@
 
     <section class="section staff" id="barberos">
       <header class="section__head">
-        <p class="eyebrow mono">[ 03 / El equipo ]</p>
+        <p class="eyebrow">[ 03 / El equipo ]</p>
         <h2 class="section__title">Nuestros <span class="accent">barberos</span></h2>
       </header>
 
@@ -291,12 +296,12 @@
               <source srcset="assets/img/el-local-1.webp" type="image/webp">
               <img class="barber__img" src="assets/img/el-local-1.jpg" alt="Foto provisional: el equipo de Barbudo's frente al local" width="720" height="960" loading="lazy" decoding="async">
             </picture>
-            <span class="barber__badge mono">Dueño</span>
+            <span class="barber__badge">Dueño</span>
           </div>
           <div class="barber__info">
             <h3 class="barber__name">Oswaldo Valecillos</h3>
             <p class="barber__role mono">Barbero profesional · <span data-desde="2018">8 años</span> de experiencia</p>
-            <p class="barber__handle mono"><a href="https://www.instagram.com/Valeoswald/" target="_blank" rel="noopener noreferrer">@Valeoswald</a></p>
+            <p class="barber__handle"><a href="https://www.instagram.com/Valeoswald/" target="_blank" rel="noopener noreferrer">@Valeoswald</a></p>
           </div>
         </article>
 
@@ -310,7 +315,7 @@
           <div class="barber__info">
             <h3 class="barber__name">Gabriel Hidalgo</h3>
             <p class="barber__role mono">Barbero profesional · <span data-desde="2014">12 años</span> de experiencia</p>
-            <p class="barber__handle mono"><a href="https://www.instagram.com/gabriel_s_barber/" target="_blank" rel="noopener noreferrer">@gabriel_s_barber</a></p>
+            <p class="barber__handle"><a href="https://www.instagram.com/gabriel_s_barber/" target="_blank" rel="noopener noreferrer">@gabriel_s_barber</a></p>
           </div>
         </article>
 
@@ -324,7 +329,7 @@
           <div class="barber__info">
             <h3 class="barber__name">Esteban Mendoza</h3>
             <p class="barber__role mono">Barbero profesional · <span data-desde="2024">2 años</span> de experiencia</p>
-            <p class="barber__handle mono"><a href="https://www.instagram.com/estabanbarber/" target="_blank" rel="noopener noreferrer">@estabanbarber</a></p>
+            <p class="barber__handle"><a href="https://www.instagram.com/estabanbarber/" target="_blank" rel="noopener noreferrer">@estabanbarber</a></p>
           </div>
         </article>
 
@@ -338,7 +343,7 @@
           <div class="barber__info">
             <h3 class="barber__name">José Ojeda</h3>
             <p class="barber__role mono">Barbero profesional · <span data-desde="2016">10 años</span> de experiencia</p>
-            <p class="barber__handle mono"><a href="https://www.instagram.com/goyi_barber/" target="_blank" rel="noopener noreferrer">@goyi_barber</a></p>
+            <p class="barber__handle"><a href="https://www.instagram.com/goyi_barber/" target="_blank" rel="noopener noreferrer">@goyi_barber</a></p>
           </div>
         </article>
       </div>
@@ -346,7 +351,7 @@
 
     <section class="section branches" id="sucursales">
       <header class="section__head">
-        <p class="eyebrow mono">[ 04 / Ubicación ]</p>
+        <p class="eyebrow">[ 04 / Ubicación ]</p>
         <h2 class="section__title">Dos sedes en <span class="accent">Trujillo</span></h2>
         <p class="section__intro">Encuentra Barbudo's en Valera y en Carvajal. Elige la más cercana al reservar tu turno.</p>
       </header>
@@ -354,7 +359,7 @@
         <article class="branch">
           <h3 class="branch__name">Sede Valera</h3>
           <p class="branch__loc">Valera, Estado Trujillo, Venezuela.</p>
-          <a class="branch__map-link mono" href="https://www.google.com/maps/search/?api=1&query=Valera+Trujillo+Venezuela" target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
+          <a class="branch__map-link" href="https://www.google.com/maps/search/?api=1&query=Valera+Trujillo+Venezuela" target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
           <div class="branch__map">
             <iframe src="https://maps.google.com/maps?q=Valera%2C%20Trujillo%2C%20Venezuela&z=13&output=embed" title="Mapa de la sede Valera" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
@@ -362,7 +367,7 @@
         <article class="branch">
           <h3 class="branch__name">Sede Carvajal</h3>
           <p class="branch__loc">Carvajal, Estado Trujillo, Venezuela.</p>
-          <a class="branch__map-link mono" href="https://www.google.com/maps/search/?api=1&query=Carvajal+Trujillo+Venezuela" target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
+          <a class="branch__map-link" href="https://www.google.com/maps/search/?api=1&query=Carvajal+Trujillo+Venezuela" target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
           <div class="branch__map">
             <iframe src="https://maps.google.com/maps?q=Carvajal%2C%20Trujillo%2C%20Venezuela&z=13&output=embed" title="Mapa de la sede Carvajal" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
@@ -371,7 +376,7 @@
 
       <!-- TODO: confirmar el horario real de ambas sedes y actualizar estas líneas -->
       <div class="hours" id="horario">
-        <p class="hours__label mono">Horario de atención</p>
+        <p class="hours__label">Horario de atención</p>
         <div class="hours__rows">
           <div class="hours__row"><span>Lunes a Sábado</span><span>8:00 a 19:00</span></div>
           <div class="hours__row"><span>Domingo</span><span>Por WhatsApp</span></div>
@@ -382,26 +387,26 @@
     <section class="section contact" id="contacto">
       <div class="contact__grid">
         <div class="contact__main">
-          <p class="eyebrow mono">[ 05 / Contacto ]</p>
+          <p class="eyebrow">[ 05 / Contacto ]</p>
           <h2 class="section__title">Hablemos <span class="accent">directo</span></h2>
           <p class="contact__sub">Escríbenos por WhatsApp, llámanos o síguenos en Instagram. Te respondemos lo antes posible.</p>
 
           <div class="contact__rows">
             <div class="contact__row">
-              <span class="contact__label mono">WhatsApp / Teléfono</span>
-              <a class="contact__value" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">+58 412-6938179</a>
+              <span class="contact__label">WhatsApp / Teléfono</span>
+              <a class="contact__value mono" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">+58 412-6938179</a>
             </div>
             <div class="contact__row">
-              <span class="contact__label mono">Instagram</span>
+              <span class="contact__label">Instagram</span>
               <a class="contact__value" href="https://www.instagram.com/barbudos.barbershop/" target="_blank" rel="noopener noreferrer">@barbudos.barbershop</a>
             </div>
           </div>
         </div>
 
         <a class="contact__card" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">
-          <span class="contact__card-kicker mono">Reserva al instante</span>
+          <span class="contact__card-kicker">Reserva al instante</span>
           <span class="contact__card-title">Escríbenos por WhatsApp</span>
-          <span class="contact__card-action mono">Abrir chat ↳</span>
+          <span class="contact__card-action">Abrir chat ↳</span>
         </a>
       </div>
     </section>
@@ -409,13 +414,13 @@
     <section class="section booking" id="turnos">
       <div class="booking__grid">
         <div class="booking__info">
-          <p class="eyebrow mono">[ 06 / Turnos ]</p>
+          <p class="eyebrow">[ 06 / Turnos ]</p>
           <h2 class="section__title">Reserva tu <span class="accent">turno</span></h2>
           <p class="booking__sub">Completa el formulario y te confirmamos por WhatsApp en minutos. Si tienes dudas, escríbenos directo.</p>
           <ol class="booking__list">
-            <li><span class="booking__list-n mono">1</span> Elige sede, servicio y horario</li>
-            <li><span class="booking__list-n mono">2</span> Enviamos tu solicitud por WhatsApp</li>
-            <li><span class="booking__list-n mono">3</span> Confirmamos y quedas reservado</li>
+            <li><span class="booking__list-n">1</span> Elige sede, servicio y horario</li>
+            <li><span class="booking__list-n">2</span> Enviamos tu solicitud por WhatsApp</li>
+            <li><span class="booking__list-n">3</span> Confirmamos y quedas reservado</li>
           </ol>
         </div>
 
@@ -494,18 +499,18 @@
         <p class="footer__rif mono">RIF J-197958002</p>
       </div>
       <div class="footer__col">
-        <p class="footer__title mono">Sucursales</p>
+        <p class="footer__title">Sucursales</p>
         <p>Sede Valera, Edo. Trujillo</p>
         <p>Sede Carvajal, Edo. Trujillo</p>
       </div>
       <div class="footer__col">
-        <p class="footer__title mono">Contacto</p>
-        <p><a href="tel:+584126938179">+58 412-6938179</a></p>
+        <p class="footer__title">Contacto</p>
+        <p><a class="mono" href="tel:+584126938179">+58 412-6938179</a></p>
         <p><a href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">WhatsApp</a></p>
         <p><a href="https://www.instagram.com/barbudos.barbershop/" target="_blank" rel="noopener noreferrer">Instagram</a></p>
       </div>
       <div class="footer__col">
-        <p class="footer__title mono">Navegación</p>
+        <p class="footer__title">Navegación</p>
         <p><a href="#local">El Local</a></p>
         <p><a href="#servicios">Servicios</a></p>
         <p><a href="#barberos">Barberos</a></p>
