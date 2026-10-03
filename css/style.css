@@ -456,13 +456,23 @@ code {
   display: block;
 }
 
+/* Las líneas de arriba se pintan sobre el bloque rojo: así la coma de
+   "corte," no queda tapada cuando el rojo sube para cubrir la tilde. */
+.hero__line:not(.hero__line--block) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Con line-height: 1 la tilde de la Ñ sobresale ~0,1em por encima de la
+   caja; el padding superior extra la deja sobre el rojo y el margen
+   negativo compensa para que la altura total no cambie. */
 .hero__line--block {
   display: inline-block;
   max-width: 100%;
   background: var(--accent);
   color: #0a0909;
-  padding: 0.02em 0.2em;
-  margin-top: 0.08em;
+  padding: 0.12em 0.2em 0.02em;
+  margin-top: -0.02em;
 }
 
 .hero__sub {
