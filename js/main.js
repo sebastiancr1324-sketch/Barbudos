@@ -80,7 +80,6 @@
     '.barber',
     '.branch',
     '.hours',
-    '.ph',
     '.media-grid__item',
     '.video-item',
     '.contact__row',
@@ -216,8 +215,15 @@
     });
   }
 
+  /* ---------- Años de experiencia (desde el año de inicio) ---------- */
+  const thisYear = new Date().getFullYear();
+  document.querySelectorAll('[data-desde]').forEach((el) => {
+    const years = thisYear - Number(el.dataset.desde);
+    if (years > 0) el.textContent = years + (years === 1 ? ' año' : ' años');
+  });
+
   /* ---------- Año en el footer ---------- */
   document.querySelectorAll('.footer__legal p').forEach((p) => {
-    p.textContent = p.textContent.replace('© 2026', '© ' + new Date().getFullYear());
+    p.textContent = p.textContent.replace('© 2026', '© ' + thisYear);
   });
 })();

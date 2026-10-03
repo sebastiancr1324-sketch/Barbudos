@@ -115,7 +115,6 @@ code {
 .nav__burger,
 .preloader__mark,
 .preloader__bar,
-.ph,
 .video-item,
 .feature,
 .drinks,
@@ -545,45 +544,6 @@ code {
   to   { opacity: 1; transform: none; }
 }
 
-/* ---------- Placeholders de medios ---------- */
-.ph {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  text-align: center;
-  padding: 1.25rem 1rem;
-  background: var(--bg-2);
-  border: 2px dashed var(--line-strong);
-  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
-}
-
-.ph:hover {
-  border-color: var(--accent);
-  background: var(--bg-3);
-}
-
-.ph--3-4 { aspect-ratio: 3 / 4; width: 100%; }
-.ph--16-9 { aspect-ratio: 16 / 9; width: 100%; }
-
-.ph__label {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.ph__file {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: var(--ink-3);
-  word-break: break-all;
-  max-width: 100%;
-}
-
 /* ---------- Marquee ---------- */
 .marquee {
   border-block: 1px solid var(--line);
@@ -904,6 +864,7 @@ code {
 .barber {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
   border: 1px solid var(--line-strong);
   background: var(--bg-2);
   overflow: hidden;
@@ -914,7 +875,6 @@ code {
   padding: 0.85rem;
 }
 
-.barber__photo .ph,
 .barber__img {
   width: 100%;
   min-height: 280px;
