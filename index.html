@@ -82,6 +82,8 @@
     <img class="preloader__logo" src="assets/img/logo.svg" alt="" width="72" height="72">
   </div>
 
+  <a class="skip-link" href="#inicio">Saltar al contenido</a>
+
   <header class="nav" id="nav">
     <div class="nav__inner">
       <a class="nav__brand" href="#inicio" aria-label="Barbudo's Barbershop, inicio">
@@ -126,7 +128,7 @@
           <span class="hero__line">corte,</span>
           <span class="hero__line">diseñamos tu <span class="accent">estilo</span></span>
         </h1>
-        <p class="hero__sub">Cortes, barba y diseño hecho a tu medida. Dos sedes en Trujillo, Venezuela. Sin vueltas, al corte.</p>
+        <p class="hero__sub">Cortes, barba y diseño hechos a tu medida. Dos sedes en Trujillo, Venezuela. Sin vueltas, al corte.</p>
         <div class="hero__ctas">
           <a class="btn btn--primary" href="#reserva">Reservar turno</a>
           <a class="btn btn--ghost" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">
@@ -451,6 +453,8 @@
           <p class="branch__loc">Valera, Estado Trujillo, Venezuela.</p>
           <a class="branch__map-link" href="https://www.google.com/maps/search/?api=1&query=Valera+Trujillo+Venezuela" target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
           <div class="branch__map">
+            <!-- Respaldo: imagen estática detrás del mapa; se ve mientras el mapa carga o si no llega a mostrarse -->
+            <div class="branch__map-fallback" aria-hidden="true"><span>Valera · Trujillo</span></div>
             <iframe src="https://maps.google.com/maps?q=Valera%2C%20Trujillo%2C%20Venezuela&z=13&output=embed" title="Mapa de la sede Valera" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </article>
@@ -459,6 +463,8 @@
           <p class="branch__loc">Carvajal, Estado Trujillo, Venezuela.</p>
           <a class="branch__map-link" href="https://www.google.com/maps/search/?api=1&query=Carvajal+Trujillo+Venezuela" target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
           <div class="branch__map">
+            <!-- Respaldo: imagen estática detrás del mapa; se ve mientras el mapa carga o si no llega a mostrarse -->
+            <div class="branch__map-fallback" aria-hidden="true"><span>Carvajal · Trujillo</span></div>
             <iframe src="https://maps.google.com/maps?q=Carvajal%2C%20Trujillo%2C%20Venezuela&z=13&output=embed" title="Mapa de la sede Carvajal" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </article>

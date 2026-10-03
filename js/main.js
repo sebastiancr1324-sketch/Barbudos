@@ -256,6 +256,20 @@
     });
   }
 
+  /* ---------- Mapas: foco de teclado visible ----------
+     Al tabular dentro del iframe (otro dominio) la página pierde el foco y
+     :focus-within no aplica: se marca el contenedor del mapa a mano. */
+  const maps = document.querySelectorAll('.branch__map');
+  const clearMaps = () => maps.forEach((m) => m.classList.remove('is-focused'));
+  window.addEventListener('blur', () => setTimeout(() => {
+    const active = document.activeElement;
+    if (active && active.tagName === 'IFRAME' && active.parentElement.classList.contains('branch__map')) {
+      clearMaps();
+      active.parentElement.classList.add('is-focused');
+    }
+  }));
+  window.addEventListener('focus', clearMaps);
+
   /* ---------- Años de experiencia (desde el año de inicio) ---------- */
   const thisYear = new Date().getFullYear();
   document.querySelectorAll('[data-desde]').forEach((el) => {
