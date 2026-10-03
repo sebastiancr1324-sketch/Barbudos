@@ -2,7 +2,7 @@
    Barbudo's Barbershop — Power sobre marca negro + rojo
    Tipografía Oswald + JetBrains Mono y radios suaves del sistema
    Power, sobre la identidad característica: fondo oscuro cálido,
-   texto marfil, acento rojo #e04032.
+   texto marfil, acento rojo #e24234.
    ============================================================ */
 
 @font-face {
@@ -40,15 +40,15 @@
 
   --ink: #ece6dc;
   --ink-2: #aca396;
-  --ink-3: #7d7467;
+  --ink-3: #898073; /* 4,5:1 sobre --bg-3 (WCAG AA) */
 
   --line: #26221d;
   --line-soft: #1d1a16;
   --line-strong: #3a342c;
 
-  --accent: #e04032;
+  --accent: #e24234; /* 4,5:1 sobre --bg-2 (WCAG AA) */
   --accent-deep: #b02a20;
-  --accent-soft: rgba(224, 64, 50, 0.14);
+  --accent-soft: rgba(226, 66, 52, 0.14);
   --danger: #e06056;
 
   --radius-sm: 4px;
