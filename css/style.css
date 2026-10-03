@@ -139,11 +139,6 @@ p { max-width: 68ch; }
 .contact__card,
 .form,
 .footer__rif,
-.hero__figure img {
-  border-radius: var(--radius-md);
-}
-
-.hero__figure::after,
 .media-grid__item {
   border-radius: var(--radius-md);
 }
@@ -441,45 +436,66 @@ p { max-width: 68ch; }
 .nav__burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
 .nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-/* ---------- Hero ---------- */
+/* ---------- Hero (pantalla completa con video) ---------- */
 .hero {
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  padding-top: calc(var(--nav-h) + clamp(1.5rem, 4vh, 2.5rem));
-  padding-bottom: clamp(3rem, 7vh, 4.5rem);
   position: relative;
+  isolation: isolate;
+  min-height: 92vh;
+  min-height: 92svh;
+  display: flex;
+  align-items: flex-end;
+  padding-top: calc(var(--nav-h) + var(--space-12));
+  padding-bottom: clamp(var(--space-12), 9vh, var(--space-24));
+  padding-inline: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
   overflow: hidden;
+  background: var(--bg);
 }
 
-.hero__grid {
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.hero__poster,
+.hero__video {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  max-width: var(--container);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: clamp(2.5rem, 6vw, 5rem);
-  align-items: center;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
 }
 
-.hero__copy {
+/* Capa --overlay sobre todo el video y, abajo a la izquierda (donde va
+   el texto), un degradado al fondo de la página para que el marfil se
+   lea aunque el frame sea claro. */
+.hero__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, var(--bg) 0%, rgba(10, 9, 9, 0.7) 35%, rgba(10, 9, 9, 0) 70%),
+    linear-gradient(to right, rgba(10, 9, 9, 0.55) 0%, rgba(10, 9, 9, 0) 65%),
+    var(--overlay);
+}
+
+.hero__inner {
+  width: 100%;
+  max-width: 820px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1.4rem;
+  gap: var(--space-6);
   justify-items: start;
   animation: heroIn 0.8s var(--ease) both;
 }
 
-.hero__brand {
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-
 .hero__title {
-  font-size: clamp(3.1rem, 8vw, 6.3rem);
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  font-weight: 700;
+  /* Más apretado, la tilde de la Ñ de "DISEÑAMOS" toca la línea de arriba */
+  line-height: 1.04;
+  letter-spacing: -0.01em;
   overflow-wrap: break-word;
 }
 
@@ -488,66 +504,85 @@ p { max-width: 68ch; }
 }
 
 .hero__sub {
-  color: var(--ink-2);
+  color: var(--ink);
   max-width: 46ch;
-  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  line-height: 1.55;
 }
 
 .hero__ctas {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.9rem;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
 }
 
-.hero__media {
-  position: relative;
-  max-width: clamp(320px, 30vw, 440px);
-  margin-left: auto;
+/* Sobre el video, el borde --line-strong casi no se ve */
+.hero .btn--ghost {
+  border-color: var(--ink-3);
+  background: rgba(10, 9, 9, 0.35);
 }
 
-.hero__figure {
-  position: relative;
-  margin: 0;
+.hero .btn--ghost:hover {
+  border-color: var(--ink);
+  background: var(--bg-3);
 }
 
-.hero__figure::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 2px solid var(--accent);
-  transform: translate(12px, 12px);
-  z-index: -1;
-  pointer-events: none;
+.btn__icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
 }
 
-.hero__figure img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  border: 1px solid var(--line-strong);
-}
-
-.hero__figure:hover img {
-  filter: saturate(1.15);
-  transition: filter 0.25s var(--ease);
-}
-
-.hero__stamp {
-  position: absolute;
-  top: -14px;
-  right: -10px;
-  transform: rotate(3deg);
-  color: var(--ink);
-  border: 2px solid var(--ink);
-  font-weight: 700;
-  font-size: 0.8125rem;
-  line-height: 1;
-  text-align: center;
+.hero__facts {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.4rem 0.55rem;
-  background: var(--bg);
+  color: var(--ink-2);
 }
+
+.hero__facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.hero__facts li + li::before {
+  content: '·';
+  color: var(--ink-3);
+}
+
+.hero__toggle {
+  position: absolute;
+  right: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
+  bottom: clamp(var(--space-12), 9vh, var(--space-24));
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--ink-3);
+  border-radius: var(--radius-md);
+  background: rgba(10, 9, 9, 0.45);
+  color: var(--ink);
+  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.hero__toggle[hidden] { display: none; }
+
+.hero__toggle:hover {
+  border-color: var(--ink);
+  background: var(--bg-3);
+}
+
+.hero__toggle-play,
+.hero__toggle.is-paused .hero__toggle-pause { display: none; }
+.hero__toggle.is-paused .hero__toggle-play { display: block; }
 
 @keyframes heroIn {
   from { opacity: 0; transform: translateY(24px); }
@@ -1390,16 +1425,6 @@ p { max-width: 68ch; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
-  .hero__grid {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-  }
-
-  .hero__media {
-    max-width: 440px;
-    margin-left: 0;
-  }
-
   .contact__grid {
     grid-template-columns: 1fr;
   }
@@ -1520,8 +1545,10 @@ p { max-width: 68ch; }
     grid-template-columns: 1fr;
   }
 
-  .hero__stamp {
-    right: 0;
+  /* En el celular el botón de pausa sube a la esquina para no tapar los datos */
+  .hero__toggle {
+    top: calc(var(--nav-h) + var(--space-4));
+    bottom: auto;
   }
 }
 
@@ -1543,8 +1570,13 @@ p { max-width: 68ch; }
     transition: none;
   }
 
-  .hero__copy {
+  .hero__inner {
     animation: none;
+  }
+
+  /* Solo el póster: sin video en movimiento */
+  .hero__video {
+    display: none;
   }
 
   /* Quieta: la lista en varias filas y una sola vez (el HTML la repite

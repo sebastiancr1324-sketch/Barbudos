@@ -17,7 +17,7 @@
     if (reduceMotion) {
       hide();
     } else {
-      const heroImg = document.querySelector('.hero__figure img');
+      const heroImg = document.querySelector('.hero__poster');
       const heroVisible = heroImg && heroImg.getBoundingClientRect().top < window.innerHeight;
       const imgReady = heroVisible && !heroImg.complete
         ? new Promise((resolve) => {
@@ -30,6 +30,33 @@
         Promise.all([imgReady, fontsReady]),
         new Promise((resolve) => setTimeout(resolve, 1500))
       ]).then(hide);
+    }
+  }
+
+  /* ---------- Hero: video de fondo y botón de pausa ----------
+     Con "reducir movimiento" el <source> ya no aplica (media query) y el
+     CSS oculta el video; aquí además se frena por si el navegador
+     ignora el atributo media. */
+  const heroVideo = document.getElementById('hero-video');
+  const heroToggle = document.getElementById('hero-toggle');
+  if (heroVideo) {
+    if (reduceMotion) {
+      heroVideo.removeAttribute('autoplay');
+      heroVideo.pause();
+    } else if (heroToggle) {
+      const sync = () => {
+        const paused = heroVideo.paused;
+        heroToggle.classList.toggle('is-paused', paused);
+        heroToggle.setAttribute('aria-label', paused ? 'Reproducir el video de fondo' : 'Pausar el video de fondo');
+      };
+      heroToggle.hidden = false;
+      heroToggle.addEventListener('click', () => {
+        if (heroVideo.paused) heroVideo.play().catch(() => {});
+        else heroVideo.pause();
+      });
+      heroVideo.addEventListener('play', sync);
+      heroVideo.addEventListener('pause', sync);
+      sync();
     }
   }
 
@@ -115,7 +142,8 @@
      El atributo poster se descarga siempre al cargar la página (~110 KB
      cada uno) aunque los videos estén muy abajo: se asigna recién cuando
      el video se acerca a la pantalla. */
-  const pageVideos = [...document.querySelectorAll('video')];
+  // El video de fondo del hero va aparte: no tiene controles ni póster diferido
+  const pageVideos = [...document.querySelectorAll('video:not(.hero__video)')];
   const posterIO = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
