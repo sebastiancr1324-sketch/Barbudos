@@ -106,12 +106,9 @@
     '.drinks',
     '.barber',
     '.branch',
-    '.hours',
-    '.media-grid__item',
-    '.video-item',
-    '.contact__row',
-    '.contact__card',
-    '.booking__info',
+    '.showcase__item',
+    '.showcase__video',
+    '.booking__aside',
     '.form'
   ];
 
