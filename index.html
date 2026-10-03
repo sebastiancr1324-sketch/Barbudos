@@ -74,6 +74,11 @@
         <span class="nav__brand-text">Barbudo's</span>
       </a>
 
+      <!-- El botón va antes que los enlaces para que, al abrir el menú, Tab entre en ellos -->
+      <button class="nav__burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
       <nav class="nav__links" id="nav-links" aria-label="Navegación principal">
         <a href="#local">El Local</a>
         <a href="#servicios">Servicios</a>
@@ -82,10 +87,6 @@
         <a href="#contacto">Contacto</a>
         <a class="nav__cta" href="#turnos">Reservar turno</a>
       </nav>
-
-      <button class="nav__burger" id="nav-burger" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menú">
-        <span></span><span></span><span></span>
-      </button>
     </div>
   </header>
 

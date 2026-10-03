@@ -62,7 +62,11 @@
       if (ev.target.closest('a')) close();
     });
     document.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Escape') close();
+      if (ev.key !== 'Escape' || !links.classList.contains('is-open')) return;
+      const focusInside = links.contains(document.activeElement);
+      close();
+      // El menú se oculta: el foco no puede quedar en un enlace invisible
+      if (focusInside) burger.focus();
     });
   }
 
