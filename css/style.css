@@ -100,12 +100,6 @@ h1, h2, h3, h4 {
 
 p { max-width: 68ch; }
 
-code {
-  font-family: var(--font-mono);
-  font-size: 0.85em;
-  color: var(--accent);
-}
-
 .mono { font-family: var(--font-mono); }
 
 /* ---------- Radios (Power) ---------- */
@@ -1534,10 +1528,18 @@ code {
     animation: none;
   }
 
+  /* Quieta: la lista en varias filas y una sola vez (el HTML la repite
+     para que la animación empalme) */
   .marquee__track {
     animation: none;
+    width: auto;
     flex-wrap: wrap;
     justify-content: center;
+    row-gap: 0.4rem;
+  }
+
+  .marquee__track > :nth-child(n + 12) {
+    display: none;
   }
 
   .preloader {
