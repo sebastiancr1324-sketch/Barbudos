@@ -1281,6 +1281,143 @@ p { max-width: 68ch; }
   text-align: center;
 }
 
+.form__hint a {
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* ---------- Turnos libres: grilla de horas ---------- */
+.slots {
+  border: 0;
+  min-width: 0;
+}
+
+.slots legend {
+  padding: 0;
+  margin-bottom: 0.45rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.slots__status {
+  font-size: 0.9375rem;
+  color: var(--ink-3);
+}
+
+.slots[aria-busy="true"] .slots__status {
+  color: var(--ink-2);
+}
+
+.slots.is-invalid .slots__status {
+  color: var(--danger);
+}
+
+.slots__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: var(--space-2);
+}
+
+.slots__grid:empty {
+  display: none;
+}
+
+/* El radio queda accesible (teclado y lector) pero invisible */
+.slots__input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.slots__btn {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.18s var(--ease), background 0.18s var(--ease), color 0.18s var(--ease);
+}
+
+.slots__btn:hover {
+  border-color: var(--ink-3);
+  background: var(--bg-4);
+}
+
+.slots__input:checked + .slots__btn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+}
+
+.slots__input:focus-visible + .slots__btn {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Reserva confirmada ---------- */
+/* .form usa display: grid, que pisaría el atributo hidden */
+.form[hidden] {
+  display: none;
+}
+
+.form--done {
+  justify-items: start;
+}
+
+.form--done:focus {
+  outline: none;
+}
+
+.done__title {
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+}
+
+.done__rows {
+  width: 100%;
+  display: grid;
+}
+
+.done__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  color: var(--ink-2);
+  border-bottom: 1px dashed var(--line);
+}
+
+.done__row dd {
+  color: var(--ink);
+  font-weight: 600;
+  text-align: right;
+}
+
+.done__row dd::first-letter {
+  text-transform: uppercase;
+}
+
+.form--done .form__hint {
+  text-align: left;
+}
+
 /* ---------- Footer ---------- */
 /* Sedes va en --bg-2: el pie vuelve a --bg, sin línea divisoria */
 .footer {

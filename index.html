@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Barbudo's Barbershop · Barbería en Valera y Carvajal</title>
-  <meta name="description" content="Barbudo's Barbershop. Más que un corte, diseñamos tu estilo. Barbería profesional en Valera y Carvajal, Edo. Trujillo, Venezuela. Reserva tu turno por WhatsApp.">
+  <meta name="description" content="Barbudo's Barbershop. Más que un corte, diseñamos tu estilo. Barbería profesional en Valera y Carvajal, Edo. Trujillo, Venezuela. Reserva tu turno en línea.">
   <meta name="author" content="Barbudo's Barbershop">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0a0909">
@@ -18,7 +18,7 @@
   <meta property="og:locale" content="es_VE">
   <meta property="og:url" content="https://sebbasv.github.io/Barbudos/">
   <meta property="og:title" content="Barbudo's Barbershop · Barbería Profesional en Valera y Carvajal">
-  <meta property="og:description" content="Más que un corte, diseñamos tu estilo. Barbería profesional en Valera y Carvajal, Edo. Trujillo, Venezuela. Reserva tu turno por WhatsApp.">
+  <meta property="og:description" content="Más que un corte, diseñamos tu estilo. Barbería profesional en Valera y Carvajal, Edo. Trujillo, Venezuela. Reserva tu turno en línea.">
   <!-- Las redes solo aceptan URL absolutas: si cambia el dominio, actualizar aquí, en canonical y en el JSON-LD -->
   <meta property="og:image" content="https://sebbasv.github.io/Barbudos/assets/img/og-image.jpg">
   <meta property="og:image:type" content="image/jpeg">
@@ -28,7 +28,7 @@
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Barbudo's Barbershop · Barbería Profesional en Trujillo">
-  <meta name="twitter:description" content="Más que un corte, diseñamos tu estilo. Reserva tu turno por WhatsApp.">
+  <meta name="twitter:description" content="Más que un corte, diseñamos tu estilo. Reserva tu turno en línea.">
   <meta name="twitter:image" content="https://sebbasv.github.io/Barbudos/assets/img/og-image.jpg">
   <meta name="twitter:image:alt" content="Barbudo's Barbershop: más que un corte, diseñamos tu estilo. El equipo frente al local en Valera.">
 
@@ -154,7 +154,7 @@
       <header class="section__head">
         <p class="eyebrow">01 — Servicios</p>
         <h2 class="section__title">Servicios del local</h2>
-        <p class="section__intro">Dos cortes de la casa, pensados para salir listo de la silla. Ambos incluyen bebida de cortesía; el valor se confirma al reservar por WhatsApp.</p>
+        <p class="section__intro">Dos cortes de la casa, pensados para salir listo de la silla. Ambos incluyen bebida de cortesía; el valor se confirma en la barbería.</p>
       </header>
 
       <!-- PRECIO Y DURACIÓN: cuando los tengas, cambia en cada tarjeta
@@ -352,7 +352,7 @@
       <header class="section__head">
         <p class="eyebrow">04 — Reserva</p>
         <h2 class="section__title">Reserva tu turno</h2>
-        <p class="section__intro">Completa el formulario y te confirmamos por WhatsApp en minutos. Si tienes dudas, escríbenos directo.</p>
+        <p class="section__intro">Elige sede, barbero y fecha, y aparta uno de los turnos libres. Si tienes dudas, escríbenos directo.</p>
       </header>
 
       <div class="booking__grid">
@@ -398,16 +398,17 @@
             </select>
           </div>
 
-          <div class="form__row">
-            <div class="form__field">
-              <label for="f-fecha">Fecha</label>
-              <input id="f-fecha" name="fecha" type="date" required>
-            </div>
-            <div class="form__field">
-              <label for="f-hora">Hora</label>
-              <input id="f-hora" name="hora" type="time" required>
-            </div>
+          <div class="form__field">
+            <label for="f-fecha">Fecha</label>
+            <input id="f-fecha" name="fecha" type="date" required>
           </div>
+
+          <!-- Los turnos libres llegan de Supabase según sede, barbero y fecha -->
+          <fieldset class="form__field slots" id="f-hora" aria-describedby="slots-status">
+            <legend>Hora</legend>
+            <p class="slots__status" id="slots-status" aria-live="polite">Elige sede y fecha para ver los turnos libres.</p>
+            <div class="slots__grid" id="slots-grid"></div>
+          </fieldset>
 
           <div class="form__field">
             <label for="f-notas">Notas (opcional)</label>
@@ -416,9 +417,17 @@
 
           <p class="form__error" id="form-error" role="alert"></p>
 
-          <button class="btn btn--primary btn--block" type="submit">Reservar turno</button>
-          <p class="form__hint">Al enviar se abre WhatsApp con tu pedido listo para confirmar. No se cobra nada por adelantado.</p>
+          <button class="btn btn--primary btn--block" type="submit" id="form-submit">Reservar turno</button>
+          <p class="form__hint">Tu turno queda apartado al instante. No se cobra nada por adelantado.</p>
         </form>
+
+        <div class="form form--done" id="booking-done" tabindex="-1" hidden>
+          <p class="eyebrow">Turno reservado</p>
+          <h3 class="done__title">¡Listo, te esperamos!</h3>
+          <dl class="done__rows" id="booking-summary"></dl>
+          <p class="form__hint">Para cambiar o cancelar el turno, escríbenos por WhatsApp al <a class="mono" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">+58 412-6938179</a>.</p>
+          <button class="btn btn--ghost btn--block" type="button" id="booking-again">Hacer otra reserva</button>
+        </div>
 
         <aside class="booking__aside" aria-label="Contacto y horario">
           <div class="booking__row">
@@ -504,6 +513,7 @@
     </div>
   </footer>
 
+  <script src="js/config.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
