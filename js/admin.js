@@ -102,7 +102,6 @@
 
   /* ---------- Turnos del día ---------- */
   const dayInput = $('day-input');
-  const sedeFilter = $('sede-filter');
   const showCancelled = $('show-cancelled');
   const list = $('list');
   const listStatus = $('list-status');
@@ -156,8 +155,7 @@
         (r.servicios && r.servicios.nombre) || 'Servicio',
         ' · ',
         (r.barberos && r.barberos.nombre) || 'Barbero',
-        r.sin_preferencia ? ' (asignado)' : '',
-        sedeFilter.value ? '' : ' · ' + r.sede
+        r.sin_preferencia ? ' (asignado)' : ''
       );
       info.append(meta);
       const tel = el('a', 'turno__tel mono', r.telefono);
@@ -190,14 +188,12 @@
     if (!fecha) return;
     $('app-title').textContent = fecha === todayISO() ? 'Hoy, ' + fechaLarga(fecha) : fechaLarga(fecha);
     const req = ++loadReq;
-    let q = sb
+    // Una sola sede (Valera): no hace falta filtrar ni mostrar la sede
+    const { data, error } = await sb
       .from('reservas')
-      .select('id, nombre, telefono, sede, fecha, hora, notas, estado, sin_preferencia, barberos(nombre), servicios(nombre)')
+      .select('id, nombre, telefono, fecha, hora, notas, estado, sin_preferencia, barberos(nombre), servicios(nombre)')
       .eq('fecha', fecha)
-      .order('hora')
-      .order('sede');
-    if (sedeFilter.value) q = q.eq('sede', sedeFilter.value);
-    const { data, error } = await q;
+      .order('hora');
     if (req !== loadReq) return;
     if (error) {
       listStatus.textContent = 'No se pudieron cargar los turnos: ' + error.message;
@@ -223,7 +219,6 @@
   };
 
   dayInput.addEventListener('change', load);
-  sedeFilter.addEventListener('change', load);
   showCancelled.addEventListener('change', load);
   $('day-prev').addEventListener('click', () => { dayInput.value = shiftDay(dayInput.value || todayISO(), -1); load(); });
   $('day-next').addEventListener('click', () => { dayInput.value = shiftDay(dayInput.value || todayISO(), 1); load(); });

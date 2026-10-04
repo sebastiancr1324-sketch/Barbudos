@@ -219,7 +219,7 @@ p { max-width: 68ch; }
 }
 
 /* Las secciones se separan alternando el fondo, sin líneas divisorias:
-   Servicios, Barberos y Sedes en --bg-2; El local y Reserva en --bg. */
+   Servicios, Barberos y Ubicación en --bg-2; El local y Reserva en --bg. */
 .services,
 .staff,
 .branches {
@@ -758,33 +758,11 @@ p { max-width: 68ch; }
   flex: none;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 1.375rem;
+  font-size: 2rem;
+  color: var(--accent-text);
   line-height: 1;
   text-align: right;
   white-space: nowrap;
-}
-
-.service__time {
-  display: block;
-  margin-top: var(--space-2);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-
-/* Mientras no haya precio publicado (ver comentario en index.html) */
-.service__price--tbd {
-  max-width: 11ch;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 0.8125rem;
-  line-height: 1.3;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: normal;
-  color: var(--ink-2);
 }
 
 .service__desc {
@@ -885,7 +863,7 @@ p { max-width: 68ch; }
 /* ---------- Barberos ---------- */
 .staff__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-6);
 }
 
@@ -924,26 +902,6 @@ p { max-width: 68ch; }
 .barber:hover .barber__img {
   filter: none;
   transform: scale(1.03);
-}
-
-/* Mientras falte el retrato: el logo sobre una superficie lisa */
-.barber__ph {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-}
-
-.barber__ph img {
-  width: 72px;
-  height: 72px;
-  opacity: 0.6;
-  filter: grayscale(0.8);
-  transition: filter 0.35s var(--ease);
-}
-
-.barber:hover .barber__ph img {
-  filter: none;
 }
 
 .barber__badge {
@@ -1022,20 +980,52 @@ p { max-width: 68ch; }
   border-color: var(--accent);
 }
 
-/* ---------- Sucursales ---------- */
-.branches__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-6);
-}
-
+/* ---------- Ubicación: una sola sede, datos a la izquierda y mapa ---------- */
 .branch {
   border: 1px solid var(--line);
   background: var(--bg-3);
   padding: var(--space-6);
   display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap: var(--space-6);
+}
+
+.branch__info {
+  display: grid;
   gap: var(--space-3);
   align-content: start;
+}
+
+.branch__rows {
+  display: grid;
+  margin-top: var(--space-2);
+}
+
+.branch__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  color: var(--ink-2);
+  border-bottom: 1px dashed var(--line);
+}
+
+.branch__row dd {
+  color: var(--ink);
+}
+
+.branch__row .mono {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.branch__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+  margin-top: var(--space-4);
 }
 
 .branch__name {
@@ -1066,8 +1056,7 @@ p { max-width: 68ch; }
 
 .branch__map {
   position: relative;
-  height: 240px;
-  margin-top: 0.4rem;
+  min-height: 340px;
   border: 1px solid var(--line);
   overflow: hidden;
   line-height: 0;
@@ -1419,7 +1408,7 @@ p { max-width: 68ch; }
 }
 
 /* ---------- Footer ---------- */
-/* Sedes va en --bg-2: el pie vuelve a --bg, sin línea divisoria */
+/* Ubicación va en --bg-2: el pie vuelve a --bg, sin línea divisoria */
 .footer {
   background: var(--bg);
   padding-top: clamp(3rem, 6vw, 4.5rem);
@@ -1517,12 +1506,6 @@ p { max-width: 68ch; }
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 1024px) {
-  .staff__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-}
 
 @media (max-width: 860px) {
   .nav__links {
@@ -1597,12 +1580,30 @@ p { max-width: 68ch; }
     width: min(100%, 420px);
   }
 
+  /* Tres barberos en dos columnas: el dueño ocupa la fila de arriba con
+     una foto apaisada (recortada desde arriba para no perder la cara) */
   .staff__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .branches__grid {
-    grid-template-columns: 1fr;
+  .barber--owner {
+    grid-column: 1 / -1;
+  }
+
+  .barber--owner .barber__photo {
+    aspect-ratio: 4 / 3;
+  }
+
+  .barber--owner .barber__img {
+    object-position: center 5%;
+  }
+
+  .branch {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .branch__map {
+    min-height: 280px;
   }
 
   .booking__grid {
@@ -1632,11 +1633,6 @@ p { max-width: 68ch; }
 
   .barber__name {
     font-size: 1.25rem;
-  }
-
-  .barber__ph img {
-    width: 56px;
-    height: 56px;
   }
 
   .service__body {

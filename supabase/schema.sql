@@ -20,7 +20,7 @@ create table if not exists public.barberos (
   nombre  text not null unique,
   -- Sedes donde atiende. Un barbero nunca tiene dos turnos a la misma
   -- hora, aunque sea en sedes distintas.
-  sedes   text[] not null default array['Valera', 'Carvajal'],
+  sedes   text[] not null default array['Valera'],
   activo  boolean not null default true,
   orden   smallint not null default 0
 );
@@ -86,10 +86,16 @@ create table if not exists public.admins (
 
 insert into public.barberos (nombre, orden) values
   ('Oswaldo Valecillos', 1),
-  ('Gabriel Hidalgo', 2),
-  ('Esteban Mendoza', 3),
-  ('José Ojeda', 4)
+  ('Esteban Mendoza', 2),
+  ('José Ojeda', 3)
 on conflict (nombre) do nothing;
+
+-- Octubre 2026: Gabriel Hidalgo ya no trabaja en la barbería y se cerró la
+-- sede Carvajal. Se da de baja (no se borra: sus turnos pasados quedan en
+-- el historial) y todos atienden solo en Valera.
+alter table public.barberos alter column sedes set default array['Valera'];
+update public.barberos set activo = false where nombre = 'Gabriel Hidalgo';
+update public.barberos set sedes = array['Valera'] where sedes <> array['Valera'];
 
 insert into public.servicios (nombre, orden) values
   ('Corte Premium', 1),
@@ -280,7 +286,7 @@ begin
 
   if char_length(v_nombre) < 2 or char_length(v_nombre) > 80
      or v_tel !~ '^\+?[0-9]{7,15}$'
-     or p_sede not in ('Valera', 'Carvajal')
+     or p_sede is distinct from 'Valera'
      or v_servicio is null
      or p_fecha is null or p_hora is null
      or char_length(coalesce(v_notas, '')) > 500 then
