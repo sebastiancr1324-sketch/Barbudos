@@ -1,0 +1,249 @@
+/* ============================================================
+   Barbudo's Barbershop — panel de reservas
+   Reutiliza tokens, botones y formularios de style.css.
+   ============================================================ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.admin {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.admin__bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: var(--nav-h);
+  padding-inline: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
+  background: var(--bg);
+  box-shadow: var(--shadow-nav);
+}
+
+.admin__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.admin__email {
+  color: var(--ink-3);
+  font-size: 0.9375rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn--sm {
+  padding: 0.55rem 0.9rem;
+  font-size: 0.8125rem;
+}
+
+.admin__main {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: var(--space-8) var(--gutter) var(--space-16);
+}
+
+.admin__title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.admin__title::first-letter {
+  text-transform: uppercase;
+}
+
+.admin__notice {
+  margin-bottom: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+/* ---------- Ingreso ---------- */
+.admin__login {
+  max-width: 440px;
+  margin: clamp(1rem, 8vh, 4rem) auto 0;
+}
+
+/* ---------- Encabezado del día ---------- */
+.admin__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.admin__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.admin__day {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.admin__input {
+  min-height: 40px;
+  padding: 0.45rem 0.75rem;
+  background: var(--bg-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+}
+
+.admin__check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.admin__check input {
+  accent-color: var(--accent);
+  width: 18px;
+  height: 18px;
+}
+
+.admin__empty {
+  color: var(--ink-3);
+}
+
+.admin__empty:empty {
+  display: none;
+}
+
+/* ---------- Lista de turnos ---------- */
+.admin__list {
+  list-style: none;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.turno {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-4) var(--space-6);
+  align-items: start;
+  padding: var(--space-4) var(--space-6);
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--line-strong);
+  border-radius: var(--radius-md);
+}
+
+.turno--pendiente { border-left-color: var(--accent); }
+.turno--confirmada { border-left-color: var(--ink); }
+.turno--completada,
+.turno--no_asistio,
+.turno--cancelada { opacity: 0.6; }
+
+.turno__hora {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.turno__info {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.turno__nombre {
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+
+.turno__meta {
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+}
+
+.turno__tel {
+  justify-self: start;
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.turno__tel:hover {
+  color: var(--ink);
+}
+
+.turno__notas {
+  margin-top: var(--space-1);
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--line-strong);
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  white-space: pre-line;
+}
+
+.turno__side {
+  display: grid;
+  justify-items: end;
+  gap: var(--space-3);
+}
+
+.turno__estado {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.turno--pendiente .turno__estado { color: var(--accent-text); }
+
+.turno__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  gap: var(--space-2);
+}
+
+@media (max-width: 640px) {
+  .admin__email { display: none; }
+
+  .turno {
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: var(--space-4);
+  }
+
+  .turno__side {
+    grid-column: 1 / -1;
+    justify-items: start;
+  }
+
+  .turno__acciones { justify-content: start; }
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de reservas · Barbudo's</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0a0909">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin">
+
+  <header class="admin__bar">
+    <a class="nav__brand" href="./" aria-label="Volver al sitio de Barbudo's">
+      <img class="nav__logo" src="assets/img/logo.svg" alt="" width="36" height="36">
+      <span class="nav__brand-text">Reservas</span>
+    </a>
+    <div class="admin__user" id="admin-user" hidden>
+      <span class="admin__email" id="admin-email"></span>
+      <button class="btn btn--ghost btn--sm" type="button" id="admin-logout">Salir</button>
+    </div>
+  </header>
+
+  <main class="admin__main">
+    <p class="admin__notice" id="admin-notice" role="alert" hidden></p>
+
+    <!-- Ingreso del personal -->
+    <section class="admin__login" id="view-login" hidden aria-labelledby="login-title">
+      <form class="form" id="login-form" novalidate>
+        <p class="eyebrow">Personal</p>
+        <h1 class="admin__title" id="login-title">Entrar al panel</h1>
+        <div class="form__field">
+          <label for="l-email">Correo</label>
+          <input id="l-email" name="email" type="email" autocomplete="username" required>
+        </div>
+        <div class="form__field">
+          <label for="l-pass">Contraseña</label>
+          <input id="l-pass" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <p class="form__error" id="login-error" role="alert"></p>
+        <button class="btn btn--primary btn--block" type="submit" id="login-submit">Entrar</button>
+      </form>
+    </section>
+
+    <!-- Turnos del día -->
+    <section class="admin__app" id="view-app" hidden aria-labelledby="app-title">
+      <div class="admin__head">
+        <div>
+          <p class="eyebrow" id="app-count">Turnos</p>
+          <h1 class="admin__title" id="app-title">Hoy</h1>
+        </div>
+        <div class="admin__tools">
+          <div class="admin__day">
+            <button class="btn btn--ghost btn--sm" type="button" id="day-prev" aria-label="Día anterior">←</button>
+            <label class="sr-only" for="day-input">Fecha</label>
+            <input class="admin__input" id="day-input" type="date">
+            <button class="btn btn--ghost btn--sm" type="button" id="day-next" aria-label="Día siguiente">→</button>
+            <button class="btn btn--ghost btn--sm" type="button" id="day-today">Hoy</button>
+          </div>
+          <label class="sr-only" for="sede-filter">Sede</label>
+          <select class="admin__input" id="sede-filter">
+            <option value="">Todas las sedes</option>
+            <option value="Valera">Sede Valera</option>
+            <option value="Carvajal">Sede Carvajal</option>
+          </select>
+          <label class="admin__check">
+            <input type="checkbox" id="show-cancelled"> Ver canceladas
+          </label>
+        </div>
+      </div>
+
+      <p class="admin__empty" id="list-status" aria-live="polite"></p>
+      <ol class="admin__list" id="list"></ol>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

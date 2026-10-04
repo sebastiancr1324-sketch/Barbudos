@@ -149,12 +149,34 @@
     });
   }
 
-  /* ---------- Formulario de turnos → WhatsApp ---------- */
+  /* ---------- Formulario de turnos → Supabase ----------
+     Sin librería: el sitio solo llama a dos funciones RPC públicas
+     (turnos_disponibles y crear_reserva, en supabase/schema.sql). La
+     base de datos impide que dos personas tomen el mismo turno. */
   const form = document.getElementById('booking-form');
   if (form) {
-    const WA_NUMBER = '584126938179';
+    const cfg = window.BARBUDOS_CONFIG || {};
+    const apiKey = cfg.supabaseAnonKey || '';
+    const apiBase = cfg.supabaseUrl && apiKey ? cfg.supabaseUrl.replace(/\/+$/, '') + '/rest/v1/rpc/' : null;
+
+    const rpc = async (fn, body) => {
+      const headers = { apikey: apiKey, 'Content-Type': 'application/json' };
+      // Las claves anon antiguas son JWT y van también como Bearer; las
+      // nuevas "publishable" (sb_publishable_…) solo en apikey
+      if (apiKey.startsWith('eyJ')) headers.Authorization = 'Bearer ' + apiKey;
+      const res = await fetch(apiBase + fn, { method: 'POST', headers, body: JSON.stringify(body) });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error((data && data.message) || 'http_' + res.status);
+      return data;
+    };
 
     const field = (id) => document.getElementById(id);
+    const slotsBox = field('f-hora');
+    const slotsGrid = field('slots-grid');
+    const slotsStatus = field('slots-status');
+    const submitBtn = field('form-submit');
+    const errorEl = field('form-error');
+    const done = field('booking-done');
 
     const setInvalid = (el, bad) => {
       el.classList.toggle('is-invalid', bad);
@@ -162,50 +184,13 @@
       else el.removeAttribute('aria-invalid');
     };
 
-    const validate = () => {
-      const checks = [
-        [field('f-nombre'), field('f-nombre').value.trim() !== '', 'Escribe tu nombre para poder reservar.'],
-        [field('f-tel'), field('f-tel').value.trim().length >= 7, 'Escribe un teléfono válido para confirmarte el turno.'],
-        [field('f-sede'), field('f-sede').value !== '', 'Selecciona la sede donde quieres el turno.'],
-        [field('f-servicio'), field('f-servicio').value !== '', 'Selecciona el servicio que quieres.'],
-        [field('f-fecha'), field('f-fecha').value !== '', 'Elige la fecha.'],
-        [field('f-hora'), field('f-hora').value !== '', 'Elige la hora.']
-      ];
-
-      let firstBad = null;
-      checks.forEach(([el, ok, msg]) => {
-        setInvalid(el, !ok);
-        if (!ok && !firstBad) firstBad = { el, msg };
-      });
-
-      const fecha = field('f-fecha');
-      if (!firstBad && fecha.value) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const chosen = new Date(fecha.value + 'T00:00:00');
-        const past = chosen < today;
-        setInvalid(fecha, past);
-        if (past) firstBad = { el: fecha, msg: 'La fecha no puede ser anterior a hoy.' };
-      }
-
-      return firstBad;
+    const barberoElegido = () => {
+      const v = field('f-barbero').value;
+      return v === 'Sin preferencia' ? null : v;
     };
-
-    const buildMessage = () => {
-      const val = (id) => field(id).value.trim();
-      const lines = [
-        'Hola Barbudo\u0027s Barbershop, quiero reservar un turno:',
-        '',
-        '• Nombre: ' + val('f-nombre'),
-        '• Teléfono: ' + val('f-tel'),
-        '• Sede: ' + val('f-sede'),
-        '• Barbero: ' + val('f-barbero'),
-        '• Servicio: ' + val('f-servicio'),
-        '• Fecha: ' + val('f-fecha').split('-').reverse().join('/'),
-        '• Hora: ' + val('f-hora')
-      ];
-      if (val('f-notas')) lines.push('• Notas: ' + val('f-notas'));
-      return lines.join('\n');
+    const horaElegida = () => {
+      const r = slotsGrid.querySelector('input:checked');
+      return r ? r.value : '';
     };
 
     // Fecha de hoy en hora local (toISOString usa UTC: en Venezuela,
@@ -213,31 +198,173 @@
     const now = new Date();
     const pad = (n) => String(n).padStart(2, '0');
     const todayISO = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
-    const fechaInput = field('f-fecha');
-    if (fechaInput) fechaInput.min = todayISO;
+    field('f-fecha').min = todayISO;
 
-    form.addEventListener('submit', (ev) => {
+    const fechaLarga = (iso) =>
+      new Date(iso + 'T00:00:00').toLocaleDateString('es-VE', { weekday: 'long', day: 'numeric', month: 'long' });
+
+    /* ----- Turnos libres ----- */
+    let slotsReq = 0;
+    const loadSlots = async () => {
+      const sede = field('f-sede').value;
+      const fecha = field('f-fecha').value;
+      const previa = horaElegida();
+      const req = ++slotsReq;
+      slotsGrid.replaceChildren();
+      setInvalid(slotsBox, false);
+
+      if (!apiBase) {
+        slotsStatus.textContent = 'Las reservas en línea aún no están activas. Escríbenos por WhatsApp para apartar tu turno.';
+        return;
+      }
+      if (!sede || !fecha) {
+        slotsStatus.textContent = 'Elige sede y fecha para ver los turnos libres.';
+        return;
+      }
+      if (fecha < todayISO) {
+        slotsStatus.textContent = 'La fecha no puede ser anterior a hoy.';
+        return;
+      }
+
+      slotsBox.setAttribute('aria-busy', 'true');
+      slotsStatus.textContent = 'Buscando turnos libres…';
+      try {
+        const rows = await rpc('turnos_disponibles', { p_fecha: fecha, p_sede: sede, p_barbero: barberoElegido() });
+        if (req !== slotsReq) return; // llegó tarde: ya se pidió otra combinación
+        if (!rows.length) {
+          slotsStatus.textContent = 'No hay turnos disponibles ese día. Prueba con otra fecha u otro barbero.';
+          return;
+        }
+        rows.forEach(({ hora }, i) => {
+          const value = hora.slice(0, 5); // "08:45:00" → "08:45"
+          const id = 'slot-' + i;
+          const input = document.createElement('input');
+          Object.assign(input, { type: 'radio', name: 'hora', id, value, className: 'slots__input' });
+          if (value === previa) input.checked = true;
+          const label = document.createElement('label');
+          label.htmlFor = id;
+          label.className = 'slots__btn mono';
+          label.textContent = value;
+          slotsGrid.append(input, label);
+        });
+        slotsStatus.textContent = rows.length === 1 ? 'Queda 1 turno libre:' : 'Quedan ' + rows.length + ' turnos libres:';
+      } catch (err) {
+        if (req !== slotsReq) return;
+        slotsStatus.textContent = 'No pudimos cargar los turnos. Revisa tu conexión e inténtalo de nuevo.';
+      } finally {
+        if (req === slotsReq) slotsBox.removeAttribute('aria-busy');
+      }
+    };
+
+    ['f-sede', 'f-barbero', 'f-fecha'].forEach((id) => field(id).addEventListener('change', loadSlots));
+    loadSlots();
+
+    /* ----- Validación ----- */
+    const validate = () => {
+      const tel = field('f-tel').value.replace(/[^0-9]/g, '');
+      const checks = [
+        [field('f-nombre'), field('f-nombre').value.trim().length >= 2, 'Escribe tu nombre para poder reservar.'],
+        [field('f-tel'), tel.length >= 7 && tel.length <= 15, 'Escribe un teléfono válido para contactarte.'],
+        [field('f-sede'), field('f-sede').value !== '', 'Selecciona la sede donde quieres el turno.'],
+        [field('f-servicio'), field('f-servicio').value !== '', 'Selecciona el servicio que quieres.'],
+        [field('f-fecha'), field('f-fecha').value >= todayISO, field('f-fecha').value ? 'La fecha no puede ser anterior a hoy.' : 'Elige la fecha.'],
+        [slotsBox, horaElegida() !== '', 'Elige uno de los turnos libres.']
+      ];
+
+      let firstBad = null;
+      checks.forEach(([el, ok, msg]) => {
+        setInvalid(el, !ok);
+        if (!ok && !firstBad) firstBad = { el: el === slotsBox ? slotsGrid.querySelector('input') || field('f-fecha') : el, msg };
+      });
+      return firstBad;
+    };
+
+    const ERRORES = {
+      turno_ocupado: 'Ese turno se acaba de ocupar. Elige otro de la lista.',
+      fuera_de_horario: 'Ese turno ya no está disponible. Elige otro de la lista.',
+      demasiados_turnos: 'Ya tienes varios turnos apartados con este teléfono. Escríbenos por WhatsApp si necesitas otro.',
+      datos_invalidos: 'Revisa los datos del formulario e inténtalo de nuevo.'
+    };
+
+    const showDone = (r) => {
+      const rows = [
+        ['Sede', 'Sede ' + r.sede],
+        ['Barbero', r.barbero],
+        ['Servicio', field('f-servicio').value],
+        ['Fecha', fechaLarga(r.fecha)],
+        ['Hora', r.hora]
+      ];
+      field('booking-summary').replaceChildren(
+        ...rows.map(([k, v]) => {
+          const row = document.createElement('div');
+          row.className = 'done__row';
+          const dt = document.createElement('dt');
+          dt.textContent = k;
+          const dd = document.createElement('dd');
+          dd.textContent = v;
+          if (k === 'Hora') dd.className = 'mono';
+          row.append(dt, dd);
+          return row;
+        })
+      );
+      form.hidden = true;
+      done.hidden = false;
+      done.focus();
+    };
+
+    form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
-      form.classList.remove('is-sent');
       const error = validate();
-      const errorEl = document.getElementById('form-error');
-
       if (error) {
         errorEl.textContent = error.msg;
         error.el.focus();
         return;
       }
+      if (!apiBase) {
+        errorEl.textContent = 'Las reservas en línea aún no están activas. Escríbenos por WhatsApp para apartar tu turno.';
+        return;
+      }
 
       errorEl.textContent = '';
-      const msg = encodeURIComponent(buildMessage());
-      window.open('https://wa.me/' + WA_NUMBER + '?text=' + msg, '_blank', 'noopener');
-      form.classList.add('is-sent');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Reservando…';
+      try {
+        const res = await rpc('crear_reserva', {
+          p_nombre: field('f-nombre').value.trim(),
+          p_telefono: field('f-tel').value.trim(),
+          p_sede: field('f-sede').value,
+          p_barbero: barberoElegido(),
+          p_servicio: field('f-servicio').value,
+          p_fecha: field('f-fecha').value,
+          p_hora: horaElegida(),
+          p_notas: field('f-notas').value.trim() || null
+        });
+        showDone(res);
+      } catch (err) {
+        const code = Object.keys(ERRORES).find((k) => err.message.includes(k));
+        errorEl.textContent = code ? ERRORES[code] : 'No pudimos guardar la reserva. Revisa tu conexión e inténtalo de nuevo.';
+        if (code === 'turno_ocupado' || code === 'fuera_de_horario') loadSlots();
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Reservar turno';
+      }
+    });
+
+    // Otra reserva: se conservan nombre y teléfono
+    field('booking-again').addEventListener('click', () => {
+      const keep = { nombre: field('f-nombre').value, tel: field('f-tel').value };
+      form.reset();
+      field('f-nombre').value = keep.nombre;
+      field('f-tel').value = keep.tel;
+      done.hidden = true;
+      form.hidden = false;
+      loadSlots();
+      field('f-sede').focus();
     });
 
     form.addEventListener('input', (ev) => {
-      if (ev.target.classList.contains('is-invalid')) {
-        setInvalid(ev.target, false);
-      }
+      const el = ev.target.name === 'hora' ? slotsBox : ev.target;
+      if (el.classList.contains('is-invalid')) setInvalid(el, false);
     });
 
     /* "Reservar" de cada barbero y "Reservar este corte": el enlace baja
@@ -245,8 +372,10 @@
        servicio. Sin JS, el enlace igual lleva al formulario. */
     const preselect = (select, value) => {
       if (!select || ![...select.options].some((o) => o.value === value)) return;
+      const changed = select.value !== value;
       select.value = value;
       setInvalid(select, false);
+      if (changed) select.dispatchEvent(new Event('change'));
     };
     document.addEventListener('click', (ev) => {
       const link = ev.target.closest('[data-barbero], [data-servicio]');
