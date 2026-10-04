@@ -7,6 +7,6 @@
    Nunca pongas aquí la service_role / secret key.
    ============================================================ */
 window.BARBUDOS_CONFIG = {
-  supabaseUrl: '',
-  supabaseAnonKey: ''
+  supabaseUrl: 'https://zmxarsxyrczdnkvmjpny.supabase.co',
+  supabaseAnonKey: 'sb_publishable_INh5152-narJrdeUJKyxkw_Nz3q0WT_'
 };
