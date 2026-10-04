@@ -218,7 +218,7 @@
         return;
       }
       if (!sede || !fecha) {
-        slotsStatus.textContent = 'Elige sede y fecha para ver los turnos libres.';
+        slotsStatus.textContent = 'Elige una fecha para ver los turnos libres.';
         return;
       }
       if (fecha < todayISO) {
@@ -256,7 +256,8 @@
       }
     };
 
-    ['f-sede', 'f-barbero', 'f-fecha'].forEach((id) => field(id).addEventListener('change', loadSlots));
+    // La sede es un campo oculto (una sola sede): no cambia, no se escucha
+    ['f-barbero', 'f-fecha'].forEach((id) => field(id).addEventListener('change', loadSlots));
     loadSlots();
 
     /* ----- Validación ----- */
@@ -265,7 +266,6 @@
       const checks = [
         [field('f-nombre'), field('f-nombre').value.trim().length >= 2, 'Escribe tu nombre para poder reservar.'],
         [field('f-tel'), tel.length >= 7 && tel.length <= 15, 'Escribe un teléfono válido para contactarte.'],
-        [field('f-sede'), field('f-sede').value !== '', 'Selecciona la sede donde quieres el turno.'],
         [field('f-servicio'), field('f-servicio').value !== '', 'Selecciona el servicio que quieres.'],
         [field('f-fecha'), field('f-fecha').value >= todayISO, field('f-fecha').value ? 'La fecha no puede ser anterior a hoy.' : 'Elige la fecha.'],
         [slotsBox, horaElegida() !== '', 'Elige uno de los turnos libres.']
@@ -359,7 +359,7 @@
       done.hidden = true;
       form.hidden = false;
       loadSlots();
-      field('f-sede').focus();
+      field('f-barbero').focus();
     });
 
     form.addEventListener('input', (ev) => {
