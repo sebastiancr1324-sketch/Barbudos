@@ -93,25 +93,40 @@
   if (!reduceMotion && "IntersectionObserver" in window) {
     try {
       const revealEls = [...document.querySelectorAll(revealSelectors.join(","))];
+      // Los elementos de un grupo (el mosaico del local) aparecen todos a la vez
+      // cuando el grupo entra en pantalla, sin escalonado.
+      const groupOf = (el) => el.closest(".showcase");
       const io = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.classList.add("is-in");
+              const targets = entry.target.matches(".showcase")
+                ? entry.target.querySelectorAll(".reveal")
+                : [entry.target];
+              targets.forEach((t) => t.classList.add("is-in"));
               io.unobserve(entry.target);
             }
           });
         },
         { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
       );
+      const groups = new Set();
       revealEls.forEach((el) => {
-        const sib = el.parentElement ? [...el.parentElement.children] : [el];
-        el.style.setProperty("--rd", String(Math.min(sib.indexOf(el), 6)));
+        const group = groupOf(el);
+        if (group) {
+          el.style.setProperty("--rd", "0");
+          groups.add(group);
+        } else {
+          const sib = el.parentElement ? [...el.parentElement.children] : [el];
+          el.style.setProperty("--rd", String(Math.min(sib.indexOf(el), 6)));
+          io.observe(el);
+        }
         // Lo que ya está en pantalla al cargar no se esconde
-        if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add("is-in");
+        const top = (group || el).getBoundingClientRect().top;
+        if (top < window.innerHeight) el.classList.add("is-in");
         el.classList.add("reveal");
-        io.observe(el);
       });
+      groups.forEach((g) => io.observe(g));
       document.documentElement.classList.add("reveal-on");
       // Al imprimir, todo visible
       window.addEventListener("beforeprint", () => revealEls.forEach((el) => el.classList.add("is-in")));
