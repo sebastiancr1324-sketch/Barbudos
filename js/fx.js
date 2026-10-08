@@ -268,33 +268,35 @@ async function buildIntro(section, tl) {
 }
 
 /* ---------- Techo 3D del hero ----------
-   Solo si el equipo lo aguanta: WebGL2 y más de 4 núcleos y de 4 GB (si
-   el navegador no informa la memoria, cuenta como suficiente). Se pide
-   cuando el navegador está libre; mientras tanto, y si algo falla, queda
-   la foto. Al estar listo, el canvas aparece sobre la foto y los tubos se
-   encienden en cascada. */
+   Primer filtro (aquí): WebGL2, sin "ahorro de datos" y, si el navegador
+   informa la memoria (Chrome), más de 2 GB. Los núcleos no se miran:
+   Safari informa menos de los que hay y dejaba afuera a los iPhone. El
+   filtro de verdad lo hace hex3d.js: mide la GPU antes de mostrarse y,
+   si no va fluido, se rinde. Mientras tanto, y si algo falla, queda la
+   foto. Se arma detrás del preloader, que espera a que esté listo (ver
+   start()); los tubos se encienden cuando se abre la cortina. */
+const hex3d = () => import('./hex3d.js?v=6');
+
 function can3D() {
-  const weak = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
-  return !weak && 'WebGL2RenderingContext' in window;
+  const memory = navigator.deviceMemory;
+  const saveData = navigator.connection && navigator.connection.saveData;
+  return 'WebGL2RenderingContext' in window && !saveData && !(memory && memory < 4);
 }
 
-function load3D(section) {
-  const bg = section && section.querySelector('.hero__bg');
-  if (!bg || !can3D()) return;
-  const run = async () => {
-    try {
-      const { createHexCeiling } = await import('./hex3d.js?v=5');
-      // Celular o pantalla táctil: calidad baja (menos hexágonos, sin bloom)
-      const lite = window.matchMedia('(max-width: 540px), (pointer: coarse)').matches;
-      const ceiling = await createHexCeiling(bg, { lite });
-      bg.classList.add('is-3d');
-      ceiling.ignite();
-    } catch (err) {
-      // sin 3D: queda la foto de respaldo
-    }
-  };
-  if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout: 1500 });
-  else setTimeout(run, 200);
+// Devuelve el techo listo (canvas visible, tubos apagados) o null
+async function load3D(section) {
+  const bg = section.querySelector('.hero__bg');
+  if (!bg) return null;
+  try {
+    const { createHexCeiling } = await hex3d();
+    // Celular o pantalla táctil: calidad baja (menos hexágonos, menos resolución)
+    const lite = window.matchMedia('(max-width: 540px), (pointer: coarse)').matches;
+    const ceiling = await createHexCeiling(bg, { lite });
+    bg.classList.add('is-3d');
+    return ceiling;
+  } catch (err) {
+    return null; // sin 3D (o la GPU no da): queda la foto de respaldo
+  }
 }
 
 /* ---------- Servicios ---------- */
@@ -422,16 +424,17 @@ function initGallery(mm) {
 
 /* ---------- Poste de barbero ----------
    El 3D (js/pole3d.js) se pide cuando el separador está por llegar a la
-   pantalla, y solo si el equipo aguanta; si no, queda el SVG. */
-function loadPole() {
+   pantalla, y solo si el techo del hero pudo (con su misma resolución);
+   si no, queda el SVG. */
+function loadPole(ceiling) {
   const el = document.querySelector('[data-fx-pole]');
-  if (!el || !can3D()) return;
+  if (!el || !ceiling || !ceiling.alive()) return;
   const io = new IntersectionObserver(async ([entry]) => {
     if (!entry.isIntersecting) return;
     io.disconnect();
     try {
-      const { createPole } = await import('./pole3d.js?v=2');
-      await createPole(el);
+      const { createPole } = await import('./pole3d.js?v=3');
+      await createPole(el, { pixelRatio: ceiling.pixelRatio() });
       el.classList.add('is-3d');
     } catch (err) {
       // sin 3D: queda el SVG
@@ -626,7 +629,9 @@ function initAnchors(lenis) {
    El anillo y el contador avanzan de 0 a 100 en 1,4 s como máximo, contados
    desde que el preloader se pintó. Si la página está lista antes, terminan
    enseguida (nunca antes de 0,8 s, para que se lea); si vino de la caché,
-   todo dura 0,4 s. Al llegar a 100 se abre la cortina (CSS). */
+   todo dura 0,4 s. Al llegar a 100 se abre la cortina (CSS).
+   Con hold (el equipo va a armar el 3D) no hay máximo: el contador se
+   acerca a 90 cada vez más lento y completa recién con finish(). */
 
 // ¿La página vino de la caché? Recarga, volver atrás o visita reciente: el
 // documento llegó sin volver a bajar su contenido (0 bytes o un 304).
@@ -637,7 +642,7 @@ function fromCache() {
     (nav.encodedBodySize > 0 && nav.transferSize < nav.encodedBodySize);
 }
 
-function startPreloader(el) {
+function startPreloader(el, { hold = false } = {}) {
   // fx.js llegó tan tarde que el respaldo del CSS ya lo está retirando
   if (parseFloat(getComputedStyle(el).opacity) < 1) {
     el.remove();
@@ -674,7 +679,7 @@ function startPreloader(el) {
   firstPaint.then((t) => {
     t0 = t;
     minEnd = t0 + (cached ? 400 : 800);
-    end = t0 + (cached ? 400 : 1400);
+    end = hold ? Infinity : t0 + (cached ? 400 : 1400);
     from = { t: t0, p: 0 };
     if (ready) shorten();
   });
@@ -705,7 +710,9 @@ function startPreloader(el) {
 
   const tick = (now) => {
     if (t0 !== null) {
-      const linear = now >= end ? 1 : from.p + (1 - from.p) * ((now - from.t) / (end - from.t));
+      const linear = end === Infinity
+        ? 0.9 * (1 - Math.exp(-(now - t0) / (cached ? 500 : 1000)))
+        : now >= end ? 1 : from.p + (1 - from.p) * ((now - from.t) / (end - from.t));
       p = Math.min(1, Math.max(p, linear));
       if (bar) bar.style.strokeDashoffset = length * (1 - p);
       if (count) count.textContent = Math.round(p * 100);
@@ -719,9 +726,19 @@ function startPreloader(el) {
 }
 
 /* ---------- Arranque ---------- */
+// Tope de espera del 3D detrás del preloader (red lenta): pasado este
+// tiempo se abre igual con la foto, y el techo aparece cuando llegue
+const WAIT_3D = 3500;
+
 async function start() {
-  const preloader = preloaderEl ? startPreloader(preloaderEl) : null;
+  const hero = document.querySelector('[data-fx-intro]');
+  const want3D = Boolean(hero && can3D());
+  const preloader = preloaderEl ? startPreloader(preloaderEl, { hold: want3D }) : null;
   await firstPaint;
+
+  // three.js se empieza a bajar junto con GSAP (el techo se arma después,
+  // cuando ScrollTrigger ya está registrado)
+  if (want3D) hex3d().catch(() => {});
 
   try {
     const [core, st, split, lenis] = await Promise.all([
@@ -753,16 +770,23 @@ async function start() {
   }
   initTilt({ mouse: finePointer });
 
-  const hero = document.querySelector('[data-fx-intro]');
+  // El techo 3D se arma ya, detrás del preloader
+  const ceiling = want3D ? load3D(hero) : Promise.resolve(null);
+
   if (preloader && !preloader.opened) {
     const intro = hero ? gsap.timeline({ paused: true }) : null;
     if (intro) await buildIntro(hero, intro);
+    // Si el equipo arma el 3D, la cortina espera a que esté listo
+    await Promise.race([ceiling, wait(WAIT_3D)]);
     preloader.finish();
     await preloader.opening;
-    // El hero arranca cuando la cortina empieza a correrse
-    if (intro) gsap.delayedCall(preloader.cached ? 0.2 : 0.4, () => intro.play());
+    // El hero y los tubos arrancan cuando la cortina empieza a correrse
+    const delay = preloader.cached ? 0.2 : 0.4;
+    if (intro) gsap.delayedCall(delay, () => intro.play());
+    ceiling.then((c) => c && gsap.delayedCall(delay, c.ignite));
     initReveals();
   } else {
+    ceiling.then((c) => c && c.ignite());
     initReveals({ late: true });
   }
 
@@ -777,9 +801,8 @@ async function start() {
   ScrollTrigger.sort();
   ScrollTrigger.refresh();
 
-  // El 3D, después del contenido
-  load3D(hero);
-  loadPole();
+  // El poste, si el techo pudo con el 3D
+  ceiling.then(loadPole);
 }
 
 if (reduceMotion) {

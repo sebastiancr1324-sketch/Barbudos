@@ -2,21 +2,24 @@
    Barbudo's Barbershop — poste de barbero en 3D (separador)
 
    Lo carga js/fx.js con import() cuando el separador se acerca a la
-   pantalla, y solo si el equipo aguanta el 3D. Si algo falla, queda el
-   SVG de respaldo.
+   pantalla, y solo si el techo del hero pudo con el 3D. Si algo falla,
+   queda el SVG de respaldo.
 
    Un cilindro corto con franjas en diagonal (rojo, marfil y negro) y
-   tapas cromadas (metal con un entorno simple, RoomEnvironment). Gira
-   con el scroll: la rotación va atada al recorrido del separador por la
-   pantalla (scrub). Solo dibuja cuando gira y con el poste en pantalla.
+   tapas cromadas. La luz y los reflejos son "matcaps": una esfera
+   pintada en un canvas que da el color según hacia dónde mira cada
+   punto. Sin luces ni entorno que calcular (antes: RoomEnvironment +
+   PMREM, que pedían un módulo más y varias pasadas de GPU al cargar).
+   Gira con el scroll: la rotación va atada al recorrido del separador
+   por la pantalla (scrub). Solo dibuja cuando gira y con el poste en
+   pantalla.
    ============================================================ */
 
 import {
-  WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, PMREMGenerator,
-  CylinderGeometry, SphereGeometry, TorusGeometry, MeshStandardMaterial,
+  WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh,
+  CylinderGeometry, SphereGeometry, TorusGeometry, MeshMatcapMaterial,
   CanvasTexture, RepeatWrapping, SRGBColorSpace, NeutralToneMapping
 } from 'three';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { gsap } from 'gsap';
 
 const RED = '#e24234';
@@ -57,48 +60,95 @@ function stripes() {
   return texture;
 }
 
-export async function createPole(container) {
+// Matcap: una esfera iluminada pintada en 2D. paint(ctx, size) dibuja
+// sobre el círculo ya recortado.
+function matcap(paint) {
+  const size = 128;
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+  ctx.clip();
+  paint(ctx, size);
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return texture;
+}
+
+// Acrílico: blanco que cae a gris en los bordes y un brillo arriba a la izquierda
+const acrylic = () => matcap((ctx, s) => {
+  const base = ctx.createRadialGradient(s * 0.45, s * 0.4, 0, s / 2, s / 2, s / 2);
+  base.addColorStop(0, '#ffffff');
+  base.addColorStop(0.7, '#d8d4ce');
+  base.addColorStop(1, '#6f6b66');
+  ctx.fillStyle = base;
+  ctx.fillRect(0, 0, s, s);
+  const spot = ctx.createRadialGradient(s * 0.32, s * 0.28, 0, s * 0.32, s * 0.28, s * 0.18);
+  spot.addColorStop(0, 'rgba(255,255,255,0.9)');
+  spot.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = spot;
+  ctx.fillRect(0, 0, s, s);
+});
+
+// Cromo: cielo claro arriba, horizonte oscuro, piso medio y un reflejo duro
+const chromeCap = () => matcap((ctx, s) => {
+  const sky = ctx.createLinearGradient(0, 0, 0, s);
+  sky.addColorStop(0, '#f4f1ec');
+  sky.addColorStop(0.42, '#a9a59f');
+  sky.addColorStop(0.5, '#2a2725');
+  sky.addColorStop(0.6, '#56524d');
+  sky.addColorStop(1, '#bdb8b1');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, s, s);
+  const rim = ctx.createRadialGradient(s / 2, s / 2, s * 0.36, s / 2, s / 2, s / 2);
+  rim.addColorStop(0, 'rgba(0,0,0,0)');
+  rim.addColorStop(1, 'rgba(0,0,0,0.55)');
+  ctx.fillStyle = rim;
+  ctx.fillRect(0, 0, s, s);
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.beginPath();
+  ctx.ellipse(s * 0.34, s * 0.26, s * 0.1, s * 0.05, -0.5, 0, Math.PI * 2);
+  ctx.fill();
+});
+
+export async function createPole(container, { pixelRatio = 1.5 } = {}) {
   const canvas = document.createElement('canvas');
   canvas.className = 'pole__canvas';
   canvas.setAttribute('aria-hidden', 'true');
 
   const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, failIfMajorPerformanceCaveat: true });
   renderer.debug.checkShaderErrors = false;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, pixelRatio));
   renderer.toneMapping = NeutralToneMapping;
   container.appendChild(canvas);
 
   const scene = new Scene();
-  // Entorno simple para que el cromo tenga qué reflejar
-  const pmrem = new PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  pmrem.dispose();
-
   const camera = new PerspectiveCamera(26, 1, 0.1, 50);
   camera.position.set(0, 0.15, 9.5);
   camera.lookAt(0, 0, 0);
 
-  const chrome = new MeshStandardMaterial({ color: 0xdedad4, metalness: 1, roughness: 0.18 });
+  const chrome = new MeshMatcapMaterial({ matcap: chromeCap() });
   const pole = new Group();
 
   // Cuerpo con las franjas (y un toque de brillo, como el acrílico del poste)
   const body = new Mesh(
-    new CylinderGeometry(0.55, 0.55, 3, 64, 1, true),
-    new MeshStandardMaterial({ map: stripes(), roughness: 0.32, metalness: 0 })
+    new CylinderGeometry(0.55, 0.55, 3, 48, 1, true),
+    new MeshMatcapMaterial({ map: stripes(), matcap: acrylic() })
   );
   pole.add(body);
 
   // Tapas cromadas: aro, cilindro y una cúpula arriba
   [1.5, -1.5].forEach((y) => {
-    const cap = new Mesh(new CylinderGeometry(0.7, 0.7, 0.32, 64), chrome);
+    const cap = new Mesh(new CylinderGeometry(0.7, 0.7, 0.32, 48), chrome);
     cap.position.y = y + Math.sign(y) * 0.16;
     pole.add(cap);
-    const ring = new Mesh(new TorusGeometry(0.62, 0.05, 16, 64), chrome);
+    const ring = new Mesh(new TorusGeometry(0.62, 0.05, 12, 48), chrome);
     ring.rotation.x = Math.PI / 2;
     ring.position.y = y;
     pole.add(ring);
   });
-  const dome = new Mesh(new SphereGeometry(0.45, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2), chrome);
+  const dome = new Mesh(new SphereGeometry(0.45, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), chrome);
   dome.position.y = 1.82;
   pole.add(dome);
   pole.rotation.z = 0.04;
