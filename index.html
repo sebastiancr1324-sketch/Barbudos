@@ -42,7 +42,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap">
 
   <!-- ?v=N: subir el número al cambiar CSS o JS, para que el navegador no use la copia vieja -->
-  <link rel="stylesheet" href="css/style.css?v=19">
+  <link rel="stylesheet" href="css/style.css?v=20">
   <noscript><style>.preloader { display: none; }</style></noscript>
 
   <!-- Librerías de animación y 3D por CDN, con versión fija. js/fx.js las pide
@@ -186,29 +186,6 @@
            total, WCAG 2.2.2) y queda llena -->
       <span class="hero__scroll" aria-hidden="true"></span>
     </section>
-
-    <!-- Franja decorativa: el texto repite datos que ya están en la página,
-         por eso va oculto para lectores de pantalla. fx.js la duplica para
-         que no tenga cortes y la mueve (más rápido y al revés según el
-         scroll). Se mueve más de 5 s: botón para pausarla (WCAG 2.2.2). -->
-    <div class="marquee" data-fx-marquee>
-      <svg class="marquee__defs" width="0" height="0" aria-hidden="true" focusable="false">
-        <symbol id="hexagono" viewBox="0 0 24 24"><path d="M12 2.5 20.5 7.25v9.5L12 21.5l-8.5-4.75v-9.5z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
-      </svg>
-      <div class="marquee__track" aria-hidden="true">
-        <div class="marquee__group">
-          <span class="marquee__word">Corte</span><svg class="marquee__hex"><use href="#hexagono"/></svg>
-          <span class="marquee__word">Barba</span><svg class="marquee__hex"><use href="#hexagono"/></svg>
-          <span class="marquee__word is-fill">Diseño</span><svg class="marquee__hex"><use href="#hexagono"/></svg>
-          <span class="marquee__word">Valera</span><svg class="marquee__hex"><use href="#hexagono"/></svg>
-          <span class="marquee__word">Est. 2021</span><svg class="marquee__hex"><use href="#hexagono"/></svg>
-        </div>
-      </div>
-      <button class="marquee__toggle" type="button" aria-label="Pausar la franja animada" hidden>
-        <svg class="marquee__toggle-pause" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-        <svg class="marquee__toggle-play" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path d="M7 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 7 5.5z"/></svg>
-      </button>
-    </div>
 
     <section class="section services" id="servicios">
       <header class="section__head">
@@ -787,6 +764,6 @@
 
   <script src="js/config.js?v=4" defer></script>
   <script src="js/main.js?v=9" defer></script>
-  <script type="module" src="js/fx.js?v=10"></script>
+  <script type="module" src="js/fx.js?v=11"></script>
 </body>
 </html>

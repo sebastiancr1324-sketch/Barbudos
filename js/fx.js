@@ -23,7 +23,6 @@
      data-fx-neon      texto con brillo de neón (--neon en el CSS) que se
                        prende con parpadeo al terminar su título
      data-fx-magnetic  botón que sigue un poco al mouse (solo puntero fino)
-     data-fx-marquee   franja que se mueve sola y responde al scroll
      data-fx-parallax  foto que se corre de -10 % a 10 % dentro de su marco
      data-fx-gallery   galería horizontal (fijada en escritorio)
      data-fx-pole      separador con el poste de barbero (3D o SVG)
@@ -296,62 +295,6 @@ function load3D(section) {
   };
   if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout: 1500 });
   else setTimeout(run, 200);
-}
-
-/* ---------- Franja (marquee) ----------
-   Se mueve sola a velocidad constante. El scroll la acelera según su
-   velocidad (getVelocity) y le marca la dirección: bajando va a la
-   izquierda, subiendo a la derecha. Se detiene fuera de pantalla y con su
-   botón de pausa. */
-function initMarquee() {
-  const el = document.querySelector('[data-fx-marquee]');
-  if (!el) return;
-  const track = el.querySelector('.marquee__track');
-  const group = track.querySelector('.marquee__group');
-  const toggle = el.querySelector('.marquee__toggle');
-
-  // Copias: media pista tiene que cubrir la pantalla más ancha posible; la
-  // otra mitad es igual, para que el salto al volver a empezar no se note
-  const copies = Math.max(1, Math.ceil(Math.max(window.innerWidth, window.screen.width || 0) / group.offsetWidth));
-  for (let i = 1; i < copies * 2; i++) track.append(group.cloneNode(true));
-  let half = group.offsetWidth * copies;
-  new ResizeObserver(() => { half = group.offsetWidth * copies; }).observe(group);
-
-  const BASE = 60; // px por segundo
-  const speed = { boost: 1 };
-  const setX = gsap.quickSetter(track, 'x', 'px');
-  let x = 0;
-  let dir = -1;
-  let visible = false;
-  let paused = false;
-
-  gsap.ticker.add((time, delta) => {
-    if (!visible || paused) return;
-    x = gsap.utils.wrap(-half, 0, x + dir * BASE * speed.boost * (delta / 1000));
-    setX(x);
-  });
-
-  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }).observe(el);
-
-  ScrollTrigger.create({
-    trigger: el,
-    start: 'top bottom',
-    end: 'bottom top',
-    onUpdate: (self) => {
-      dir = self.direction === 1 ? -1 : 1;
-      speed.boost = 1 + Math.min(Math.abs(self.getVelocity()) / 250, 8);
-      gsap.to(speed, { boost: 1, duration: 1.2, ease: 'power2.out', overwrite: true });
-    }
-  });
-
-  if (toggle) {
-    toggle.hidden = false;
-    toggle.addEventListener('click', () => {
-      paused = !paused;
-      toggle.classList.toggle('is-paused', paused);
-      toggle.setAttribute('aria-label', paused ? 'Reanudar la franja animada' : 'Pausar la franja animada');
-    });
-  }
 }
 
 /* ---------- Servicios ---------- */
@@ -826,7 +769,6 @@ async function start() {
   // Secciones. Los ScrollTrigger se ordenan por su posición en la página
   // antes de recalcular: así los que están debajo de la galería fijada
   // cuentan el espacio que agrega el pin.
-  initMarquee();
   initParallax();
   const mm = gsap.matchMedia();
   initStack(mm);
