@@ -159,12 +159,10 @@ p { max-width: 68ch; }
 .nav__burger,
 .service,
 .drinks,
-.barber,
 .branch,
 .branch__map,
 .form,
-.footer__rif,
-.showcase__item {
+.footer__rif {
   border-radius: var(--radius-md);
 }
 
@@ -177,6 +175,18 @@ p { max-width: 68ch; }
 }
 
 /* ---------- Utilidades ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 .accent { color: var(--accent); }
 
 /* "01 — El local", con el rombo rojo del logo delante */
@@ -301,36 +311,147 @@ p { max-width: 68ch; }
 }
 
 /* ---------- Preloader ----------
-   Solo CSS, 600 ms como máximo en total: el logo aparece y la capa se
-   desvanece entre los 350 y los 600 ms. No depende de JS ni del evento
-   load, así que nunca deja la página tapada. */
+   Logo circular, anillo rojo que se dibuja y contador 0→100; al terminar
+   se abre en dos mitades (cortina). El anillo, el contador y la apertura
+   los maneja js/fx.js (clases is-running, is-fast e is-open).
+   Respaldo: si fx.js no llega a correr (navegador sin módulos, error),
+   la animación preloaderFailsafe lo retira sola a los 2,4 s, así que la
+   página nunca queda tapada. pointer-events: none por lo mismo. */
 .preloader {
+  --pl-wait: 0.3s; /* el filo rojo corta y el logo se va; luego se abre */
+  --pl-open: 0.9s;
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: var(--bg);
   display: grid;
   place-items: center;
+  background: var(--bg);
   pointer-events: none;
-  animation: preloaderOut 0.25s ease-out 0.35s forwards;
+  animation: preloaderFailsafe 0.4s ease 2.4s forwards;
 }
 
-@keyframes preloaderOut {
+.preloader.is-running { animation: none; }
+
+/* Visita en caché: todo más corto */
+.preloader.is-fast {
+  --pl-wait: 0.15s;
+  --pl-open: 0.7s;
+}
+
+@keyframes preloaderFailsafe {
   to { opacity: 0; visibility: hidden; }
 }
 
+/* Las dos mitades de la cortina; el fondo propio del preloader solo tapa
+   la costura mientras está cerrado */
+.preloader.is-open { background: transparent; }
+
+.preloader__panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: var(--bg);
+  transition: transform var(--pl-open) cubic-bezier(0.76, 0, 0.24, 1) var(--pl-wait);
+}
+
+.preloader__panel--l { left: 0; }
+.preloader__panel--r { right: 0; }
+
+/* El filo rojo de la costura: baja como una navaja y se va con cada mitad */
+.preloader__panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--accent);
+  box-shadow: 0 0 12px rgba(226, 66, 52, 0.75);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--pl-wait) cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.preloader__panel--l::after { right: 0; }
+.preloader__panel--r::after { left: 0; }
+
+.preloader.is-open .preloader__panel::after { transform: none; }
+.preloader.is-open .preloader__panel--l { transform: translate3d(-100%, 0, 0); }
+.preloader.is-open .preloader__panel--r { transform: translate3d(100%, 0, 0); }
+
+.preloader__mark {
+  position: relative;
+  z-index: 1;
+  width: 180px;
+  height: 180px;
+  display: grid;
+  place-items: center;
+  transition: opacity var(--pl-wait) ease, transform var(--pl-wait) ease;
+}
+
 .preloader__logo {
-  width: 72px;
-  height: 72px;
-  animation: preloaderLogo 0.35s var(--ease) both;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  animation: preloaderLogo 0.6s var(--ease) both;
 }
 
 @keyframes preloaderLogo {
-  from { opacity: 0; transform: scale(0.92); }
+  from { opacity: 0; transform: scale(0.82); }
   to   { opacity: 1; transform: none; }
 }
 
-/* ---------- Navegación (fondo siempre sólido) ---------- */
+/* El trazo arranca arriba (12 en punto) y avanza en sentido horario.
+   Largo del trazo: 2π·96 ≈ 603; fx.js lo recalcula y lo mueve. */
+.preloader__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-90deg);
+}
+
+.preloader__ring circle {
+  fill: none;
+  stroke-width: 2;
+}
+
+.preloader__track { stroke: var(--line-strong); }
+
+.preloader__bar {
+  stroke: var(--accent);
+  stroke-dasharray: 604;
+  stroke-dashoffset: 604;
+  filter: drop-shadow(0 0 5px rgba(226, 66, 52, 0.6));
+}
+
+.preloader__count {
+  position: absolute;
+  z-index: 1;
+  right: var(--gutter);
+  bottom: var(--gutter);
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  transition: opacity var(--pl-wait) ease;
+}
+
+.preloader.is-open .preloader__mark {
+  opacity: 0;
+  transform: scale(0.94);
+}
+
+.preloader.is-open .preloader__count { opacity: 0; }
+
+/* ---------- Navegación ----------
+   Sin JS: fondo sólido siempre. Con JS (main.js): transparente arriba del
+   todo y sólido con blur pasados los 80 px (.is-solid); con el menú del
+   celular abierto, sólido igual. fx.js lo oculta al bajar (.is-hidden) y
+   vuelve al subir; si el foco de teclado entra al nav, se muestra. */
 .nav {
   position: fixed;
   inset: 0 0 auto 0;
@@ -338,11 +459,28 @@ p { max-width: 68ch; }
   height: var(--nav-h);
   background: var(--bg);
   border-bottom: 1px solid var(--line);
+  transition:
+    transform 0.4s var(--ease),
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-.nav.is-scrolled {
+.js .nav:not(.is-solid):not(:has(.nav__links.is-open)) {
+  background: transparent;
+  border-bottom-color: transparent;
+}
+
+.nav.is-solid {
+  background: rgba(10, 9, 9, 0.78);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
   border-bottom-color: var(--line-strong);
   box-shadow: var(--shadow-nav);
+}
+
+.nav.is-hidden:not(:focus-within):not(:has(.nav__links.is-open)) {
+  transform: translateY(-100%);
 }
 
 .nav__inner {
@@ -371,19 +509,17 @@ p { max-width: 68ch; }
 }
 
 .nav__logo {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   flex: none;
   display: block;
-  border: 1px solid var(--line-strong);
-  background: var(--bg-2);
-  object-fit: contain;
-  padding: 3px;
-  transition: border-color 0.2s var(--ease);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line-strong);
+  transition: box-shadow 0.2s var(--ease);
 }
 
 .nav__brand:hover .nav__logo {
-  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 12px rgba(226, 66, 52, 0.5);
 }
 
 .nav__brand-text {
@@ -446,12 +582,16 @@ p { max-width: 68ch; }
 .nav__burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
 .nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-/* ---------- Hero (pantalla completa con video) ---------- */
+/* ---------- Hero (pantalla completa, techo de hexágonos) ----------
+   Fondo: la foto del techo LED del local con --overlay y un leve zoom
+   (respaldo). Si el equipo aguanta, fx.js agrega encima el <canvas> del
+   techo en 3D (js/hex3d.js) y le pone .is-3d a .hero__bg: el canvas
+   aparece y la foto se desvanece. */
 .hero {
   position: relative;
   isolation: isolate;
-  min-height: 92vh;
-  min-height: 92svh;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: flex-end;
   padding-top: calc(var(--nav-h) + var(--space-12));
@@ -461,70 +601,146 @@ p { max-width: 68ch; }
   background: var(--bg);
 }
 
+/* Empieza bajo el nav (que es opaco): ahí no hace falta dibujar, y una
+   foto del alto exacto de la pantalla Chrome no la cuenta como LCP */
 .hero__bg {
   position: absolute;
-  inset: 0;
+  inset: var(--nav-h) 0 0 0;
   z-index: -1;
+  overflow: hidden;
 }
 
-.hero__poster,
-.hero__video {
+/* En la foto los hexágonos están en el tercio de arriba: se encuadra ahí */
+.hero__photo {
   position: absolute;
   inset: 0;
+  z-index: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 40%;
+  object-position: center 12%;
+  /* Menos de 5 s: no necesita botón de pausa (WCAG 2.2.2) */
+  animation: heroZoom 4.8s var(--ease) both;
+  transition: opacity 1.2s ease;
 }
 
-/* Capa --overlay sobre todo el video y, abajo a la izquierda (donde va
-   el texto), un degradado al fondo de la página para que el marfil se
-   lea aunque el frame sea claro. */
+@keyframes heroZoom {
+  from { transform: scale(1.08); }
+  to   { transform: none; }
+}
+
+/* Capas, de abajo arriba: foto, --overlay que la oscurece, canvas 3D
+   (opaco: tapa a las dos) y los degradados que funden el texto y el
+   borde de abajo con la página. */
+.hero__bg::before,
 .hero__bg::after {
   content: '';
   position: absolute;
   inset: 0;
+}
+
+.hero__bg::before {
+  z-index: 1;
+  background: var(--overlay);
+}
+
+.hero__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+}
+
+.hero__bg.is-3d .hero__canvas { opacity: 1; }
+.hero__bg.is-3d .hero__photo { opacity: 0; }
+
+.hero__bg::after {
+  z-index: 3;
   background:
     linear-gradient(to top, var(--bg) 0%, rgba(10, 9, 9, 0.7) 35%, rgba(10, 9, 9, 0) 70%),
-    linear-gradient(to right, rgba(10, 9, 9, 0.55) 0%, rgba(10, 9, 9, 0) 65%),
-    var(--overlay);
+    linear-gradient(to right, rgba(10, 9, 9, 0.55) 0%, rgba(10, 9, 9, 0) 65%);
+}
+
+/* Sobre el 3D, el lado del texto un poco más oscuro: el brillo de los
+   tubos no debe bajar el contraste del eyebrow (texto chico) */
+.hero__bg.is-3d::after {
+  background:
+    linear-gradient(to top, var(--bg) 0%, rgba(10, 9, 9, 0.7) 35%, rgba(10, 9, 9, 0) 70%),
+    linear-gradient(to right, rgba(10, 9, 9, 0.78) 0%, rgba(10, 9, 9, 0.45) 45%, rgba(10, 9, 9, 0) 75%);
 }
 
 .hero__inner {
   width: 100%;
-  max-width: 820px;
+  max-width: 920px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-6);
   justify-items: start;
-  /* Arranca cuando el preloader ya se está yendo */
-  animation: heroIn 0.8s var(--ease) 0.3s both;
 }
 
-/* Sobre el video, el rojo pequeño baja de 4,5:1 en frames claros:
-   el eyebrow del hero va en marfil (el rombo sigue rojo) */
+/* Sobre la foto, el rojo pequeño baja de 4,5:1 en zonas claras:
+   el eyebrow del hero va en marfil (el rombo sigue rojo). La sombra
+   oscura lo separa de los tubos encendidos que pasan por detrás. */
+/* Logo del hero con brillo rojo suave detrás (cartel de neón) */
+.hero__logo {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  isolation: isolate;
+}
+
+.hero__logo::before {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(226, 66, 52, 0.5) 0%, rgba(226, 66, 52, 0.16) 42%, transparent 70%);
+  filter: blur(10px);
+}
+
+.hero__logo-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(226, 66, 52, 0.35), 0 0 24px rgba(226, 66, 52, 0.4);
+}
+
+@media (max-width: 540px) {
+  .hero__logo { width: 104px; height: 104px; }
+}
+
+.hero__brand,
+.hero__stat dt {
+  text-shadow: 0 1px 10px rgba(10, 9, 9, 0.9), 0 0 2px rgba(10, 9, 9, 0.9);
+}
+
 .hero__brand {
   color: var(--ink);
 }
 
 .hero__title {
-  font-size: clamp(3rem, 12vw, 5.5rem);
+  /* Que "MÁS QUE UN CORTE," entre en una línea también en el celular */
+  font-size: clamp(2.5rem, 9.4vw, 6.25rem);
   font-weight: 700;
   /* Más apretado, la tilde de la Ñ de "DISEÑAMOS" toca la línea de arriba */
   line-height: 1.04;
   letter-spacing: -0.01em;
   overflow-wrap: break-word;
+  /* Brillo del neón de "ESTILO": 1 encendido, 0 apagado (fx.js lo prende con parpadeo) */
+  --neon: 1;
 }
 
-.hero__line {
-  display: block;
-}
-
-.hero__sub {
-  color: var(--ink);
-  max-width: 46ch;
-  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
-  line-height: 1.55;
+.hero__neon {
+  text-shadow:
+    0 0 0.08em rgb(226 66 52 / calc(0.55 * var(--neon))),
+    0 0 0.35em rgb(226 66 52 / calc(0.4 * var(--neon))),
+    0 0 0.9em rgb(226 66 52 / calc(0.25 * var(--neon)));
 }
 
 .hero__ctas {
@@ -534,7 +750,13 @@ p { max-width: 68ch; }
   margin-top: var(--space-2);
 }
 
-/* Sobre el video, el borde --line-strong casi no se ve */
+/* El botón magnético lo mueve GSAP: su transición CSS de transform
+   pelearía con la animación */
+.btn[data-fx-magnetic] {
+  transition-property: background, color, border-color;
+}
+
+/* Sobre el fondo del hero, el borde --line-strong casi no se ve */
 .hero .btn--ghost {
   border-color: var(--ink-3);
   background: rgba(10, 9, 9, 0.35);
@@ -551,145 +773,339 @@ p { max-width: 68ch; }
   height: 18px;
 }
 
-.hero__facts {
-  list-style: none;
+/* Fila de cifras: número grande (mono) arriba, etiqueta abajo */
+.hero__stats {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2) var(--space-4);
-  font-size: 0.875rem;
+  gap: var(--space-4) clamp(var(--space-6), 5vw, var(--space-12));
+  margin-top: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: 1px solid rgba(236, 230, 220, 0.14);
+}
+
+.hero__stat {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-1);
+}
+
+.hero__stat dd {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.hero__stat dt {
+  font-size: 0.8125rem;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-2);
 }
 
-.hero__facts li {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.hero__facts li + li::before {
-  content: '·';
-  color: var(--ink-3);
-}
-
-.hero__toggle {
+/* Indicador de scroll: línea vertical que se llena de arriba abajo y se
+   vacía hacia abajo, en bucle. 3,5 vueltas de 1,4 s (menos de 5 s, WCAG
+   2.2.2) y termina llena. Arranca cuando el preloader ya se fue. */
+.hero__scroll {
   position: absolute;
   right: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
   bottom: clamp(var(--space-12), 9vh, var(--space-24));
-  width: 44px;
-  height: 44px;
+  width: 1px;
+  height: 72px;
+  overflow: hidden;
+  background: rgba(236, 230, 220, 0.18);
+}
+
+.hero__scroll::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(226, 66, 52, 0.8);
+  transform-origin: top;
+  animation: scrollLine 1.4s cubic-bezier(0.76, 0, 0.24, 1) 2s 3.5 both;
+}
+
+@keyframes scrollLine {
+  0%     { transform: scaleY(0); transform-origin: top; }
+  50%    { transform: scaleY(1); transform-origin: top; }
+  50.01% { transform: scaleY(1); transform-origin: bottom; }
+  100%   { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ---------- Franja (marquee) ----------
+   Palabras en Oswald solo con contorno; "Diseño" va rellena en rojo. La
+   mueve fx.js; sin JS o con "reducir movimiento" queda quieta. */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(var(--space-6), 4vw, var(--space-12));
+  background: var(--bg);
+  border-block: 1px solid var(--line);
+}
+
+.marquee__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.marquee__group {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.marquee__word {
+  padding-inline: clamp(1rem, 2.5vw, 2.25rem);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--ink);
+}
+
+.marquee__word.is-fill {
+  color: var(--accent);
+  -webkit-text-stroke-color: var(--accent);
+}
+
+@supports not (-webkit-text-stroke: 1px black) {
+  .marquee__word { color: var(--ink-3); }
+}
+
+.marquee__hex {
+  flex: none;
+  width: clamp(18px, 2vw, 28px);
+  height: clamp(18px, 2vw, 28px);
+  color: var(--accent);
+}
+
+.marquee__toggle {
+  position: absolute;
+  right: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
+  bottom: var(--space-2);
+  width: 36px;
+  height: 36px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--ink-3);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-md);
-  background: rgba(10, 9, 9, 0.45);
+  background: rgba(10, 9, 9, 0.8);
   color: var(--ink);
-  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
+  transition: border-color 0.18s var(--ease);
 }
 
-.hero__toggle[hidden] { display: none; }
+.marquee__toggle[hidden] { display: none; }
+.marquee__toggle:hover { border-color: var(--ink); }
 
-.hero__toggle:hover {
-  border-color: var(--ink);
-  background: var(--bg-3);
+.marquee__toggle-play,
+.marquee__toggle.is-paused .marquee__toggle-pause { display: none; }
+.marquee__toggle.is-paused .marquee__toggle-play { display: block; }
+
+/* ---------- El local · Galería ----------
+   Base (celular, sin JS, "reducir movimiento"): carrusel horizontal con
+   scroll-snap. En escritorio, fx.js le pone .is-pinned: la galería ocupa la
+   pantalla y la pista se corre de lado con el scroll. */
+.gallery {
+  /* A todo el ancho de la pantalla (la sección tiene margen a los lados).
+     Ancho explícito: al fijarla, ScrollTrigger la envuelve y con ancho
+     automático quedaría del ancho del contenido */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  --gallery-pad: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)));
 }
 
-.hero__toggle-play,
-.hero__toggle.is-paused .hero__toggle-pause { display: none; }
-.hero__toggle.is-paused .hero__toggle-play { display: block; }
-
-@keyframes heroIn {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: none; }
-}
-
-/* ---------- El local · Mosaico ---------- */
-/* 1 foto grande + 2 chicas + el video destacado. La altura la marca el
-   video (9:16, ocupa las dos filas); las fotos van en position: absolute
-   para recortarse a su celda sin empujar la grilla con su propio alto. */
-.showcase {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.9fr) minmax(0, 1fr);
-  grid-template-rows: repeat(2, minmax(0, 1fr));
+.gallery__track {
+  display: flex;
+  align-items: flex-start;
   gap: var(--space-4);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gallery-pad);
+  padding-inline: var(--gallery-pad);
+  padding-bottom: var(--space-4);
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
 }
 
-.showcase__item {
-  position: relative;
+.gallery__item {
+  flex: none;
+  width: min(78vw, 340px);
   margin: 0;
-  min-height: 0;
+  display: grid;
+  gap: var(--space-3);
+  scroll-snap-align: start;
+}
+
+.gallery__item--wide { width: min(88vw, 480px); }
+
+.gallery__frame {
+  position: relative;
   overflow: hidden;
+  aspect-ratio: 3 / 4;
   border: 1px solid var(--line);
+  border-radius: var(--radius-md);
   background: var(--bg-3);
 }
 
-.showcase__item--big  { grid-column: 1; grid-row: 1 / span 2; }
-.showcase__item--team { grid-column: 2; grid-row: 1; }
-.showcase__item--sign { grid-column: 2; grid-row: 2; }
+.gallery__item--wide .gallery__frame { aspect-ratio: 4 / 3; }
 
-.showcase__item img {
+.gallery__frame img,
+.gallery__frame video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.7s var(--ease);
-}
-
-.showcase__item--big img  { object-position: center 60%; }
-.showcase__item--team img { object-position: center 72%; }
-.showcase__item--sign img { object-position: center 40%; }
-
-.showcase__item:hover img {
-  transform: scale(1.03);
-}
-
-.showcase__video {
-  grid-column: 3;
-  grid-row: 1 / span 2;
-  position: relative;
-  margin: 0;
-}
-
-/* El video es vertical 720x1280: la proporción fija evita que el bloque
-   salte cuando llega el póster (que se carga diferido). */
-.showcase__video video {
-  display: block;
-  width: 100%;
-  aspect-ratio: 9 / 16;
   background: #000;
-  border-radius: var(--radius-lg);
 }
 
-.showcase__video figcaption {
-  position: absolute;
-  top: var(--space-3);
-  left: var(--space-3);
-  padding: 0.4rem 0.65rem;
-  border-radius: var(--radius-sm);
-  background: rgba(10, 9, 9, 0.72);
-  color: var(--ink);
-  font-weight: 600;
+.gallery__caption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   font-size: 0.8125rem;
-  line-height: 1.2;
-  letter-spacing: 0.04em;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  pointer-events: none;
+  color: var(--ink-2);
 }
 
-/* ---------- Servicios ---------- */
-.services__grid {
+.gallery__caption::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  flex: none;
+  background: var(--accent);
+}
+
+@media (min-width: 861px) {
+  .gallery.is-pinned {
+    height: 100vh;
+    height: 100svh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding-top: var(--nav-h);
+  }
+
+  .gallery.is-pinned .gallery__track {
+    align-items: center;
+    gap: clamp(1.5rem, 3.5vw, 3.5rem);
+    overflow: visible;
+    scroll-snap-type: none;
+    padding-bottom: 0;
+  }
+
+  .gallery.is-pinned .gallery__item { width: auto; }
+
+  /* Tamaños alternados: grande vertical, mediana horizontal, mediana vertical */
+  .gallery.is-pinned .gallery__item--tall .gallery__frame { height: 62svh; width: calc(62svh * 3 / 4); }
+  .gallery.is-pinned .gallery__item--wide .gallery__frame { height: 40svh; width: calc(40svh * 4 / 3); }
+  .gallery.is-pinned .gallery__item--mid .gallery__frame { height: 48svh; width: calc(48svh * 3 / 4); }
+  .gallery.is-pinned .gallery__item--wide { align-self: flex-start; margin-top: 10svh; }
+  .gallery.is-pinned .gallery__item--mid { align-self: flex-end; margin-bottom: 8svh; }
+}
+
+/* Cierre: el equipo a todo el ancho, con la frase encima */
+.local__finale {
+  position: relative;
+  height: clamp(420px, 72svh, 760px);
+  margin: var(--space-16) calc(50% - 50vw) 0;
+  overflow: hidden;
+  background: var(--bg-3);
+}
+
+.local__finale img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 58%;
+}
+
+.local__finale::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(10, 9, 9, 0.88) 0%, rgba(10, 9, 9, 0.25) 55%, rgba(10, 9, 9, 0.1) 100%),
+    linear-gradient(to right, rgba(10, 9, 9, 0.55) 0%, rgba(10, 9, 9, 0) 60%);
+}
+
+.local__finale-text {
+  position: absolute;
+  z-index: 1;
+  left: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
+  bottom: clamp(var(--space-8), 6vw, var(--space-16));
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.75rem, 8vw, 7rem);
+  line-height: 1.02;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* ---------- Servicios ----------
+   Celular: una tarjeta debajo de la otra. Escritorio: tarjetas apiladas;
+   cada una queda fija arriba (sticky) y la siguiente la tapa. fx.js
+   achica y oscurece la de abajo (scale y --shade, la capa ::after). */
+.services__stack {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-6);
 }
 
-/* Las dos tarjetas con el mismo layout: foto 4:3, nombre y precio,
+.stack__item {
+  position: relative;
+  transform-origin: center top;
+}
+
+.stack__item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  opacity: var(--shade, 0);
+  pointer-events: none;
+}
+
+@media (min-width: 861px) {
+  .services__stack {
+    display: block;
+  }
+
+  .stack__item {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--space-6));
+    margin-bottom: var(--space-12);
+  }
+
+  .stack__item:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Las dos tarjetas con el mismo layout: foto, nombre y precio,
    descripción, lista y botón (abajo, alineado aunque las listas midan
-   distinto). */
+   distinto). En escritorio la foto va a la izquierda. */
 .service {
   display: flex;
   flex-direction: column;
@@ -712,12 +1128,21 @@ p { max-width: 68ch; }
   background: var(--bg-2);
 }
 
+/* Parallax interno de la foto: fx.js la corre de -10 % a 10 % de su alto;
+   por eso es 25 % más alta que el marco (12,5 % de sobra arriba y abajo) */
+.service__parallax {
+  position: absolute;
+  inset: -12.5% 0;
+  display: block;
+}
+
 .service__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center 45%;
 }
+
 
 .service__chip {
   position: absolute;
@@ -813,6 +1238,25 @@ p { max-width: 68ch; }
   color: var(--ink);
 }
 
+/* Escritorio: foto a la izquierda, a todo el alto de la tarjeta (va al
+   final de Servicios para ganarle a las reglas base) */
+@media (min-width: 861px) {
+  .service {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    height: min(600px, calc(100svh - var(--nav-h) - var(--space-12)));
+  }
+
+  .service__media {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+
+  .service__body {
+    padding: var(--space-8);
+  }
+}
+
 /* ---------- Bebida de cortesía ---------- */
 /* Ancho fijo: si dependía del contenido, el bloque se ensanchaba de
    1000 a 1100 px al cargar la foto (lazy) y el texto se corría. */
@@ -860,59 +1304,168 @@ p { max-width: 68ch; }
   margin-top: 0.2rem;
 }
 
-/* ---------- Barberos ---------- */
-.staff__grid {
+/* ---------- Barberos: tarjeta 3D con recorte ----------
+   Cada tarjeta (4:5) tiene tres capas en 3D (perspective en el <li>):
+   1. Fondo: el nombre gigante solo con contorno, cortado por la tarjeta,
+      y un hexágono de neón (marfil al 15 %; rojo con brillo en hover).
+   2. La persona recortada, alineada abajo. En hover (o con el foco de
+      teclado adentro) sale un poco por el borde de arriba; en táctil ya
+      está afuera.
+   3. Info abajo, sobre un degradado: nombre y "Reservar con él".
+   fx.js inclina la tarjeta con el mouse (±8°) y mueve el reflejo
+   diagonal; las capas, a distinta profundidad, hacen el parallax.
+   Escritorio: 3 columnas y el fundador ocupa 2×2 (así la grilla queda
+   completa: 4 + 8 = 12 lugares). Tablet: 2 columnas. Celular: carrusel. */
+.team__grid {
+  list-style: none;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-6);
+  gap: clamp(var(--space-8), 3vw, var(--space-12)) clamp(var(--space-4), 2.5vw, var(--space-8));
+  /* Lugar para que la persona asome por arriba en la primera fila */
+  padding-top: var(--space-8);
 }
 
 .barber {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--bg-3);
-  border: 1px solid var(--line);
-  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  perspective: 1000px;
 }
 
-.barber:hover {
-  border-color: var(--line-strong);
-  box-shadow: var(--shadow-card);
+.barber--founder {
+  grid-column: span 2;
+  grid-row: span 2;
 }
 
-/* Retratos 4:5, cara en el tercio superior y el mismo tratamiento para
-   todos: casi en blanco y negro, a color al pasar el mouse. */
-.barber__photo {
+.barber__card {
   position: relative;
   aspect-ratio: 4 / 5;
-  overflow: hidden;
-  background: var(--bg-2);
+  border-radius: var(--radius-md);
+  transform-style: preserve-3d;
 }
 
-.barber__img {
+/* El del fundador llena las dos filas (mismo 4:5, contando el espacio entre filas) */
+.barber--founder .barber__card {
+  aspect-ratio: auto;
+  height: 100%;
+}
+
+/* 1. Fondo */
+.barber__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg-3);
+  container-type: inline-size;
+}
+
+.barber__ghost {
+  position: absolute;
+  top: 4%;
+  left: -3%;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30cqw;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-strong);
+}
+
+.barber__hex {
+  position: absolute;
+  top: 14%;
+  left: 50%;
+  width: 82%;
+  translate: -50% 0;
+  fill: none;
+  stroke: rgb(236 230 220 / 0.15);
+  stroke-width: 1.2;
+  transition: stroke 0.35s ease, filter 0.35s ease;
+}
+
+/* 2. Persona */
+.barber__person {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(20px);
+  transition: transform 0.55s var(--ease);
+  pointer-events: none;
+}
+
+.barber__person img {
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+/* Si el recorte no cargó: la foto entera llena la tarjeta (main.js) */
+.barber__card.is-full .barber__person {
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.barber__card.is-full .barber__person img {
   object-fit: cover;
-  object-position: center 25%;
-  filter: grayscale(0.8) contrast(1.05);
-  transition: filter 0.35s var(--ease), transform 0.5s var(--ease);
+  object-position: center 20%;
 }
 
-.barber:hover .barber__img {
-  filter: none;
-  transform: scale(1.03);
-}
-
-.barber__badge {
+/* 3. Info */
+.barber__info {
   position: absolute;
-  top: var(--space-3);
-  left: var(--space-3);
-  z-index: 1;
-  padding: 0.4rem 0.6rem;
+  inset: auto 0 0;
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+  padding: var(--space-12) var(--space-6) var(--space-6);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background: linear-gradient(to top, rgba(10, 9, 9, 0.95) 0%, rgba(10, 9, 9, 0.75) 45%, rgba(10, 9, 9, 0) 100%);
+  /* Apenas delante de la persona cuando ella sale (60 px): el nombre y el
+     botón nunca quedan tapados. No más: cuanto más cerca de la cámara,
+     más se agranda y se corre hacia afuera con la perspectiva */
+  transform: translateZ(64px);
+}
+
+.barber__name {
+  font-size: 1.625rem;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.barber__book {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: rgba(10, 9, 9, 0.5);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.18s var(--ease), border-color 0.18s var(--ease), color 0.18s var(--ease);
+}
+
+.barber__book:hover,
+.barber__book:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.barber__chip {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  padding: 0.4rem 0.65rem;
   border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
   background: var(--accent-soft);
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   color: var(--ink);
   font-size: 0.8125rem;
@@ -920,64 +1473,163 @@ p { max-width: 68ch; }
   line-height: 1;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  transform: translateZ(66px);
 }
 
-.barber__info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: var(--space-4) var(--space-6) var(--space-6);
+/* Reflejo diagonal: lo corre fx.js con --shine-x / --shine-y */
+.barber__shine {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  background: linear-gradient(115deg, transparent 40%, rgb(255 255 255 / 0.08) 50%, transparent 60%);
+  background-size: 300% 300%;
+  background-position: var(--shine-x, 100%) var(--shine-y, 100%);
+  opacity: 0;
+  transform: translateZ(68px);
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
-.barber__name {
-  font-size: 1.375rem;
-  font-weight: 500;
-  line-height: 1.1;
+/* Hover (solo con mouse) y foco de teclado: la persona sale por arriba y
+   el hexágono se prende en rojo */
+@media (hover: hover) {
+  .barber__card:hover .barber__person {
+    transform: translateZ(60px) translateY(-4%);
+  }
+
+  .barber__card:hover .barber__hex {
+    stroke: var(--accent);
+    filter: drop-shadow(0 0 4px rgba(226, 66, 52, 0.9)) drop-shadow(0 0 14px rgba(226, 66, 52, 0.5));
+  }
+
+  .barber__card:hover .barber__shine {
+    opacity: 1;
+  }
 }
 
-.barber__years {
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--ink-3);
+/* Con teclado (foco visible en "Reservar con él"): igual que el hover */
+.barber__card:has(:focus-visible) .barber__person {
+  transform: translateZ(60px) translateY(-4%);
 }
 
-.barber__links {
-  margin-top: auto;
-  padding-top: var(--space-3);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-2) var(--space-3);
+.barber__card:has(:focus-visible) .barber__hex {
+  stroke: var(--accent);
+  filter: drop-shadow(0 0 4px rgba(226, 66, 52, 0.9)) drop-shadow(0 0 14px rgba(226, 66, 52, 0.5));
 }
 
-.barber__ig {
-  color: var(--accent-text);
-  font-weight: 500;
-  font-size: 0.875rem;
-  overflow-wrap: anywhere;
-  transition: color 0.2s var(--ease);
+.barber__card:has(:focus-visible) .barber__shine {
+  opacity: 1;
 }
 
-.barber__ig:hover {
-  color: var(--ink);
+/* Táctil: sin hover, la persona ya asoma por arriba */
+@media (hover: none) {
+  .barber__card:not(.is-full) .barber__person {
+    transform: translateZ(60px) translateY(-4%);
+  }
 }
 
-.barber__book {
-  color: var(--ink);
-  font-weight: 600;
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding-bottom: 3px;
-  border-bottom: 1px solid var(--line-strong);
-  transition: border-color 0.2s var(--ease);
+/* La foto entera no sale del marco */
+.barber__card.is-full .barber__person,
+.barber__card.is-full:hover .barber__person {
+  transform: translateZ(20px);
 }
 
-.barber__book:hover {
-  border-color: var(--accent);
+/* Puntos del carrusel: solo en el celular (los crea main.js) */
+.team__dots {
+  display: none;
+}
+
+/* Tablet: 2 columnas; el fundador a todo el ancho, apaisado */
+@media (max-width: 860px) {
+  .team__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .barber--founder {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .barber--founder .barber__card {
+    aspect-ratio: 8 / 5;
+    height: auto;
+  }
+
+  /* Tarjeta ancha: más margen, la perspectiva corre los bordes hacia afuera */
+  .barber--founder .barber__info {
+    padding-inline: var(--space-12);
+  }
+
+  .barber--founder .barber__chip {
+    top: var(--space-6);
+    left: var(--space-8);
+  }
+}
+
+/* Celular: carrusel horizontal con scroll-snap, cada tarjeta al 78 % */
+@media (max-width: 540px) {
+  .team {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+
+  .team__grid {
+    display: flex;
+    gap: var(--space-4);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    /* Arriba, lugar para que la persona asome: el scroll recorta lo que sale */
+    padding: 12% var(--gutter) var(--space-2);
+    scrollbar-width: none;
+  }
+
+  .team__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .barber {
+    flex: 0 0 78%;
+    scroll-snap-align: start;
+  }
+
+  .barber--founder .barber__card {
+    aspect-ratio: 4 / 5;
+  }
+
+  .barber__info {
+    padding: var(--space-8) var(--space-4) var(--space-4);
+  }
+
+  .team__dots:not([hidden]) {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-1);
+    margin-top: var(--space-4);
+  }
+
+  /* Área táctil de 24 px; el punto visible es de 8 px */
+  .team__dot {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+  }
+
+  .team__dot::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line-strong);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .team__dot[aria-current="true"]::before {
+    background: var(--accent);
+    transform: scale(1.25);
+  }
 }
 
 /* ---------- Ubicación: una sola sede, datos a la izquierda y mapa ---------- */
@@ -1424,6 +2076,29 @@ p { max-width: 68ch; }
   padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
 }
 
+/* Logo que gira como una moneda (12 s por vuelta), se detiene con el
+   mouse encima; con "reducir movimiento", quieto */
+.footer__coin {
+  width: 160px;
+  height: 160px;
+  margin-bottom: var(--space-6);
+  perspective: 800px;
+}
+
+.footer__logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  backface-visibility: visible;
+  animation: coinSpin 12s linear infinite;
+}
+
+.footer__coin:hover .footer__logo { animation-play-state: paused; }
+
+@keyframes coinSpin {
+  to { transform: rotateY(360deg); }
+}
+
 .footer__brand {
   font-family: var(--font-display);
   font-weight: 600;
@@ -1492,18 +2167,182 @@ p { max-width: 68ch; }
   margin: 0 auto;
 }
 
-/* ---------- Aparición al hacer scroll ---------- */
-.reveal-on .reveal {
-  opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
-  transition-delay: calc(var(--rd, 0) * 70ms);
+/* ---------- Separador: poste de barbero ----------
+   SVG de respaldo (sin JS, equipos débiles, sin WebGL): las franjas bajan
+   con el scroll por CSS donde el navegador soporta animation-timeline; si
+   no, quedan quietas. Si el equipo aguanta, fx.js pone encima el poste en
+   3D (js/pole3d.js) y le agrega .is-3d. */
+.pole {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding-block: var(--space-16);
+  background: var(--bg);
+  overflow: hidden;
 }
 
-.reveal-on .reveal.is-in {
-  opacity: 1;
-  transform: none;
+.pole::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: var(--gutter);
+  right: var(--gutter);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-strong) 25%, var(--line-strong) 75%, transparent);
 }
+
+.pole__fallback {
+  position: relative;
+  display: block;
+  width: 80px;
+  height: 300px;
+  transition: opacity 0.8s ease;
+}
+
+.pole__canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 380px;
+  translate: -50% -50%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+.pole.is-3d .pole__canvas { opacity: 1; }
+.pole.is-3d .pole__fallback { opacity: 0; }
+
+/* La línea de tiempo la da el contenedor (HTML): un elemento de SVG no
+   sirve como sujeto de view() */
+@supports (animation-timeline: view()) {
+  .pole {
+    view-timeline-name: --pole;
+  }
+
+  .pole__stripes {
+    animation: poleStripes linear both;
+    animation-timeline: --pole;
+  }
+}
+
+/* Dos vueltas de franjas (60 px cada una) mientras el poste cruza la pantalla */
+@keyframes poleStripes {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-120px); }
+}
+
+/* ---------- Cursor (solo escritorio con mouse; lo crea fx.js) ----------
+   Un punto de 10 px que sigue al mouse. Sobre enlaces y botones crece a
+   48 px e invierte los colores (difference); sobre las fotos de los
+   barberos dice "Ver" y sobre los botones de reserva, "Reservar". El
+   cursor del sistema no se esconde. */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 300;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* El blend va en .cursor: crea su propio contexto de apilamiento y es el
+   que se mezcla con la página */
+.cursor.is-link { mix-blend-mode: difference; }
+
+.cursor__dot {
+  position: absolute;
+  top: -24px;
+  left: -24px;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0;
+  transform: scale(0.2083); /* 10 px */
+  transition: transform 0.35s var(--ease), background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.cursor.is-visible .cursor__dot { opacity: 1; }
+.cursor.is-link .cursor__dot { transform: scale(1); }
+
+.cursor.is-label .cursor__dot {
+  transform: scale(1.5);
+  background: var(--accent);
+}
+
+.cursor__label {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--on-accent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.cursor.is-label .cursor__label { opacity: 1; }
+
+/* ---------- Animaciones (js/fx.js) ----------
+   Los estados ocultos los activa fx.js (en línea o con estas clases .fx-pre-*,
+   que solo agrega él): si el JS o el CDN fallan, todo queda visible.
+   Se oculta con opacidad o recorte, nunca con visibility: los lectores de
+   pantalla siguen encontrando los títulos aunque no hayan aparecido. */
+.fx-pre-fade {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.fx-pre-title { opacity: 0; }
+
+.fx-pre-image { clip-path: inset(100% 0 0 0); }
+
+.fx-pre-image img,
+.fx-pre-image video {
+  transform: scale(1.15);
+  transition: none;
+}
+
+/* Base de Lenis (copiada de lenis@1.3.26/dist/lenis.css) */
+html.lenis,
+html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch],
+.lenis [data-lenis-prevent-vertical],
+.lenis [data-lenis-prevent-horizontal] { overscroll-behavior: contain; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+.lenis.lenis-autoToggle {
+  transition-property: overflow;
+  transition-duration: 1ms;
+  transition-behavior: allow-discrete;
+}
+/* Con Lenis activo, el scroll suave nativo estorba: cada scroll que hace
+   Lenis (o el foco) se volvería una animación del navegador que pisa la
+   siguiente. Lenis 1.3 pone .lenis en <html> (no siempre .lenis-smooth). */
+html.lenis { scroll-behavior: auto; }
+
+/* Máscara de cada línea en los títulos. SplitText la recorta con
+   overflow: clip justo al alto de la línea, y eso corta las tildes (la Ñ
+   de DISEÑAMOS) y la cola de la coma. Se recorta con clip-path en su
+   lugar: más aire arriba y a los lados, y abajo apenas 0,06em, menos de
+   lo que baja la palabra escondida (110 %), así sigue sin verse. Sin
+   tocar padding ni márgenes: las líneas no se mueven. */
+.fx-line-mask {
+  overflow: visible !important;
+  clip-path: inset(-0.3em -0.1em -0.06em -0.1em);
+}
+
+/* Al saltar a una sección con un enlace (#reserva…) fx.js le pasa el foco
+   para que Tab siga desde ahí; la sección entera no necesita contorno */
+main[tabindex="-1"]:focus,
+section[tabindex="-1"]:focus { outline: none; }
 
 /* ---------- Responsive ---------- */
 
@@ -1545,57 +2384,8 @@ p { max-width: 68ch; }
     display: flex;
   }
 
-  .services__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .drinks {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  /* Mosaico apilado: la grande arriba, las dos chicas lado a lado y el
-     video debajo, ahora con su propia proporción */
-  .showcase {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: none;
-  }
-
-  .showcase__item--big {
-    grid-column: 1 / -1;
-    grid-row: auto;
-    aspect-ratio: 4 / 3;
-  }
-
-  .showcase__item--team,
-  .showcase__item--sign {
-    grid-column: auto;
-    grid-row: auto;
-    aspect-ratio: 1 / 1;
-  }
-
-  .showcase__video {
-    grid-column: 1 / -1;
-    grid-row: auto;
-    justify-self: center;
-    width: min(100%, 420px);
-  }
-
-  /* Tres barberos en dos columnas: el dueño ocupa la fila de arriba con
-     una foto apaisada (recortada desde arriba para no perder la cara) */
-  .staff__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .barber--owner {
-    grid-column: 1 / -1;
-  }
-
-  .barber--owner .barber__photo {
-    aspect-ratio: 4 / 3;
-  }
-
-  .barber--owner .barber__img {
-    object-position: center 5%;
   }
 
   .branch {
@@ -1621,32 +2411,12 @@ p { max-width: 68ch; }
     grid-template-columns: 1fr;
   }
 
-  /* Dos barberos por fila también en el celular: una sola columna de
-     retratos 4:5 hacía la sección muy larga */
-  .staff__grid {
-    gap: var(--space-3);
-  }
-
-  .barber__info {
-    padding: var(--space-3) var(--space-4) var(--space-4);
-  }
-
-  .barber__name {
-    font-size: 1.25rem;
-  }
-
   .service__body {
     padding: var(--space-6) var(--space-4);
   }
 
   .service__name {
     font-size: 1.75rem;
-  }
-
-  /* En el celular el botón de pausa sube a la esquina para no tapar los datos */
-  .hero__toggle {
-    top: calc(var(--nav-h) + var(--space-4));
-    bottom: auto;
   }
 }
 
@@ -1662,19 +2432,17 @@ p { max-width: 68ch; }
     transition-duration: 0.01ms !important;
   }
 
-  .reveal-on .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-
-  .hero__inner {
+  .pole__stripes {
     animation: none;
   }
 
-  /* Solo el póster: sin video en movimiento */
-  .hero__video {
-    display: none;
+  .footer__logo {
+    animation: none;
+  }
+
+  /* El indicador de scroll queda lleno y quieto */
+  .hero__scroll::after {
+    animation: none;
   }
 
   .preloader {
