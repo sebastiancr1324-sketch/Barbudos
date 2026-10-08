@@ -4,47 +4,47 @@
 (() => {
   'use strict';
 
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.classList.add('js');
 
-  // El preloader es solo CSS (600 ms como máximo): no necesita JS.
+  // El preloader, las animaciones y el 3D del hero van en js/fx.js (módulo aparte).
 
-  /* ---------- Hero: video de fondo y botón de pausa ----------
-     Con "reducir movimiento" el <source> ya no aplica (media query) y el
-     CSS oculta el video; aquí además se frena por si el navegador
-     ignora el atributo media. */
-  const heroVideo = document.getElementById('hero-video');
-  const heroToggle = document.getElementById('hero-toggle');
-  if (heroVideo) {
-    if (reduceMotion) {
-      heroVideo.removeAttribute('autoplay');
-      heroVideo.pause();
-    } else if (heroToggle) {
-      const sync = () => {
-        const paused = heroVideo.paused;
-        heroToggle.classList.toggle('is-paused', paused);
-        heroToggle.setAttribute('aria-label', paused ? 'Reproducir el video de fondo' : 'Pausar el video de fondo');
-      };
-      heroToggle.hidden = false;
-      heroToggle.addEventListener('click', () => {
-        if (heroVideo.paused) heroVideo.play().catch(() => {});
-        else heroVideo.pause();
-      });
-      heroVideo.addEventListener('play', sync);
-      heroVideo.addEventListener('pause', sync);
-      sync();
-    }
-  }
-
-  /* ---------- Navegación : sombra al hacer scroll ---------- */
+  /* ---------- Navegación: sólida (fondo con blur) pasados los 80 px ----------
+     Arriba del todo va transparente. No es una animación: funciona también
+     con "reducir movimiento". (Ocultarse al bajar y volver al subir lo hace
+     js/fx.js.) Sin JS el nav queda sólido siempre (el CSS lo pide con .js). */
   const nav = document.getElementById('nav');
-  const hero = document.getElementById('inicio');
-  if (nav && hero) {
-    const sentinel = new IntersectionObserver(
-      ([entry]) => nav.classList.toggle('is-scrolled', !entry.isIntersecting),
-      { rootMargin: '-72px 0px 0px 0px', threshold: 0 }
-    );
-    sentinel.observe(hero);
+  if (nav) {
+    let queued = false;
+    const update = () => {
+      queued = false;
+      nav.classList.toggle('is-solid', window.scrollY > 80);
+    };
+    window.addEventListener('scroll', () => {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(update);
+      }
+    }, { passive: true });
+    update();
+
+    // Foco de teclado nunca tapado por el nav fijo (WCAG 2.4.11): el
+    // scroll-padding solo actúa cuando el navegador desplaza; si el
+    // elemento ya estaba en pantalla pero debajo del nav, se baja lo justo.
+    // Se cuenta siempre el alto del nav, aunque en ese momento esté oculto
+    // (fx.js lo esconde al bajar y lo vuelve a mostrar al subir).
+    // Con scroll suave (Lenis, en fx.js) lo hace fx.js a través de Lenis:
+    // un scroll por fuera de Lenis puede deshacerse en el cuadro siguiente.
+    document.addEventListener('focusin', (ev) => {
+      const el = ev.target;
+      if (document.documentElement.classList.contains('lenis')) return;
+      if (!(el instanceof Element) || nav.contains(el)) return;
+      const navBottom = nav.offsetHeight;
+      const r = el.getBoundingClientRect();
+      // (margen de 32 px: la tarjeta de barbero se inclina al recibir el foco)
+      if (r.top < navBottom + 8 && r.bottom > 0) {
+        window.scrollBy(0, r.top - navBottom - 32);
+      }
+    });
   }
 
   /* ---------- Menú móvil ---------- */
@@ -73,74 +73,11 @@
     });
   }
 
-  /* ---------- Aparición al hacer scroll ---------- */
-  const revealSelectors = [
-    '.section__head',
-    '.section__title',
-    '.section__intro',
-    '.service',
-    '.drinks',
-    '.barber',
-    '.branch',
-    '.showcase__item',
-    '.showcase__video',
-    '.booking__aside',
-    '.form'
-  ];
-
-  // El contenido solo se oculta cuando IntersectionObserver existe y quedó
-  // listo (clase reveal-on en <html>). Si algo falla, todo queda visible.
-  if (!reduceMotion && "IntersectionObserver" in window) {
-    try {
-      const revealEls = [...document.querySelectorAll(revealSelectors.join(","))];
-      // Los elementos de un grupo (el mosaico del local) aparecen todos a la vez
-      // cuando el grupo entra en pantalla, sin escalonado.
-      const groupOf = (el) => el.closest(".showcase");
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const targets = entry.target.matches(".showcase")
-                ? entry.target.querySelectorAll(".reveal")
-                : [entry.target];
-              targets.forEach((t) => t.classList.add("is-in"));
-              io.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
-      );
-      const groups = new Set();
-      revealEls.forEach((el) => {
-        const group = groupOf(el);
-        if (group) {
-          el.style.setProperty("--rd", "0");
-          groups.add(group);
-        } else {
-          const sib = el.parentElement ? [...el.parentElement.children] : [el];
-          el.style.setProperty("--rd", String(Math.min(sib.indexOf(el), 6)));
-          io.observe(el);
-        }
-        // Lo que ya está en pantalla al cargar no se esconde
-        const top = (group || el).getBoundingClientRect().top;
-        if (top < window.innerHeight) el.classList.add("is-in");
-        el.classList.add("reveal");
-      });
-      groups.forEach((g) => io.observe(g));
-      document.documentElement.classList.add("reveal-on");
-      // Al imprimir, todo visible
-      window.addEventListener("beforeprint", () => revealEls.forEach((el) => el.classList.add("is-in")));
-    } catch (err) {
-      document.documentElement.classList.remove("reveal-on");
-    }
-  }
-
   /* ---------- Videos: póster diferido ----------
      El atributo poster se descarga siempre al cargar la página (~110 KB
      cada uno) aunque los videos estén muy abajo: se asigna recién cuando
      el video se acerca a la pantalla. */
-  // El video de fondo del hero va aparte: no tiene controles ni póster diferido
-  const pageVideos = [...document.querySelectorAll('video:not(.hero__video)')];
+  const pageVideos = [...document.querySelectorAll('video')];
   const posterIO = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -414,12 +351,68 @@
   }));
   window.addEventListener('focus', clearMaps);
 
-  /* ---------- Años de experiencia (desde el año de inicio) ---------- */
-  const thisYear = new Date().getFullYear();
-  document.querySelectorAll('[data-desde]').forEach((el) => {
-    const years = thisYear - Number(el.dataset.desde);
-    if (years > 0) el.textContent = years + (years === 1 ? ' año' : ' años');
+  /* ---------- Barberos: recorte o foto completa ----------
+     Cada tarjeta pide el recorte (<slug>-cutout.webp). Si no carga, se
+     cambia por la foto completa (<slug>.webp, en data-fallback) y la
+     tarjeta pasa a modo foto entera (.is-full). Un navegador sin WebP
+     carga directo el <img> .jpg, que también es la foto completa. */
+  document.querySelectorAll('.barber__person picture').forEach((picture) => {
+    const source = picture.querySelector('source[data-fallback]');
+    const img = picture.querySelector('img');
+    const card = picture.closest('.barber__card');
+    if (!source || !img || !card) return;
+    const markFull = () => card.classList.toggle('is-full', !img.currentSrc.includes('-cutout'));
+    const useFull = () => {
+      if (!source.dataset.fallback) return;
+      source.srcset = source.dataset.fallback;
+      source.removeAttribute('data-fallback');
+      card.classList.add('is-full');
+    };
+    img.addEventListener('load', markFull);
+    img.addEventListener('error', useFull);
+    // Ya falló antes de que corriera este script
+    if (img.complete && img.currentSrc && img.naturalWidth === 0) useFull();
   });
+
+  /* ---------- Barberos: puntos del carrusel (celular) ----------
+     En el celular la grilla es un carrusel con scroll-snap (CSS). Un punto
+     por barbero: marca el que está a la vista y lleva a él al tocarlo.
+     En pantallas grandes el CSS los oculta. */
+  const teamList = document.querySelector('.team__grid');
+  const teamDots = document.querySelector('.team__dots');
+  if (teamList && teamDots) {
+    const members = [...teamList.children];
+    const dots = members.map((member, i) => {
+      const name = member.querySelector('.barber__name');
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'team__dot';
+      dot.setAttribute('aria-label', 'Barbero ' + (i + 1) + ' de ' + members.length + (name ? ': ' + name.textContent : ''));
+      dot.addEventListener('click', () => {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        teamList.scrollTo({
+          left: member.offsetLeft - members[0].offsetLeft,
+          behavior: reduceMotion ? 'auto' : 'smooth'
+        });
+      });
+      teamDots.append(dot);
+      return dot;
+    });
+    const setActive = (i) => dots.forEach((dot, j) => {
+      if (j === i) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
+    });
+    setActive(0);
+    const visibleMember = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setActive(members.indexOf(entry.target));
+      });
+    }, { root: teamList, threshold: 0.6 });
+    members.forEach((member) => visibleMember.observe(member));
+    teamDots.hidden = false;
+  }
+
+  const thisYear = new Date().getFullYear();
 
   /* ---------- Año en el footer ---------- */
   document.querySelectorAll('.footer__legal p').forEach((p) => {

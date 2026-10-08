@@ -84,17 +84,26 @@ create table if not exists public.admins (
 
 -- ---------- Datos iniciales ----------
 
+-- El equipo, en el orden del sitio. Los nombres tienen que coincidir
+-- exactamente con las opciones de #f-barbero en index.html. Al volver a
+-- ejecutar este archivo, los de la lista quedan activos y con este orden.
 insert into public.barberos (nombre, orden) values
   ('Oswaldo Valecillos', 1),
-  ('Esteban Mendoza', 2),
-  ('José Ojeda', 3)
-on conflict (nombre) do nothing;
+  ('Gabriel Hidalgo', 2),
+  ('Esteban Mendoza', 3),
+  ('José Gregorio', 4),
+  ('Asdrúbal Añez', 5),
+  ('Carlos Barrueta', 6),
+  ('Frank Artigas', 7),
+  ('Jordan Rodríguez', 8),
+  ('Jorge Luis Carrero', 9)
+on conflict (nombre) do update set orden = excluded.orden, activo = true;
 
--- Octubre 2026: Gabriel Hidalgo ya no trabaja en la barbería y se cerró la
--- sede Carvajal. Se da de baja (no se borra: sus turnos pasados quedan en
--- el historial) y todos atienden solo en Valera.
+-- Octubre 2026: se cerró la sede Carvajal y todos atienden solo en Valera.
+-- José Ojeda ya no está en el equipo: se da de baja (no se borra: sus
+-- turnos pasados quedan en el historial).
 alter table public.barberos alter column sedes set default array['Valera'];
-update public.barberos set activo = false where nombre = 'Gabriel Hidalgo';
+update public.barberos set activo = false where nombre = 'José Ojeda';
 update public.barberos set sedes = array['Valera'] where sedes <> array['Valera'];
 
 insert into public.servicios (nombre, orden) values

@@ -20,21 +20,21 @@
   <meta property="og:title" content="Barbudo's Barbershop · Barbería Profesional en Valera">
   <meta property="og:description" content="Más que un corte, diseñamos tu estilo. Barbería profesional en Valera, Edo. Trujillo, Venezuela. Reserva tu turno en línea.">
   <!-- Las redes solo aceptan URL absolutas: si cambia el dominio, actualizar aquí, en canonical y en el JSON-LD -->
-  <meta property="og:image" content="https://sebbasv.github.io/Barbudos/assets/img/og-image.jpg">
+  <meta property="og:image" content="https://sebbasv.github.io/Barbudos/assets/img/og-image.jpg?v=2">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Barbudo's Barbershop: más que un corte, diseñamos tu estilo. El equipo frente al local en Valera.">
+  <meta property="og:image:alt" content="Logo de Barbudo's Barbershop sobre el techo de luces hexagonales del local: más que un corte, diseñamos tu estilo.">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Barbudo's Barbershop · Barbería Profesional en Trujillo">
   <meta name="twitter:description" content="Más que un corte, diseñamos tu estilo. Reserva tu turno en línea.">
-  <meta name="twitter:image" content="https://sebbasv.github.io/Barbudos/assets/img/og-image.jpg">
-  <meta name="twitter:image:alt" content="Barbudo's Barbershop: más que un corte, diseñamos tu estilo. El equipo frente al local en Valera.">
+  <meta name="twitter:image" content="https://sebbasv.github.io/Barbudos/assets/img/og-image.jpg?v=2">
+  <meta name="twitter:image:alt" content="Logo de Barbudo's Barbershop sobre el techo de luces hexagonales del local: más que un corte, diseñamos tu estilo.">
 
   <link rel="preload" href="assets/fonts/Oswald-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" as="image" href="assets/img/poster-corte.webp" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/img/local/techo-hexagonos-cafe.webp" type="image/webp" fetchpriority="high">
 
   <!-- Barlow (texto, nav y botones) desde Google Fonts; Oswald y JetBrains Mono son locales -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,8 +42,25 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap">
 
   <!-- ?v=N: subir el número al cambiar CSS o JS, para que el navegador no use la copia vieja -->
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="css/style.css?v=19">
   <noscript><style>.preloader { display: none; }</style></noscript>
+
+  <!-- Librerías de animación y 3D por CDN, con versión fija. js/fx.js las pide
+       con import() solo cuando hacen falta (nunca con "reducir movimiento").
+       Para actualizar: cambiar la versión aquí y probar todo el sitio. -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <script type="importmap">
+  {
+    "imports": {
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.15.0/+esm",
+      "gsap/ScrollTrigger": "https://cdn.jsdelivr.net/npm/gsap@3.15.0/ScrollTrigger.js/+esm",
+      "gsap/SplitText": "https://cdn.jsdelivr.net/npm/gsap@3.15.0/SplitText.js/+esm",
+      "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.mjs/+esm",
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/+esm",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+    }
+  }
+  </script>
 
   <script type="application/ld+json">
   {
@@ -56,7 +73,7 @@
     "slogan": "Más que un corte, diseñamos tu estilo",
     "taxID": "J-197958002",
     "telephone": "+58 412-6938179",
-    "image": ["https://sebbasv.github.io/Barbudos/assets/img/og-image.jpg", "https://sebbasv.github.io/Barbudos/assets/img/el-local-1.jpg"],
+    "image": ["https://sebbasv.github.io/Barbudos/assets/img/og-image.jpg?v=2", "https://sebbasv.github.io/Barbudos/assets/img/el-local-1.jpg"],
     "priceRange": "$15 - $20",
     "foundingDate": "2021",
     "founder": { "@type": "Person", "name": "Oswaldo Valecillos" },
@@ -75,9 +92,19 @@
 </head>
 <body>
 
-  <!-- Preloader -->
+  <!-- Preloader: lo maneja js/fx.js (anillo, contador y cortina). Si fx.js no
+       corre, el CSS lo retira solo; con "reducir movimiento" no se muestra. -->
   <div class="preloader" id="preloader" aria-hidden="true">
-    <img class="preloader__logo" src="assets/img/logo.svg" alt="" width="72" height="72">
+    <div class="preloader__panel preloader__panel--l"></div>
+    <div class="preloader__panel preloader__panel--r"></div>
+    <div class="preloader__mark">
+      <svg class="preloader__ring" viewBox="0 0 200 200" focusable="false">
+        <circle class="preloader__track" cx="100" cy="100" r="96"/>
+        <circle class="preloader__bar" cx="100" cy="100" r="96"/>
+      </svg>
+      <img class="preloader__logo" src="assets/img/marca/logo-circular-512.webp" srcset="assets/img/marca/logo-circular-256.webp 256w, assets/img/marca/logo-circular-512.webp 512w" sizes="140px" alt="" width="140" height="140">
+    </div>
+    <p class="preloader__count mono">0</p>
   </div>
 
   <a class="skip-link" href="#inicio">Saltar al contenido</a>
@@ -85,7 +112,10 @@
   <header class="nav" id="nav">
     <div class="nav__inner">
       <a class="nav__brand" href="#inicio" aria-label="Barbudo's Barbershop, inicio">
-        <img class="nav__logo" src="assets/img/logo.svg" alt="Barbudo's Barbershop" width="36" height="36">
+        <picture>
+          <source type="image/webp" srcset="assets/img/marca/logo-circular-256.webp 256w, assets/img/marca/logo-circular-512.webp 512w, assets/img/marca/logo-circular-1024.webp 1024w, assets/img/marca/logo-circular-2048.webp 2048w" sizes="40px">
+          <img class="nav__logo" src="assets/img/marca/logo-circular-512.png" srcset="assets/img/marca/logo-circular-512.png 512w, assets/img/marca/logo-circular-1024.png 1024w, assets/img/marca/logo-circular-2048.png 2048w" sizes="40px" alt="" width="40" height="40">
+        </picture>
         <span class="nav__brand-text">Barbudo's</span>
       </a>
 
@@ -106,62 +136,99 @@
 
   <main id="inicio">
 
-    <!-- Hero a pantalla completa: el corte en video de fondo, sin sonido y en
-         bucle. Con "reducir movimiento" el <source> no aplica y queda solo el póster. -->
-    <section class="hero" aria-labelledby="hero-title">
+    <!-- Hero a pantalla completa. Fondo: la foto del techo de hexágonos del
+         local (respaldo, y lo que se ve sin JS, con "reducir movimiento" o en
+         equipos débiles); si el equipo aguanta, fx.js le pone encima el techo
+         en 3D (js/hex3d.js) y la foto se desvanece. -->
+    <section class="hero" aria-labelledby="hero-title" data-fx-intro>
       <div class="hero__bg" aria-hidden="true">
         <picture>
-          <source srcset="assets/img/poster-corte.webp" type="image/webp">
-          <img class="hero__poster" src="assets/img/poster-corte.jpg" alt="" width="720" height="1280" fetchpriority="high" decoding="async">
+          <source srcset="assets/img/local/techo-hexagonos-cafe.webp" type="image/webp">
+          <img class="hero__photo" src="assets/img/local/techo-hexagonos-cafe.jpg" alt="" width="960" height="1280" fetchpriority="high" decoding="async">
         </picture>
-        <video class="hero__video" id="hero-video" poster="assets/img/poster-corte.webp" muted autoplay loop playsinline preload="auto">
-          <source src="assets/video/VideoCorteLucas.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)">
-        </video>
       </div>
 
       <div class="hero__inner">
-        <p class="eyebrow hero__brand">Barbería profesional · Valera, Trujillo</p>
-        <h1 class="hero__title" id="hero-title">
-          <span class="hero__line">Más que un</span>
-          <span class="hero__line">corte,</span>
-          <span class="hero__line">diseñamos tu <span class="accent">estilo</span></span>
+        <!-- Logo con brillo rojo detrás, como el cartel de neón del local -->
+        <div class="hero__logo" data-fx="fade">
+          <picture>
+            <source type="image/webp" srcset="assets/img/marca/logo-circular-256.webp 256w, assets/img/marca/logo-circular-512.webp 512w, assets/img/marca/logo-circular-1024.webp 1024w, assets/img/marca/logo-circular-2048.webp 2048w" sizes="(max-width: 540px) 104px, 140px">
+            <img class="hero__logo-img" src="assets/img/marca/logo-circular-512.png" srcset="assets/img/marca/logo-circular-512.png 512w, assets/img/marca/logo-circular-1024.png 1024w, assets/img/marca/logo-circular-2048.png 2048w" sizes="(max-width: 540px) 104px, 140px" alt="Barbudo's Barbershop" width="140" height="140" decoding="async">
+          </picture>
+        </div>
+        <p class="eyebrow hero__brand" data-fx="fade">Barbería profesional · Valera · Est. 2021</p>
+        <!-- Saltos con <br> y no con bloques: SplitText (fx.js) no parte en
+             líneas el texto de un hijo en bloque cuando se envuelve en el celular.
+             data-fx-split="chars": aparece letra por letra. -->
+        <h1 class="hero__title" id="hero-title" data-fx="title" data-fx-split="chars">
+          Más que un corte,<br>
+          diseñamos tu<br>
+          <span class="accent hero__neon" data-fx-neon>estilo</span>
         </h1>
-        <p class="hero__sub">Cortes, barba y diseño hechos a tu medida. En Valera, Trujillo, Venezuela. Sin vueltas, al corte.</p>
-        <div class="hero__ctas">
-          <a class="btn btn--primary" href="#reserva">Reservar turno</a>
+        <div class="hero__ctas" data-fx="fade">
+          <a class="btn btn--primary" href="#reserva" data-fx-magnetic>Reservar turno</a>
           <a class="btn btn--ghost" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">
             <svg class="btn__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>
             WhatsApp
           </a>
         </div>
-        <ul class="hero__facts mono" aria-label="Barbudo's en números">
-          <li>Est. 2021</li>
-          <li>3 barberos</li>
-          <li>Lun a sáb</li>
-        </ul>
+        <!-- Cifras: el número va en el HTML (así se ve sin JS); fx.js lo cuenta
+             desde data-fx-from (o 0). El orden dt/dd es el de lectura ("Desde:
+             2021"); el CSS pone el número arriba. -->
+        <dl class="hero__stats" data-fx="fade">
+          <div class="hero__stat"><dt>Desde</dt><dd class="mono" data-fx-count data-fx-from="2000">2021</dd></div>
+          <div class="hero__stat"><dt>Barberos</dt><dd class="mono" data-fx-count>9</dd></div>
+          <div class="hero__stat"><dt>Sede en Valera</dt><dd class="mono" data-fx-count>1</dd></div>
+        </dl>
       </div>
 
-      <!-- Video en movimiento > 5 s: botón para pausarlo (WCAG 2.2.2). Lo muestra main.js. -->
-      <button class="hero__toggle" id="hero-toggle" type="button" aria-label="Pausar el video de fondo" hidden>
-        <svg class="hero__toggle-pause" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-        <svg class="hero__toggle-play" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M7 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 7 5.5z"/></svg>
-      </button>
+      <!-- Indicador de scroll: la línea se llena en bucle (menos de 5 s en
+           total, WCAG 2.2.2) y queda llena -->
+      <span class="hero__scroll" aria-hidden="true"></span>
     </section>
+
+    <!-- Franja decorativa: el texto repite datos que ya están en la página,
+         por eso va oculto para lectores de pantalla. fx.js la duplica para
+         que no tenga cortes y la mueve (más rápido y al revés según el
+         scroll). Se mueve más de 5 s: botón para pausarla (WCAG 2.2.2). -->
+    <div class="marquee" data-fx-marquee>
+      <svg class="marquee__defs" width="0" height="0" aria-hidden="true" focusable="false">
+        <symbol id="hexagono" viewBox="0 0 24 24"><path d="M12 2.5 20.5 7.25v9.5L12 21.5l-8.5-4.75v-9.5z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
+      </svg>
+      <div class="marquee__track" aria-hidden="true">
+        <div class="marquee__group">
+          <span class="marquee__word">Corte</span><svg class="marquee__hex"><use href="#hexagono"/></svg>
+          <span class="marquee__word">Barba</span><svg class="marquee__hex"><use href="#hexagono"/></svg>
+          <span class="marquee__word is-fill">Diseño</span><svg class="marquee__hex"><use href="#hexagono"/></svg>
+          <span class="marquee__word">Valera</span><svg class="marquee__hex"><use href="#hexagono"/></svg>
+          <span class="marquee__word">Est. 2021</span><svg class="marquee__hex"><use href="#hexagono"/></svg>
+        </div>
+      </div>
+      <button class="marquee__toggle" type="button" aria-label="Pausar la franja animada" hidden>
+        <svg class="marquee__toggle-pause" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+        <svg class="marquee__toggle-play" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path d="M7 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 7 5.5z"/></svg>
+      </button>
+    </div>
 
     <section class="section services" id="servicios">
       <header class="section__head">
-        <p class="eyebrow">01 — Servicios</p>
-        <h2 class="section__title">Servicios del local</h2>
-        <p class="section__intro">Dos cortes de la casa, pensados para salir listo de la silla. Ambos incluyen bebida de cortesía y se pagan en la barbería.</p>
+        <p class="eyebrow" data-fx="fade">01 — Servicios</p>
+        <h2 class="section__title" data-fx="title">Servicios del local</h2>
+        <p class="section__intro" data-fx="fade">Dos cortes de la casa, pensados para salir listo de la silla. Ambos incluyen bebida de cortesía y se pagan en la barbería.</p>
       </header>
 
-      <div class="services__grid">
-        <article class="service">
-          <div class="service__media">
-            <picture>
-              <source srcset="assets/img/Corte1.webp" type="image/webp">
-              <img src="assets/img/Corte1.jpg" alt="Resultado de un corte premium en Barbudo's Barbershop: degradado con diseño de líneas" width="960" height="1280" loading="lazy" decoding="async">
-            </picture>
+      <!-- En escritorio, tarjetas apiladas: cada una se fija arriba y la
+           siguiente la tapa (fx.js achica y oscurece la de abajo) -->
+      <div class="services__stack">
+        <div class="stack__item">
+        <article class="service" data-fx="fade">
+          <div class="service__media" data-fx="image">
+            <span class="service__parallax" data-fx-parallax>
+              <picture>
+                <source srcset="assets/img/Corte1.webp" type="image/webp">
+                <img src="assets/img/Corte1.jpg" alt="Resultado de un corte premium en Barbudo's Barbershop: degradado con diseño de líneas" width="960" height="1280" loading="lazy" decoding="async">
+              </picture>
+            </span>
             <span class="service__chip">Más pedido</span>
           </div>
           <div class="service__body">
@@ -182,13 +249,17 @@
             <a class="btn btn--ghost service__cta" href="#reserva" data-servicio="Corte Premium">Reservar este corte</a>
           </div>
         </article>
+        </div>
 
-        <article class="service">
-          <div class="service__media">
-            <picture>
-              <source srcset="assets/img/Corte2.webp" type="image/webp">
-              <img src="assets/img/Corte2.jpg" alt="Resultado de un corte full en Barbudo's Barbershop" width="1279" height="1704" loading="lazy" decoding="async">
-            </picture>
+        <div class="stack__item">
+        <article class="service" data-fx="fade">
+          <div class="service__media" data-fx="image">
+            <span class="service__parallax" data-fx-parallax>
+              <picture>
+                <source srcset="assets/img/Corte2.webp" type="image/webp">
+                <img src="assets/img/Corte2.jpg" alt="Resultado de un corte full en Barbudo's Barbershop" width="1279" height="1704" loading="lazy" decoding="async">
+              </picture>
+            </span>
           </div>
           <div class="service__body">
             <div class="service__top">
@@ -206,10 +277,11 @@
             <a class="btn btn--ghost service__cta" href="#reserva" data-servicio="Corte Full">Reservar este corte</a>
           </div>
         </article>
+        </div>
       </div>
 
-      <aside class="drinks" id="bebida">
-        <div class="drinks__media">
+      <aside class="drinks" id="bebida" data-fx="fade">
+        <div class="drinks__media" data-fx="image">
           <picture>
             <source srcset="assets/img/BebidaDeCortesiaPrincipal.webp" type="image/webp">
             <img src="assets/img/BebidaDeCortesiaPrincipal.jpg" alt="Bebida de cortesía que se ofrece con cada corte en Barbudo's" width="1080" height="1440" loading="lazy" decoding="async">
@@ -229,111 +301,330 @@
 
     <section class="section local" id="local">
       <header class="section__head">
-        <p class="eyebrow">02 — El local</p>
-        <h2 class="section__title">El local</h2>
-        <p class="section__intro">Un espacio pensado para el detalle. Mira el local en fotos y en video.</p>
+        <p class="eyebrow" data-fx="fade">02 — El local</p>
+        <h2 class="section__title" data-fx="title">El local</h2>
+        <p class="section__intro" data-fx="fade">Un espacio pensado para el detalle. Mira el local en fotos y en video.</p>
       </header>
 
-      <!-- Mosaico: 1 foto grande + 2 chicas y un solo video destacado.
-           Las fotos son frames de LocalValera.mp4 que no se repiten en otra parte del sitio. -->
-      <div class="showcase">
-        <figure class="showcase__item showcase__item--big">
-          <picture>
-            <source srcset="assets/img/el-local-interior.webp" type="image/webp">
-            <img src="assets/img/el-local-interior.jpg" alt="Interior de la sede Valera: luces hexagonales en el techo y un barbero atendiendo a un cliente" width="720" height="960" loading="lazy" decoding="async">
-          </picture>
-        </figure>
-        <figure class="showcase__item showcase__item--team">
-          <picture>
-            <source srcset="assets/img/el-local-1.webp" type="image/webp">
-            <img src="assets/img/el-local-1.jpg" alt="El equipo de Barbudo's frente a la entrada del local en Valera" width="720" height="960" loading="lazy" decoding="async">
-          </picture>
-        </figure>
-        <figure class="showcase__item showcase__item--sign">
-          <picture>
-            <source srcset="assets/img/el-local-marca.webp" type="image/webp">
-            <img src="assets/img/el-local-marca.jpg" alt="El letrero iluminado de Barbudo's Barbershop con un peine y una tijera en la pared del local" width="720" height="900" loading="lazy" decoding="async">
-          </picture>
-        </figure>
-        <!-- Con preload="none" solo se descarga al tocar play; el póster se asigna en main.js al acercarse -->
-        <figure class="showcase__video">
-          <video src="assets/video/PresentacionBarberia.mp4" aria-label="Video: presentación de la barbería" data-poster="assets/img/poster-presentacion.webp" controls playsinline preload="none"></video>
-          <figcaption>Presentación de la barbería</figcaption>
-        </figure>
+      <!-- Galería: carrusel horizontal con scroll-snap (celular, sin JS y con
+           "reducir movimiento"). En escritorio fx.js la fija y la recorre de
+           lado con el scroll. Tamaños alternados: --tall vertical grande,
+           --wide horizontal, --mid vertical mediana. -->
+      <div class="gallery" data-fx-gallery>
+        <div class="gallery__track">
+          <figure class="gallery__item gallery__item--tall">
+            <div class="gallery__frame" data-fx="image">
+              <picture>
+                <source srcset="assets/img/local/techo-hexagonos-cafe.webp" type="image/webp">
+                <img src="assets/img/local/techo-hexagonos-cafe.jpg" alt="Techo con luces LED hexagonales sobre la recepción, con una taza de Barbudo's en primer plano" width="960" height="1280" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <figcaption class="gallery__caption mono">Techo LED</figcaption>
+          </figure>
+          <figure class="gallery__item gallery__item--wide">
+            <div class="gallery__frame" data-fx="image">
+              <picture>
+                <source srcset="assets/img/local/sillones-espejos.webp" type="image/webp">
+                <img src="assets/img/local/sillones-espejos.jpg" alt="Sillones rojos frente a espejos con luz de borde y barriles negros de apoyo" width="1280" height="960" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <figcaption class="gallery__caption mono">Los sillones</figcaption>
+          </figure>
+          <figure class="gallery__item gallery__item--mid">
+            <div class="gallery__frame" data-fx="image">
+              <picture>
+                <source srcset="assets/img/local/barber-pole.webp" type="image/webp">
+                <img src="assets/img/local/barber-pole.jpg" alt="Poste de barbero iluminado en la pared, junto al letrero de Barbudo's" width="960" height="1280" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <figcaption class="gallery__caption mono">El poste</figcaption>
+          </figure>
+          <figure class="gallery__item gallery__item--tall">
+            <div class="gallery__frame" data-fx="image">
+              <picture>
+                <source srcset="assets/img/local/interior-noche.webp" type="image/webp">
+                <img src="assets/img/local/interior-noche.jpg" alt="El local de noche: fila de sillones rojos y el entrepiso iluminado con luz morada" width="960" height="1280" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <figcaption class="gallery__caption mono">De noche</figcaption>
+          </figure>
+          <figure class="gallery__item gallery__item--wide">
+            <div class="gallery__frame" data-fx="image">
+              <picture>
+                <source srcset="assets/img/local/corte-recepcion.webp" type="image/webp">
+                <img src="assets/img/local/corte-recepcion.jpg" alt="Un barbero corta el cabello a un niño bajo el techo de hexágonos, con clientes esperando al fondo" width="960" height="1280" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <figcaption class="gallery__caption mono">En la silla</figcaption>
+          </figure>
+          <figure class="gallery__item gallery__item--mid">
+            <div class="gallery__frame" data-fx="image">
+              <picture>
+                <source srcset="assets/img/local/pasillo-hexagonos.webp" type="image/webp">
+                <img src="assets/img/local/pasillo-hexagonos.jpg" alt="El pasillo del local con sillones rojos y el techo de hexágonos al fondo" width="960" height="1280" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <figcaption class="gallery__caption mono">El pasillo</figcaption>
+          </figure>
+          <figure class="gallery__item gallery__item--wide">
+            <div class="gallery__frame" data-fx="image">
+              <picture>
+                <source srcset="assets/img/local/pasillo-clientes.webp" type="image/webp">
+                <img src="assets/img/local/pasillo-clientes.jpg" alt="Clientes esperando su turno en el pasillo, junto a los sillones rojos" width="960" height="1280" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <figcaption class="gallery__caption mono">Día de corte</figcaption>
+          </figure>
+          <!-- Con preload="none" solo se descarga al tocar play; el póster se asigna en main.js al acercarse -->
+          <figure class="gallery__item gallery__item--tall">
+            <div class="gallery__frame gallery__frame--video" data-fx="image">
+              <video src="assets/video/PresentacionBarberia.mp4" aria-label="Video: presentación de la barbería" data-poster="assets/img/poster-presentacion.webp" controls playsinline preload="none"></video>
+            </div>
+            <figcaption class="gallery__caption mono">Presentación</figcaption>
+          </figure>
+        </div>
       </div>
+
+      <!-- Cierre de la galería: el equipo a todo el ancho -->
+      <figure class="local__finale" data-fx="image">
+        <picture>
+          <source srcset="assets/img/local/equipo-fachada.webp" type="image/webp">
+          <img src="assets/img/local/equipo-fachada.jpg" alt="El equipo de Barbudo's, de negro, frente a la fachada del local en Valera" width="720" height="1280" loading="lazy" decoding="async">
+        </picture>
+        <figcaption class="local__finale-text" data-fx="title">Un equipo.<br>Un estándar.</figcaption>
+      </figure>
     </section>
 
     <section class="section staff" id="barberos">
       <header class="section__head">
-        <p class="eyebrow">03 — El equipo</p>
-        <h2 class="section__title">Nuestros <span class="accent">barberos</span></h2>
+        <p class="eyebrow" data-fx="fade">03 — El equipo</p>
+        <h2 class="section__title" data-fx="title">Nuestros <span class="accent">barberos</span></h2>
       </header>
 
-      <!-- Los años de experiencia se calculan en main.js desde data-desde. -->
-      <div class="staff__grid">
-        <article class="barber barber--owner">
-          <div class="barber__photo">
-            <picture>
-              <source srcset="assets/img/OswaldoValecillos1.webp" type="image/webp">
-              <img class="barber__img" src="assets/img/OswaldoValecillos1.jpg" alt="Oswaldo Valecillos, dueño de Barbudo's, atendiendo a un cliente" width="800" height="1066" loading="lazy" decoding="async">
-            </picture>
-            <span class="barber__badge">Dueño</span>
-          </div>
-          <div class="barber__info">
-            <h3 class="barber__name">Oswaldo Valecillos</h3>
-            <p class="barber__years mono"><span data-desde="2018">8 años</span> de experiencia</p>
-            <div class="barber__links">
-              <a class="barber__ig" href="https://www.instagram.com/Valeoswald/" target="_blank" rel="noopener noreferrer">@Valeoswald</a>
-              <a class="barber__book" href="#reserva" data-barbero="Oswaldo Valecillos" aria-label="Reservar con Oswaldo Valecillos">Reservar</a>
+      <!-- Tarjeta 3D con recorte: fondo (nombre gigante y hexágono), la
+           persona recortada (-cutout.webp, sale un poco por arriba en hover o
+           siempre en táctil) e info abajo. Si el recorte no carga, main.js
+           pone la foto completa. Escritorio: 3 columnas, el fundador ocupa
+           2×2. Tablet: 2 columnas. Celular: carrusel con puntos. -->
+      <div class="team">
+        <ul class="team__grid" role="list">
+        <li class="barber barber--founder" data-fx="fade">
+          <article class="barber__card" aria-labelledby="barbero-oswaldo-valecillos">
+            <div class="barber__bg" aria-hidden="true">
+              <span class="barber__ghost">Oswaldo<br>Valecillos</span>
+              <svg class="barber__hex" viewBox="0 0 100 100" focusable="false"><path d="M50 3 91 26.5v47L50 97 9 73.5v-47z"/></svg>
             </div>
-          </div>
-        </article>
-
-        <article class="barber">
-          <div class="barber__photo">
-            <picture>
-              <source srcset="assets/img/EstebanMendoza1.webp" type="image/webp">
-              <img class="barber__img" src="assets/img/EstebanMendoza1.jpg" alt="Esteban Mendoza, barbero profesional en Barbudo's" width="800" height="1066" loading="lazy" decoding="async">
-            </picture>
-          </div>
-          <div class="barber__info">
-            <h3 class="barber__name">Esteban Mendoza</h3>
-            <p class="barber__years mono"><span data-desde="2024">2 años</span> de experiencia</p>
-            <div class="barber__links">
-              <a class="barber__ig" href="https://www.instagram.com/estabanbarber/" target="_blank" rel="noopener noreferrer">@estabanbarber</a>
-              <a class="barber__book" href="#reserva" data-barbero="Esteban Mendoza" aria-label="Reservar con Esteban Mendoza">Reservar</a>
+            <div class="barber__person" data-fx="image">
+              <picture>
+                <source srcset="assets/img/barberos/oswaldo-valecillos-cutout.webp" data-fallback="assets/img/barberos/oswaldo-valecillos.webp" type="image/webp">
+                <img src="assets/img/barberos/oswaldo-valecillos.jpg" alt="Retrato de Oswaldo Valecillos" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
             </div>
-          </div>
-        </article>
-
-        <article class="barber">
-          <div class="barber__photo">
-            <picture>
-              <source srcset="assets/img/JoseOjeda1.webp" type="image/webp">
-              <img class="barber__img" src="assets/img/JoseOjeda1.jpg" alt="José Ojeda, barbero profesional en Barbudo's" width="800" height="1066" loading="lazy" decoding="async">
-            </picture>
-          </div>
-          <div class="barber__info">
-            <h3 class="barber__name">José Ojeda</h3>
-            <p class="barber__years mono"><span data-desde="2016">10 años</span> de experiencia</p>
-            <div class="barber__links">
-              <a class="barber__ig" href="https://www.instagram.com/goyi_barber/" target="_blank" rel="noopener noreferrer">@goyi_barber</a>
-              <a class="barber__book" href="#reserva" data-barbero="José Ojeda" aria-label="Reservar con José Ojeda">Reservar</a>
+            <span class="barber__chip">Fundador</span>
+            <div class="barber__info">
+              <h3 class="barber__name" id="barbero-oswaldo-valecillos">Oswaldo Valecillos</h3>
+              <a class="barber__book" href="#reserva" data-barbero="Oswaldo Valecillos">Reservar con él<span class="sr-only">: Oswaldo Valecillos</span></a>
             </div>
-          </div>
-        </article>
+            <span class="barber__shine" aria-hidden="true"></span>
+          </article>
+        </li>
+        <li class="barber" data-fx="fade">
+          <article class="barber__card" aria-labelledby="barbero-gabriel-hidalgo">
+            <div class="barber__bg" aria-hidden="true">
+              <span class="barber__ghost">Gabriel<br>Hidalgo</span>
+              <svg class="barber__hex" viewBox="0 0 100 100" focusable="false"><path d="M50 3 91 26.5v47L50 97 9 73.5v-47z"/></svg>
+            </div>
+            <div class="barber__person" data-fx="image">
+              <picture>
+                <source srcset="assets/img/barberos/gabriel-hidalgo-cutout.webp" data-fallback="assets/img/barberos/gabriel-hidalgo.webp" type="image/webp">
+                <img src="assets/img/barberos/gabriel-hidalgo.jpg" alt="Retrato de Gabriel Hidalgo" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="barber__info">
+              <h3 class="barber__name" id="barbero-gabriel-hidalgo">Gabriel Hidalgo</h3>
+              <a class="barber__book" href="#reserva" data-barbero="Gabriel Hidalgo">Reservar con él<span class="sr-only">: Gabriel Hidalgo</span></a>
+            </div>
+            <span class="barber__shine" aria-hidden="true"></span>
+          </article>
+        </li>
+        <li class="barber" data-fx="fade">
+          <article class="barber__card" aria-labelledby="barbero-esteban-mendoza">
+            <div class="barber__bg" aria-hidden="true">
+              <span class="barber__ghost">Esteban<br>Mendoza</span>
+              <svg class="barber__hex" viewBox="0 0 100 100" focusable="false"><path d="M50 3 91 26.5v47L50 97 9 73.5v-47z"/></svg>
+            </div>
+            <div class="barber__person" data-fx="image">
+              <picture>
+                <source srcset="assets/img/barberos/esteban-mendoza-cutout.webp" data-fallback="assets/img/barberos/esteban-mendoza.webp" type="image/webp">
+                <img src="assets/img/barberos/esteban-mendoza.jpg" alt="Retrato de Esteban Mendoza" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="barber__info">
+              <h3 class="barber__name" id="barbero-esteban-mendoza">Esteban Mendoza</h3>
+              <a class="barber__book" href="#reserva" data-barbero="Esteban Mendoza">Reservar con él<span class="sr-only">: Esteban Mendoza</span></a>
+            </div>
+            <span class="barber__shine" aria-hidden="true"></span>
+          </article>
+        </li>
+        <li class="barber" data-fx="fade">
+          <article class="barber__card" aria-labelledby="barbero-jose-gregorio">
+            <div class="barber__bg" aria-hidden="true">
+              <span class="barber__ghost">José<br>Gregorio</span>
+              <svg class="barber__hex" viewBox="0 0 100 100" focusable="false"><path d="M50 3 91 26.5v47L50 97 9 73.5v-47z"/></svg>
+            </div>
+            <div class="barber__person" data-fx="image">
+              <picture>
+                <source srcset="assets/img/barberos/jose-gregorio-cutout.webp" data-fallback="assets/img/barberos/jose-gregorio.webp" type="image/webp">
+                <img src="assets/img/barberos/jose-gregorio.jpg" alt="Retrato de José Gregorio" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="barber__info">
+              <h3 class="barber__name" id="barbero-jose-gregorio">José Gregorio</h3>
+              <a class="barber__book" href="#reserva" data-barbero="José Gregorio">Reservar con él<span class="sr-only">: José Gregorio</span></a>
+            </div>
+            <span class="barber__shine" aria-hidden="true"></span>
+          </article>
+        </li>
+        <li class="barber" data-fx="fade">
+          <article class="barber__card" aria-labelledby="barbero-asdrubal-anez">
+            <div class="barber__bg" aria-hidden="true">
+              <span class="barber__ghost">Asdrúbal<br>Añez</span>
+              <svg class="barber__hex" viewBox="0 0 100 100" focusable="false"><path d="M50 3 91 26.5v47L50 97 9 73.5v-47z"/></svg>
+            </div>
+            <div class="barber__person" data-fx="image">
+              <picture>
+                <source srcset="assets/img/barberos/asdrubal-anez-cutout.webp" data-fallback="assets/img/barberos/asdrubal-anez.webp" type="image/webp">
+                <img src="assets/img/barberos/asdrubal-anez.jpg" alt="Retrato de Asdrúbal Añez" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="barber__info">
+              <h3 class="barber__name" id="barbero-asdrubal-anez">Asdrúbal Añez</h3>
+              <a class="barber__book" href="#reserva" data-barbero="Asdrúbal Añez">Reservar con él<span class="sr-only">: Asdrúbal Añez</span></a>
+            </div>
+            <span class="barber__shine" aria-hidden="true"></span>
+          </article>
+        </li>
+        <li class="barber" data-fx="fade">
+          <article class="barber__card" aria-labelledby="barbero-carlos-barrueta">
+            <div class="barber__bg" aria-hidden="true">
+              <span class="barber__ghost">Carlos<br>Barrueta</span>
+              <svg class="barber__hex" viewBox="0 0 100 100" focusable="false"><path d="M50 3 91 26.5v47L50 97 9 73.5v-47z"/></svg>
+            </div>
+            <div class="barber__person" data-fx="image">
+              <picture>
+                <source srcset="assets/img/barberos/carlos-barrueta-cutout.webp" data-fallback="assets/img/barberos/carlos-barrueta.webp" type="image/webp">
+                <img src="assets/img/barberos/carlos-barrueta.jpg" alt="Retrato de Carlos Barrueta" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="barber__info">
+              <h3 class="barber__name" id="barbero-carlos-barrueta">Carlos Barrueta</h3>
+              <a class="barber__book" href="#reserva" data-barbero="Carlos Barrueta">Reservar con él<span class="sr-only">: Carlos Barrueta</span></a>
+            </div>
+            <span class="barber__shine" aria-hidden="true"></span>
+          </article>
+        </li>
+        <li class="barber" data-fx="fade">
+          <article class="barber__card" aria-labelledby="barbero-frank-artigas">
+            <div class="barber__bg" aria-hidden="true">
+              <span class="barber__ghost">Frank<br>Artigas</span>
+              <svg class="barber__hex" viewBox="0 0 100 100" focusable="false"><path d="M50 3 91 26.5v47L50 97 9 73.5v-47z"/></svg>
+            </div>
+            <div class="barber__person" data-fx="image">
+              <picture>
+                <source srcset="assets/img/barberos/frank-artigas-cutout.webp" data-fallback="assets/img/barberos/frank-artigas.webp" type="image/webp">
+                <img src="assets/img/barberos/frank-artigas.jpg" alt="Retrato de Frank Artigas" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="barber__info">
+              <h3 class="barber__name" id="barbero-frank-artigas">Frank Artigas</h3>
+              <a class="barber__book" href="#reserva" data-barbero="Frank Artigas">Reservar con él<span class="sr-only">: Frank Artigas</span></a>
+            </div>
+            <span class="barber__shine" aria-hidden="true"></span>
+          </article>
+        </li>
+        <li class="barber" data-fx="fade">
+          <article class="barber__card" aria-labelledby="barbero-jordan-rodriguez">
+            <div class="barber__bg" aria-hidden="true">
+              <span class="barber__ghost">Jordan<br>Rodríguez</span>
+              <svg class="barber__hex" viewBox="0 0 100 100" focusable="false"><path d="M50 3 91 26.5v47L50 97 9 73.5v-47z"/></svg>
+            </div>
+            <div class="barber__person" data-fx="image">
+              <picture>
+                <source srcset="assets/img/barberos/jordan-rodriguez-cutout.webp" data-fallback="assets/img/barberos/jordan-rodriguez.webp" type="image/webp">
+                <img src="assets/img/barberos/jordan-rodriguez.jpg" alt="Retrato de Jordan Rodríguez" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="barber__info">
+              <h3 class="barber__name" id="barbero-jordan-rodriguez">Jordan Rodríguez</h3>
+              <a class="barber__book" href="#reserva" data-barbero="Jordan Rodríguez">Reservar con él<span class="sr-only">: Jordan Rodríguez</span></a>
+            </div>
+            <span class="barber__shine" aria-hidden="true"></span>
+          </article>
+        </li>
+        <li class="barber" data-fx="fade">
+          <article class="barber__card" aria-labelledby="barbero-jorge-luis-carrero">
+            <div class="barber__bg" aria-hidden="true">
+              <span class="barber__ghost">Jorge<br>Luis Carrero</span>
+              <svg class="barber__hex" viewBox="0 0 100 100" focusable="false"><path d="M50 3 91 26.5v47L50 97 9 73.5v-47z"/></svg>
+            </div>
+            <div class="barber__person" data-fx="image">
+              <picture>
+                <source srcset="assets/img/barberos/jorge-luis-carrero-cutout.webp" data-fallback="assets/img/barberos/jorge-luis-carrero.webp" type="image/webp">
+                <img src="assets/img/barberos/jorge-luis-carrero.jpg" alt="Retrato de Jorge Luis Carrero" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="barber__info">
+              <h3 class="barber__name" id="barbero-jorge-luis-carrero">Jorge Luis Carrero</h3>
+              <a class="barber__book" href="#reserva" data-barbero="Jorge Luis Carrero">Reservar con él<span class="sr-only">: Jorge Luis Carrero</span></a>
+            </div>
+            <span class="barber__shine" aria-hidden="true"></span>
+          </article>
+        </li>
+        </ul>
+        <div class="team__dots" hidden></div>
       </div>
     </section>
 
+    <!-- Separador: poste de barbero. Sin JS, en equipos débiles y sin WebGL
+         es este SVG (las franjas bajan con el scroll donde el navegador lo
+         permite, por CSS); si el equipo aguanta, fx.js le pone encima el
+         poste en 3D (js/pole3d.js), que gira con el scroll. -->
+    <div class="pole" data-fx-pole aria-hidden="true">
+      <svg class="pole__fallback" viewBox="0 0 80 300" width="80" height="300" focusable="false">
+        <defs>
+          <linearGradient id="pole-chrome" x1="0" x2="1">
+            <stop offset="0" stop-color="#5b5752"/><stop offset=".35" stop-color="#f4efe6"/><stop offset=".6" stop-color="#9a958e"/><stop offset="1" stop-color="#3a342c"/>
+          </linearGradient>
+          <linearGradient id="pole-shade" x1="0" x2="1">
+            <stop offset="0" stop-color="#0a0909" stop-opacity=".55"/><stop offset=".4" stop-color="#0a0909" stop-opacity="0"/><stop offset="1" stop-color="#0a0909" stop-opacity=".6"/>
+          </linearGradient>
+          <!-- Una vuelta de franjas (rojo, marfil, negro, marfil) cada 60 px -->
+          <pattern id="pole-stripes" width="60" height="60" patternUnits="userSpaceOnUse" patternTransform="skewY(-30)">
+            <rect width="60" height="60" fill="#ece6dc"/>
+            <rect y="0" width="60" height="22" fill="#e24234"/>
+            <rect y="30" width="60" height="12" fill="#0a0909"/>
+          </pattern>
+          <clipPath id="pole-body"><rect x="14" y="34" width="52" height="232" rx="4"/></clipPath>
+        </defs>
+        <g clip-path="url(#pole-body)">
+          <rect class="pole__stripes" x="14" y="-26" width="52" height="412" fill="url(#pole-stripes)"/>
+          <rect x="14" y="34" width="52" height="232" fill="url(#pole-shade)"/>
+        </g>
+        <rect x="8" y="14" width="64" height="20" rx="4" fill="url(#pole-chrome)"/>
+        <path d="M22 14a18 12 0 0 1 36 0z" fill="url(#pole-chrome)"/>
+        <rect x="8" y="266" width="64" height="20" rx="4" fill="url(#pole-chrome)"/>
+      </svg>
+    </div>
+
     <section class="section booking" id="reserva">
       <header class="section__head">
-        <p class="eyebrow">04 — Reserva</p>
-        <h2 class="section__title">Reserva tu turno</h2>
-        <p class="section__intro">Elige barbero, servicio y fecha, y aparta uno de los turnos libres en la sede de Valera. Si tienes dudas, escríbenos directo.</p>
+        <p class="eyebrow" data-fx="fade">04 — Reserva</p>
+        <h2 class="section__title" data-fx="title">Reserva tu turno</h2>
+        <p class="section__intro" data-fx="fade">Elige barbero, servicio y fecha, y aparta uno de los turnos libres en la sede de Valera. Si tienes dudas, escríbenos directo.</p>
       </header>
 
       <div class="booking__grid">
-        <form class="form" id="booking-form" novalidate>
+        <form class="form" id="booking-form" novalidate data-fx="fade">
           <div class="form__field">
             <label for="f-nombre">Nombre y apellido</label>
             <input id="f-nombre" name="nombre" type="text" autocomplete="name" required placeholder="Tu nombre…">
@@ -353,8 +644,14 @@
               <select id="f-barbero" name="barbero">
                 <option value="Sin preferencia" selected>Sin preferencia</option>
                 <option value="Oswaldo Valecillos">Oswaldo Valecillos</option>
+                <option value="Gabriel Hidalgo">Gabriel Hidalgo</option>
                 <option value="Esteban Mendoza">Esteban Mendoza</option>
-                <option value="José Ojeda">José Ojeda</option>
+                <option value="José Gregorio">José Gregorio</option>
+                <option value="Asdrúbal Añez">Asdrúbal Añez</option>
+                <option value="Carlos Barrueta">Carlos Barrueta</option>
+                <option value="Frank Artigas">Frank Artigas</option>
+                <option value="Jordan Rodríguez">Jordan Rodríguez</option>
+                <option value="Jorge Luis Carrero">Jorge Luis Carrero</option>
               </select>
             </div>
             <div class="form__field">
@@ -399,7 +696,7 @@
           <button class="btn btn--ghost btn--block" type="button" id="booking-again">Hacer otra reserva</button>
         </div>
 
-        <aside class="booking__aside" aria-label="Contacto y horario">
+        <aside class="booking__aside" data-fx="fade" aria-label="Contacto y horario">
           <div class="booking__row">
             <p class="booking__label">WhatsApp / Teléfono</p>
             <a class="booking__value mono" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">+58 412-6938179</a>
@@ -421,11 +718,11 @@
 
     <section class="section branches" id="ubicacion">
       <header class="section__head">
-        <p class="eyebrow">05 — Ubicación</p>
-        <h2 class="section__title">Te esperamos en <span class="accent">Valera</span></h2>
-        <p class="section__intro">Estamos en la planta baja del Multicentro El Recreo, en Valera. Aparta tu turno en línea o escríbenos antes de venir.</p>
+        <p class="eyebrow" data-fx="fade">05 — Ubicación</p>
+        <h2 class="section__title" data-fx="title">Te esperamos en <span class="accent">Valera</span></h2>
+        <p class="section__intro" data-fx="fade">Estamos en la planta baja del Multicentro El Recreo, en Valera. Aparta tu turno en línea o escríbenos antes de venir.</p>
       </header>
-      <article class="branch">
+      <article class="branch" data-fx="fade">
         <div class="branch__info">
           <h3 class="branch__name">Sede Valera</h3>
           <p class="branch__loc">Multicentro El Recreo, planta baja.<br>Valera, Estado Trujillo, Venezuela.</p>
@@ -435,7 +732,7 @@
             <div class="branch__row"><dt>WhatsApp</dt><dd><a class="mono" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">+58 412-6938179</a></dd></div>
           </dl>
           <div class="branch__actions">
-            <a class="btn btn--primary" href="#reserva">Reservar turno</a>
+            <a class="btn btn--primary" href="#reserva" data-fx-magnetic>Reservar turno</a>
             <a class="branch__map-link" href="https://www.google.com/maps/search/?api=1&query=Multicentro+El+Recreo+Valera+Trujillo+Venezuela" target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
           </div>
         </div>
@@ -451,6 +748,14 @@
   <footer class="footer">
     <div class="footer__grid">
       <div class="footer__col footer__col--brand">
+        <!-- Gira como una moneda (12 s por vuelta); se detiene con el mouse
+             encima y queda quieto con "reducir movimiento" -->
+        <div class="footer__coin" aria-hidden="true">
+          <picture>
+            <source type="image/webp" srcset="assets/img/marca/logo-circular-256.webp 256w, assets/img/marca/logo-circular-512.webp 512w, assets/img/marca/logo-circular-1024.webp 1024w, assets/img/marca/logo-circular-2048.webp 2048w" sizes="160px">
+            <img class="footer__logo" src="assets/img/marca/logo-circular-512.png" srcset="assets/img/marca/logo-circular-512.png 512w, assets/img/marca/logo-circular-1024.png 1024w, assets/img/marca/logo-circular-2048.png 2048w" sizes="160px" alt="" width="160" height="160" loading="lazy" decoding="async">
+          </picture>
+        </div>
         <p class="footer__brand">Barbudo's<span>Barbershop</span></p>
         <p class="footer__tag">Más que un corte, diseñamos tu estilo.</p>
         <p class="footer__rif mono">RIF J-197958002</p>
@@ -480,7 +785,8 @@
     </div>
   </footer>
 
-  <script src="js/config.js?v=3" defer></script>
-  <script src="js/main.js?v=4" defer></script>
+  <script src="js/config.js?v=4" defer></script>
+  <script src="js/main.js?v=9" defer></script>
+  <script type="module" src="js/fx.js?v=10"></script>
 </body>
 </html>
