@@ -44,7 +44,7 @@ en el sitio.
 | Qué | Dónde |
 | --- | --- |
 | Duración de cada turno (45 min), días de anticipación (30), turnos activos por teléfono (3) | tabla `ajustes` |
-| Horario por día (1 = lunes … 7 = domingo; sin fila = cerrado) | tabla `horario` |
+| Horario por día (1 = lunes … 7 = domingo; sin fila = cerrado) y horas de anticipación mínima para reservar (domingo: 24) | tabla `horario` (`anticipacion_horas`) |
 | Dar de baja a un barbero o cambiar sus sedes | tabla `barberos` (`activo`, `sedes`) |
 | Servicios | tabla `servicios` |
 

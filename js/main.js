@@ -155,6 +155,11 @@
     const fechaLarga = (iso) =>
       new Date(iso + 'T00:00:00').toLocaleDateString('es-VE', { weekday: 'long', day: 'numeric', month: 'long' });
 
+    // Domingo: el local abre solo para los turnos reservados, de 10:00 a
+    // 17:00 y con 24 h de anticipación. La regla la aplica Supabase (tabla
+    // horario); aquí solo se explica.
+    const esDomingo = (iso) => new Date(iso + 'T00:00:00').getDay() === 0;
+
     /* ----- Turnos libres ----- */
     let slotsReq = 0;
     const loadSlots = async () => {
@@ -183,8 +188,11 @@
       try {
         const rows = await rpc('turnos_disponibles', { p_fecha: fecha, p_sede: sede, p_barbero: barberoElegido() });
         if (req !== slotsReq) return; // llegó tarde: ya se pidió otra combinación
+        const domingo = esDomingo(fecha);
         if (!rows.length) {
-          slotsStatus.textContent = 'No hay turnos disponibles ese día. Prueba con otra fecha u otro barbero.';
+          slotsStatus.textContent = domingo
+            ? 'No quedan turnos para ese domingo. Los domingos se reserva con al menos 24 horas de anticipación: prueba con otra fecha.'
+            : 'No hay turnos disponibles ese día. Prueba con otra fecha u otro barbero.';
           return;
         }
         rows.forEach(({ hora }, i) => {
@@ -199,7 +207,8 @@
           label.textContent = value;
           slotsGrid.append(input, label);
         });
-        slotsStatus.textContent = rows.length === 1 ? 'Queda 1 turno libre:' : 'Quedan ' + rows.length + ' turnos libres:';
+        slotsStatus.textContent = (domingo ? 'Domingo, solo con reserva. ' : '') +
+          (rows.length === 1 ? 'Queda 1 turno libre:' : 'Quedan ' + rows.length + ' turnos libres:');
       } catch (err) {
         if (req !== slotsReq) return;
         slotsStatus.textContent = 'No pudimos cargar los turnos. Revisa tu conexión e inténtalo de nuevo.';
@@ -234,6 +243,7 @@
     const ERRORES = {
       turno_ocupado: 'Ese turno se acaba de ocupar. Elige otro de la lista.',
       fuera_de_horario: 'Ese turno ya no está disponible. Elige otro de la lista.',
+      falta_anticipacion: 'Los domingos se reserva con al menos 24 horas de anticipación. Elige otro turno.',
       demasiados_turnos: 'Ya tienes varios turnos apartados con este teléfono. Escríbenos por WhatsApp si necesitas otro.',
       datos_invalidos: 'Revisa los datos del formulario e inténtalo de nuevo.'
     };
@@ -295,7 +305,7 @@
       } catch (err) {
         const code = Object.keys(ERRORES).find((k) => err.message.includes(k));
         errorEl.textContent = code ? ERRORES[code] : 'No pudimos guardar la reserva. Revisa tu conexión e inténtalo de nuevo.';
-        if (code === 'turno_ocupado' || code === 'fuera_de_horario') loadSlots();
+        if (code === 'turno_ocupado' || code === 'fuera_de_horario' || code === 'falta_anticipacion') loadSlots();
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Reservar turno';
