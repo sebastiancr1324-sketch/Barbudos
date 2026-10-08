@@ -42,7 +42,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap">
 
   <!-- ?v=N: subir el número al cambiar CSS o JS, para que el navegador no use la copia vieja -->
-  <link rel="stylesheet" href="css/style.css?v=20">
+  <link rel="stylesheet" href="css/style.css?v=21">
   <noscript><style>.preloader { display: none; }</style></noscript>
 
   <!-- Librerías de animación y 3D por CDN, con versión fija. js/fx.js las pide
@@ -74,7 +74,7 @@
     "taxID": "J-197958002",
     "telephone": "+58 412-6938179",
     "image": ["https://sebbasv.github.io/Barbudos/assets/img/og-image.jpg?v=2", "https://sebbasv.github.io/Barbudos/assets/img/el-local-1.jpg"],
-    "priceRange": "$15 - $20",
+    "priceRange": "$10 - $15",
     "foundingDate": "2021",
     "founder": { "@type": "Person", "name": "Oswaldo Valecillos" },
     "openingHoursSpecification": [
@@ -82,7 +82,7 @@
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         "opens": "08:00",
-        "closes": "19:00"
+        "closes": "21:00"
       }
     ],
     "address": { "@type": "PostalAddress", "streetAddress": "Multicentro El Recreo, planta baja", "addressLocality": "Valera", "addressRegion": "Trujillo", "addressCountry": "VE" },
@@ -191,39 +191,37 @@
       <header class="section__head">
         <p class="eyebrow" data-fx="fade">01 — Servicios</p>
         <h2 class="section__title" data-fx="title">Servicios del local</h2>
-        <p class="section__intro" data-fx="fade">Dos cortes de la casa, pensados para salir listo de la silla. Ambos incluyen bebida de cortesía y se pagan en la barbería.</p>
+        <p class="section__intro" data-fx="fade">Tres servicios de la casa, pensados para salir listo de la silla. Todos incluyen bebida de cortesía y se pagan en la barbería.</p>
       </header>
 
       <!-- En escritorio, tarjetas apiladas: cada una se fija arriba y la
-           siguiente la tapa (fx.js achica y oscurece la de abajo) -->
+           siguiente la tapa (fx.js achica y oscurece la de abajo).
+           Nombres y precios del cartel del local; los nombres tienen que
+           coincidir con #f-servicio y con la tabla servicios. -->
       <div class="services__stack">
         <div class="stack__item">
         <article class="service" data-fx="fade">
           <div class="service__media" data-fx="image">
             <span class="service__parallax" data-fx-parallax>
               <picture>
-                <source srcset="assets/img/Corte1.webp" type="image/webp">
-                <img src="assets/img/Corte1.jpg" alt="Resultado de un corte premium en Barbudo's Barbershop: degradado con diseño de líneas" width="960" height="1280" loading="lazy" decoding="async">
+                <source srcset="assets/img/Corte1Foto2.webp" type="image/webp">
+                <img src="assets/img/Corte1Foto2.jpg" alt="Resultado de un corte en Barbudo's Barbershop: degradado con líneas en el costado" width="960" height="1278" loading="lazy" decoding="async">
               </picture>
             </span>
-            <span class="service__chip">Más pedido</span>
           </div>
           <div class="service__body">
             <div class="service__top">
-              <h3 class="service__name">Corte Premium</h3>
-              <p class="service__price">$20</p>
+              <h3 class="service__name">Corte Standard</h3>
+              <p class="service__price">$10</p>
             </div>
-            <p class="service__desc">La experiencia completa de Barbudo's: corte de autor, lavado, cuidados y un cierre pensado para que salgas renovado.</p>
+            <p class="service__desc">Lo esencial bien hecho: tu corte con lavado y mascarilla, y su bebida de cortesía.</p>
             <ul class="service__list">
               <li>Corte</li>
               <li>Lavado</li>
               <li>Mascarilla</li>
-              <li>Mantenimiento de barba</li>
-              <li>Toalla a vapor</li>
-              <li>Masajeador</li>
               <li>Bebida de cortesía</li>
             </ul>
-            <a class="btn btn--ghost service__cta" href="#reserva" data-servicio="Corte Premium">Reservar este corte</a>
+            <a class="btn btn--ghost service__cta" href="#reserva" data-servicio="Corte Standard">Reservar este corte</a>
           </div>
         </article>
         </div>
@@ -241,17 +239,49 @@
           <div class="service__body">
             <div class="service__top">
               <h3 class="service__name">Corte Full</h3>
-              <p class="service__price">$15</p>
+              <p class="service__price">$12</p>
             </div>
-            <p class="service__desc">El corte completo para el día a día: corte, lavado, mascarilla y mantenimiento de barba, con su bebida de cortesía.</p>
+            <p class="service__desc">El corte completo para el día a día: lavado, barba, mascarilla negra y masajeadores, con su bebida de cortesía.</p>
             <ul class="service__list">
               <li>Corte</li>
               <li>Lavado</li>
-              <li>Mascarilla</li>
-              <li>Mantenimiento de barba</li>
+              <li>Barba</li>
+              <li>Mascarilla negra</li>
+              <li>Masajeadores</li>
               <li>Bebida de cortesía</li>
             </ul>
             <a class="btn btn--ghost service__cta" href="#reserva" data-servicio="Corte Full">Reservar este corte</a>
+          </div>
+        </article>
+        </div>
+
+        <div class="stack__item">
+        <article class="service" data-fx="fade">
+          <div class="service__media" data-fx="image">
+            <span class="service__parallax" data-fx-parallax>
+              <picture>
+                <source srcset="assets/img/Corte1.webp" type="image/webp">
+                <img src="assets/img/Corte1.jpg" alt="Resultado de un corte premium en Barbudo's Barbershop: degradado con diseño de líneas" width="960" height="1280" loading="lazy" decoding="async">
+              </picture>
+            </span>
+            <span class="service__chip">Más pedido</span>
+          </div>
+          <div class="service__body">
+            <div class="service__top">
+              <h3 class="service__name">Corte Premium</h3>
+              <p class="service__price">$15</p>
+            </div>
+            <p class="service__desc">La experiencia completa de Barbudo's: lavado, barba, mascarilla, masajeadores y toalla a vapor para que salgas renovado.</p>
+            <ul class="service__list">
+              <li>Corte</li>
+              <li>Lavado</li>
+              <li>Barba</li>
+              <li>Mascarilla</li>
+              <li>Masajeadores</li>
+              <li>Toalla a vapor</li>
+              <li>Bebida de cortesía</li>
+            </ul>
+            <a class="btn btn--ghost service__cta" href="#reserva" data-servicio="Corte Premium">Reservar este corte</a>
           </div>
         </article>
         </div>
@@ -267,7 +297,18 @@
         <div class="drinks__body">
           <p class="eyebrow">Incluida — Bebida de cortesía</p>
           <h3 class="drinks__title">Con tu corte,<br>la bebida va por nuestra cuenta</h3>
-          <p class="drinks__desc">Premium y Full incluyen una bebida de cortesía, para que el momento valga más que la silla.</p>
+          <p class="drinks__desc">Todos los servicios incluyen una bebida de cortesía. Elige la tuya:</p>
+          <ul class="drinks__list">
+            <li>Café espresso</li>
+            <li>Café latte / capuchino</li>
+            <li>Té caliente o frío</li>
+            <li>Agua / jugo natural</li>
+            <li>Nestea</li>
+            <li>Refresco</li>
+            <li>Cerveza</li>
+            <li>Whisky</li>
+            <li>Cuba libre</li>
+          </ul>
           <picture>
             <source srcset="assets/img/BebidasCortesia.webp" type="image/webp">
             <img class="drinks__mini" src="assets/img/BebidasCortesia.jpg" alt="Varias bebidas de cortesía disponibles en el local" width="720" height="959" loading="lazy" decoding="async">
@@ -635,8 +676,9 @@
               <label for="f-servicio">Servicio</label>
               <select id="f-servicio" name="servicio" required>
                 <option value="" selected>Selecciona…</option>
-                <option>Corte Premium</option>
+                <option>Corte Standard</option>
                 <option>Corte Full</option>
+                <option>Corte Premium</option>
                 <option>Otro (consultar)</option>
               </select>
             </div>
@@ -644,7 +686,8 @@
 
           <div class="form__field">
             <label for="f-fecha">Fecha</label>
-            <input id="f-fecha" name="fecha" type="date" required>
+            <input id="f-fecha" name="fecha" type="date" required aria-describedby="fecha-hint">
+            <p class="form__hint" id="fecha-hint">Domingos de 10:00 a 17:00, solo con reserva hecha con 24 horas de anticipación.</p>
           </div>
 
           <!-- Los turnos libres llegan de Supabase según sede, barbero y fecha -->
@@ -685,9 +728,10 @@
           <div class="booking__row hours" id="horario">
             <p class="booking__label">Horario de atención</p>
             <dl class="hours__rows">
-              <div class="hours__row"><dt>Lunes a sábado</dt><dd class="mono">8:00 a 19:00</dd></div>
-              <div class="hours__row"><dt>Domingo</dt><dd>Por WhatsApp</dd></div>
+              <div class="hours__row"><dt>Lunes a sábado</dt><dd class="mono">8:00 a 21:00</dd></div>
+              <div class="hours__row"><dt>Domingo <span class="hours__tag">solo con reserva</span></dt><dd class="mono">10:00 a 17:00</dd></div>
             </dl>
+            <p class="hours__note">Los domingos el local abre solo si hay turnos reservados. Reserva con al menos 24 horas de anticipación.</p>
           </div>
         </aside>
       </div>
@@ -704,8 +748,8 @@
           <h3 class="branch__name">Sede Valera</h3>
           <p class="branch__loc">Multicentro El Recreo, planta baja.<br>Valera, Estado Trujillo, Venezuela.</p>
           <dl class="branch__rows">
-            <div class="branch__row"><dt>Lunes a sábado</dt><dd class="mono">8:00 a 19:00</dd></div>
-            <div class="branch__row"><dt>Domingo</dt><dd>Por WhatsApp</dd></div>
+            <div class="branch__row"><dt>Lunes a sábado</dt><dd class="mono">8:00 a 21:00</dd></div>
+            <div class="branch__row"><dt>Domingo <span class="hours__tag">solo con reserva</span></dt><dd class="mono">10:00 a 17:00</dd></div>
             <div class="branch__row"><dt>WhatsApp</dt><dd><a class="mono" href="https://wa.me/584126938179" target="_blank" rel="noopener noreferrer">+58 412-6938179</a></dd></div>
           </dl>
           <div class="branch__actions">
@@ -740,7 +784,8 @@
       <div class="footer__col">
         <p class="footer__title">Sede</p>
         <p><a href="#ubicacion">Multicentro El Recreo, planta baja, Valera</a></p>
-        <p>Lunes a sábado, <span class="mono">8:00 a 19:00</span></p>
+        <p>Lunes a sábado, <span class="mono">8:00 a 21:00</span></p>
+        <p>Domingo solo con reserva, <span class="mono">10:00 a 17:00</span></p>
       </div>
       <div class="footer__col">
         <p class="footer__title">Contacto</p>
@@ -763,7 +808,7 @@
   </footer>
 
   <script src="js/config.js?v=4" defer></script>
-  <script src="js/main.js?v=9" defer></script>
-  <script type="module" src="js/fx.js?v=11"></script>
+  <script src="js/main.js?v=10" defer></script>
+  <script type="module" src="js/fx.js?v=12"></script>
 </body>
 </html>

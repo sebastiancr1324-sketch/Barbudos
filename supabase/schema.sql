@@ -34,11 +34,19 @@ create table if not exists public.servicios (
 
 -- Horario de atención por día (1 = lunes … 7 = domingo, ISO).
 -- Un día sin fila = cerrado (no se ofrecen turnos en línea).
+-- anticipacion_horas: con cuánta anticipación mínima hay que reservar
+-- los turnos de ese día (0 = hasta el momento del turno).
 create table if not exists public.horario (
-  dia_semana smallint primary key check (dia_semana between 1 and 7),
-  abre       time not null,
-  cierra     time not null check (cierra > abre)
+  dia_semana         smallint primary key check (dia_semana between 1 and 7),
+  abre               time not null,
+  cierra             time not null check (cierra > abre),
+  anticipacion_horas smallint not null default 0 check (anticipacion_horas between 0 and 168)
 );
+
+-- Octubre 2026: columna nueva en bases ya creadas
+alter table public.horario
+  add column if not exists anticipacion_horas smallint not null default 0
+  check (anticipacion_horas between 0 and 168);
 
 -- Una sola fila con los ajustes generales.
 create table if not exists public.ajustes (
@@ -106,21 +114,31 @@ alter table public.barberos alter column sedes set default array['Valera'];
 update public.barberos set activo = false where nombre = 'José Ojeda';
 update public.barberos set sedes = array['Valera'] where sedes <> array['Valera'];
 
+-- Los del cartel del local, en el orden del sitio. Los nombres tienen que
+-- coincidir con las opciones de #f-servicio en index.html.
 insert into public.servicios (nombre, orden) values
-  ('Corte Premium', 1),
+  ('Corte Standard', 1),
   ('Corte Full', 2),
-  ('Otro (consultar)', 3)
-on conflict (nombre) do nothing;
+  ('Corte Premium', 3),
+  ('Otro (consultar)', 4)
+on conflict (nombre) do update set orden = excluded.orden, activo = true;
 
--- Lunes a sábado, 8:00 a 19:00. Domingo cerrado (se atiende por WhatsApp).
-insert into public.horario (dia_semana, abre, cierra) values
-  (1, '08:00', '19:00'),
-  (2, '08:00', '19:00'),
-  (3, '08:00', '19:00'),
-  (4, '08:00', '19:00'),
-  (5, '08:00', '19:00'),
-  (6, '08:00', '19:00')
-on conflict (dia_semana) do nothing;
+-- Lunes a sábado, 8:00 a 21:00 (cartel del local).
+-- Domingo, 10:00 a 17:00, solo con reserva y con 24 h de anticipación:
+-- el local abre ese día únicamente si hay turnos reservados.
+-- Al volver a ejecutar este archivo, el horario queda como está aquí.
+insert into public.horario (dia_semana, abre, cierra, anticipacion_horas) values
+  (1, '08:00', '21:00', 0),
+  (2, '08:00', '21:00', 0),
+  (3, '08:00', '21:00', 0),
+  (4, '08:00', '21:00', 0),
+  (5, '08:00', '21:00', 0),
+  (6, '08:00', '21:00', 0),
+  (7, '10:00', '17:00', 24)
+on conflict (dia_semana) do update
+  set abre = excluded.abre,
+      cierra = excluded.cierra,
+      anticipacion_horas = excluded.anticipacion_horas;
 
 insert into public.ajustes (id) values (true) on conflict (id) do nothing;
 
@@ -244,9 +262,11 @@ set search_path = public
 as $$
   select distinct t.turno
   from public.turnos_del_dia(p_fecha) as t(turno)
+  join public.horario h on h.dia_semana = extract(isodow from p_fecha)
   cross join public.barberos_de(p_sede, nullif(p_barbero, '')) b
   cross join public.ajustes a
-  where p_fecha + t.turno > public.ahora_local()
+  -- Futuro y con la anticipación mínima del día (domingo: 24 h)
+  where p_fecha + t.turno > public.ahora_local() + make_interval(hours => h.anticipacion_horas)
     and p_fecha <= public.ahora_local()::date + a.dias_anticipacion_max
     and not exists (
       select 1 from public.reservas r
@@ -260,7 +280,7 @@ $$;
 
 -- Crea la reserva. Devuelve el barbero asignado, fecha y hora.
 -- Errores (en el mensaje): datos_invalidos, fuera_de_horario,
--- turno_ocupado, demasiados_turnos.
+-- falta_anticipacion, turno_ocupado, demasiados_turnos.
 create or replace function public.crear_reserva(
   p_nombre   text,
   p_telefono text,
@@ -311,6 +331,13 @@ begin
      or p_fecha + p_hora <= public.ahora_local()
      or p_fecha > public.ahora_local()::date + v_ajustes.dias_anticipacion_max then
     raise exception 'fuera_de_horario';
+  end if;
+
+  -- Anticipación mínima del día (domingo: 24 h)
+  if p_fecha + p_hora <= public.ahora_local() + make_interval(hours => (
+       select h.anticipacion_horas from public.horario h
+       where h.dia_semana = extract(isodow from p_fecha))) then
+    raise exception 'falta_anticipacion';
   end if;
 
   -- Freno simple contra abuso: máximo de turnos activos por teléfono

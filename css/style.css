@@ -1215,6 +1215,23 @@ p { max-width: 68ch; }
   font-size: 0.95rem;
 }
 
+/* Carta de bebidas del cartel del local */
+.drinks__list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.drinks__list li {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
 .drinks__mini {
   width: min(100%, 180px);
   aspect-ratio: 3 / 4;
@@ -1589,6 +1606,7 @@ p { max-width: 68ch; }
 .branch__row .mono {
   font-size: 0.875rem;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .branch__actions {
@@ -1750,6 +1768,30 @@ p { max-width: 68ch; }
 .hours__row dd.mono {
   font-size: 0.875rem;
   font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Domingo: el local abre solo para los turnos reservados */
+.hours__tag {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hours__note {
+  margin-top: var(--space-3);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-3);
 }
 
 /* ---------- Formulario ---------- */
@@ -1839,6 +1881,12 @@ p { max-width: 68ch; }
   font-size: 0.9rem;
   color: var(--ink-3);
   text-align: center;
+}
+
+/* Aviso bajo un campo (fecha): alineado con la etiqueta */
+.form__field .form__hint {
+  font-size: 0.85rem;
+  text-align: left;
 }
 
 .form__hint a {
