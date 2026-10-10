@@ -6,73 +6,166 @@
   <title>Panel de reservas · Barbudo's</title>
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0a0909">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="css/style.css?v=20">
-  <link rel="stylesheet" href="css/admin.css?v=3">
+  <!-- Logo circular de la barbería. ?v=2: que el navegador no use el ícono viejo -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=2">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png?v=2">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2">
+
+  <link rel="preload" href="assets/fonts/Oswald-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Barlow (texto y botones) desde Google Fonts, como en el sitio -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap">
+
+  <!-- ?v=N: subir el número al cambiar CSS o JS -->
+  <link rel="stylesheet" href="css/style.css?v=21">
+  <link rel="stylesheet" href="css/admin.css?v=4">
 </head>
 <body class="admin">
+  <a class="skip-link" href="#main">Saltar al contenido</a>
 
   <header class="admin__bar">
-    <a class="nav__brand" href="./" aria-label="Volver al sitio de Barbudo's">
-      <img class="nav__logo" src="assets/img/logo.svg" alt="" width="36" height="36">
-      <span class="nav__brand-text">Reservas</span>
-    </a>
-    <div class="admin__user" id="admin-user" hidden>
-      <span class="admin__email" id="admin-email"></span>
-      <button class="btn btn--ghost btn--sm" type="button" id="admin-logout">Salir</button>
+    <div class="admin__bar-inner">
+      <a class="nav__brand" href="./" aria-label="Volver al sitio de Barbudo's">
+        <img class="nav__logo" src="assets/img/logo.svg" alt="" width="40" height="40">
+        <span class="nav__brand-text">Barbudo's</span>
+        <span class="admin__tag mono">Panel</span>
+      </a>
+      <div class="admin__user" id="admin-user" hidden>
+        <span class="admin__hello" id="admin-hello"></span>
+        <button class="btn btn--ghost btn--sm" type="button" id="admin-logout">Salir</button>
+      </div>
     </div>
   </header>
 
-  <main class="admin__main">
+  <main class="admin__main" id="main" tabindex="-1">
     <p class="admin__notice" id="admin-notice" role="alert" hidden></p>
 
-    <!-- Ingreso del personal -->
-    <section class="admin__login" id="view-login" hidden aria-labelledby="login-title">
-      <form class="form" id="login-form" novalidate>
-        <p class="eyebrow">Personal</p>
-        <h1 class="admin__title" id="login-title">Entrar al panel</h1>
-        <div class="form__field">
-          <label for="l-email">Correo</label>
-          <input id="l-email" name="email" type="email" autocomplete="username" required>
-        </div>
-        <div class="form__field">
-          <label for="l-pass">Contraseña</label>
-          <input id="l-pass" name="password" type="password" autocomplete="current-password" required>
-        </div>
-        <p class="form__error" id="login-error" role="alert"></p>
-        <button class="btn btn--primary btn--block" type="submit" id="login-submit">Entrar</button>
-      </form>
-    </section>
-
-    <!-- Turnos del día -->
-    <section class="admin__app" id="view-app" hidden aria-labelledby="app-title">
-      <div class="admin__head">
-        <div>
-          <p class="eyebrow" id="app-count">Turnos</p>
-          <h1 class="admin__title" id="app-title">Hoy</h1>
-        </div>
-        <div class="admin__tools">
-          <div class="admin__day">
-            <button class="btn btn--ghost btn--sm" type="button" id="day-prev" aria-label="Día anterior">←</button>
-            <label class="sr-only" for="day-input">Fecha</label>
-            <input class="admin__input" id="day-input" type="date">
-            <button class="btn btn--ghost btn--sm" type="button" id="day-next" aria-label="Día siguiente">→</button>
-            <button class="btn btn--ghost btn--sm" type="button" id="day-today">Hoy</button>
-          </div>
-          <label class="admin__check">
-            <input type="checkbox" id="show-cancelled"> Ver canceladas
-          </label>
+    <!-- ===== Ingreso del personal ===== -->
+    <section class="login" id="view-login" hidden aria-labelledby="login-title">
+      <div class="login__art" aria-hidden="true">
+        <picture>
+          <source srcset="assets/img/local/techo-hexagonos-cafe.webp" type="image/webp">
+          <img class="login__photo" src="assets/img/local/techo-hexagonos-cafe.jpg" alt="" width="960" height="1280" decoding="async">
+        </picture>
+        <div class="login__art-inner">
+          <img class="login__logo" src="assets/img/marca/logo-circular-256.webp" alt="" width="96" height="96">
+          <p class="login__quote">Más que un corte, <span class="hero__neon">diseñamos tu estilo.</span></p>
         </div>
       </div>
 
-      <p class="admin__empty" id="list-status" aria-live="polite"></p>
-      <ol class="admin__list" id="list"></ol>
+      <form class="login__form" id="login-form" novalidate>
+        <p class="eyebrow">Solo para el equipo</p>
+        <h1 class="admin__title" id="login-title">Panel de reservas</h1>
+        <p class="login__intro">Entra con el correo y la contraseña que te dio el administrador para ver y gestionar los turnos.</p>
+        <div class="form__field">
+          <label for="l-email">Correo</label>
+          <input id="l-email" name="email" type="email" autocomplete="username" inputmode="email" required>
+        </div>
+        <div class="form__field">
+          <label for="l-pass">Contraseña</label>
+          <div class="login__pass">
+            <input id="l-pass" name="password" type="password" autocomplete="current-password" required>
+            <button class="login__peek" type="button" id="l-peek" aria-pressed="false">Mostrar</button>
+          </div>
+        </div>
+        <p class="form__error" id="login-error" role="alert"></p>
+        <button class="btn btn--primary btn--block" type="submit" id="login-submit">Entrar</button>
+        <p class="form__hint">¿Olvidaste la contraseña? Pídele al administrador que te la cambie.</p>
+      </form>
+    </section>
+
+    <!-- ===== Agenda ===== -->
+    <section class="agenda" id="view-app" hidden aria-labelledby="app-title">
+
+      <!-- Día: título, flechas, fecha y "Hoy" -->
+      <div class="agenda__head">
+        <div class="agenda__heading">
+          <p class="eyebrow" id="app-eyebrow">Agenda</p>
+          <h1 class="admin__title" id="app-title">Hoy</h1>
+          <p class="agenda__sub" id="app-sub"></p>
+        </div>
+        <div class="agenda__day">
+          <button class="iconbtn" type="button" id="day-prev" aria-label="Día anterior" title="Día anterior (←)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <label class="sr-only" for="day-input">Elegir fecha</label>
+          <input class="agenda__date mono" id="day-input" type="date">
+          <button class="iconbtn" type="button" id="day-next" aria-label="Día siguiente" title="Día siguiente (→)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <button class="btn btn--ghost btn--sm" type="button" id="day-today" title="Volver a hoy (T)">Hoy</button>
+        </div>
+      </div>
+
+      <!-- Semana: turnos por día del barbero elegido -->
+      <nav class="week" aria-label="Días de la semana">
+        <ol class="week__days" id="week"></ol>
+      </nav>
+
+      <!-- Barbero: cada uno elige su nombre y el panel lo recuerda -->
+      <div class="barbers" role="group" aria-labelledby="barbers-label">
+        <p class="barbers__label" id="barbers-label">Ver la agenda de</p>
+        <div class="barbers__row" id="barbers"></div>
+      </div>
+
+      <!-- Resumen del día: cada cifra filtra la lista -->
+      <div class="stats" role="group" aria-label="Filtrar por estado" id="stats"></div>
+
+      <div class="agenda__toolbar">
+        <div class="search">
+          <svg class="search__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+          <label class="sr-only" for="search">Buscar cliente por nombre o teléfono</label>
+          <input class="search__input" id="search" type="search" placeholder="Buscar cliente o teléfono" autocomplete="off">
+        </div>
+        <div class="sync">
+          <span class="sync__text" id="sync-text" aria-live="polite"></span>
+          <button class="iconbtn" type="button" id="refresh" aria-label="Actualizar turnos" title="Actualizar">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <p class="agenda__empty" id="list-status" aria-live="polite"></p>
+      <ol class="agenda__list" id="list" aria-label="Turnos del día"></ol>
+
+      <details class="help">
+        <summary>¿Cómo se usa el panel?</summary>
+        <ol class="help__steps">
+          <li><strong>Elige tu nombre</strong> en "Ver la agenda de". El panel lo recuerda en este teléfono y solo te muestra tus turnos.</li>
+          <li>Cada reserva nueva llega <span class="pill pill--pendiente">Por confirmar</span>. Escríbele al cliente con el botón de WhatsApp (el mensaje ya va escrito) y toca <strong>Confirmar</strong>.</li>
+          <li>Cuando termines el corte, toca <strong>Atendido</strong>. Si el cliente no llegó, <strong>No vino</strong>.</li>
+          <li><strong>Cancelar</strong> libera la hora para que otra persona la reserve desde la web.</li>
+          <li>¿Te equivocaste? Toca <strong>Deshacer</strong> en el aviso de abajo o en el turno.</li>
+        </ol>
+        <p class="help__keys">En la computadora: <kbd>←</kbd> <kbd>→</kbd> cambian de día y <kbd>T</kbd> vuelve a hoy. Los turnos nuevos aparecen solos cada minuto.</p>
+      </details>
     </section>
   </main>
 
+  <!-- Confirmación antes de cancelar -->
+  <dialog class="modal" id="confirm" aria-labelledby="confirm-title" aria-describedby="confirm-text">
+    <form method="dialog" class="modal__box">
+      <p class="eyebrow">Cancelar turno</p>
+      <h2 class="modal__title" id="confirm-title">¿Cancelar este turno?</h2>
+      <p class="modal__text" id="confirm-text"></p>
+      <div class="modal__actions">
+        <button class="btn btn--ghost" value="no">Volver</button>
+        <button class="btn btn--danger" value="si">Sí, cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Avisos breves con "Deshacer" -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span class="toast__text" id="toast-text"></span>
+    <button class="toast__btn" type="button" id="toast-undo" hidden>Deshacer</button>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=4"></script>
-  <script src="js/admin.js?v=3"></script>
+  <script src="js/admin.js?v=4"></script>
 </body>
 </html>
