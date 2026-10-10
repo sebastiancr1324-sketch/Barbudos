@@ -49,4 +49,12 @@ en el sitio.
 | Servicios | tabla `servicios` |
 
 Si agregas un barbero o servicio nuevo, agrégalo también como opción en el
-formulario de `index.html` con **el mismo nombre exacto**.
+formulario de `index.html` con **el mismo nombre exacto**. Si cambian los
+precios, actualízalos también en `PRECIOS` de `js/admin.js` (el panel los usa
+para el estimado del día).
+
+## Agenda de cada barbero
+
+En el panel, cada barbero toca su foto en **"Ver la agenda de"** y ve solo
+sus turnos; el panel lo recuerda en ese teléfono. También se puede guardar un
+enlace directo, por ejemplo `admin.html?barbero=gabriel-hidalgo`.
